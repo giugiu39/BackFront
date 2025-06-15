@@ -1,0 +1,17 @@
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: miao
+      MYSQL_DATABASE: ecom_code_for_project
+      MYSQL_USER: root
+      MYSQL_PASSWORD: miao
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
