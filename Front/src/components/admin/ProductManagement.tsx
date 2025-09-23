@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product, Category } from '../../types';
 import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import { adminApi } from '../../services/ApiService';
 
 const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -9,6 +10,8 @@ const ProductManagement: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -20,68 +23,99 @@ const ProductManagement: React.FC = () => {
     isFeatured: false,
   });
 
-  // Mock data - sostituire con chiamate API reali
+  // Carica prodotti e categorie dalle API
   useEffect(() => {
-    const mockCategories: Category[] = [
-      { id: '1', name: 'Electronics', description: 'Electronic devices', createdAt: new Date().toISOString() },
-      { id: '2', name: 'Clothing', description: 'Fashion items', createdAt: new Date().toISOString() },
-      { id: '3', name: 'Home & Garden', description: 'Home improvement items', createdAt: new Date().toISOString() },
-    ];
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [productsData, categoriesData] = await Promise.all([
+          adminApi.getProducts(),
+          adminApi.getCategories()
+        ]);
+        setProducts(productsData);
+        setCategories(categoriesData);
+      } catch (err) {
+        console.error('Errore nel caricamento dei dati:', err);
+        setError('Impossibile caricare i dati. Verifica la connessione al server.');
+        
+        // Fallback ai dati di esempio se l'API fallisce
+        const mockCategories: Category[] = [
+          { id: '1', name: 'Electronics', description: 'Electronic devices', createdAt: new Date().toISOString() },
+          { id: '2', name: 'Clothing', description: 'Fashion items', createdAt: new Date().toISOString() },
+          { id: '3', name: 'Home & Garden', description: 'Home improvement items', createdAt: new Date().toISOString() },
+        ];
 
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Smartphone',
-        description: 'Latest smartphone with advanced features',
-        price: 699,
-        discountPrice: 599,
-        categoryId: '1',
-        category: mockCategories[0],
-        stock: 50,
-        rating: 4.5,
-        reviewCount: 123,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        name: 'T-Shirt',
-        description: 'Comfortable cotton t-shirt',
-        price: 29,
-        categoryId: '2',
-        category: mockCategories[1],
-        stock: 100,
-        rating: 4.2,
-        reviewCount: 67,
-        isFeatured: false,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-    ];
+        const mockProducts: Product[] = [
+          {
+            id: '1',
+            name: 'Smartphone',
+            description: 'Latest smartphone with advanced features',
+            price: 699,
+            discountPrice: 599,
+            categoryId: '1',
+            category: mockCategories[0],
+            stock: 50,
+            rating: 4.5,
+            reviewCount: 123,
+            isFeatured: true,
+            imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+            createdAt: new Date().toISOString(),
+          },
+          {
+            id: '2',
+            name: 'T-Shirt',
+            description: 'Comfortable cotton t-shirt',
+            price: 29,
+            categoryId: '2',
+            category: mockCategories[1],
+            stock: 100,
+            rating: 4.2,
+            reviewCount: 67,
+            isFeatured: false,
+            imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+            createdAt: new Date().toISOString(),
+          },
+        ];
 
-    setCategories(mockCategories);
-    setProducts(mockProducts);
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newProduct: Product = {
-      id: editingProduct ? editingProduct.id : Date.now().toString(),
-      ...formData,
-      category: categories.find(c => c.id === formData.categoryId),
-      rating: editingProduct?.rating || 0,
-      reviewCount: editingProduct?.reviewCount || 0,
-      createdAt: editingProduct?.createdAt || new Date().toISOString(),
+        setCategories(mockCategories);
+        setProducts(mockProducts);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (editingProduct) {
-      setProducts(prev => prev.map(p => p.id === editingProduct.id ? newProduct : p));
-    } else {
-      setProducts(prev => [...prev, newProduct]);
-    }
+    fetchData();
+  }, []);
 
-    resetForm();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const productData = {
+        ...formData,
+        id: editingProduct?.id
+      };
+      
+      let updatedProduct;
+      
+      if (editingProduct) {
+        // Aggiorna prodotto esistente
+        updatedProduct = await adminApi.updateProduct(editingProduct.id, productData);
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? updatedProduct : p));
+      } else {
+        // Crea nuovo prodotto
+        updatedProduct = await adminApi.createProduct(productData);
+        setProducts(prev => [...prev, updatedProduct]);
+      }
+      
+      resetForm();
+    } catch (err) {
+      console.error('Errore durante il salvataggio del prodotto:', err);
+      setError('Impossibile salvare il prodotto. Riprova più tardi.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEdit = (product: Product) => {
@@ -93,17 +127,30 @@ const ProductManagement: React.FC = () => {
       discountPrice: product.discountPrice || 0,
       categoryId: product.categoryId,
       stock: product.stock,
-      imageUrl: product.imageUrl,
-      isFeatured: product.isFeatured,
+      imageUrl: product.imageUrl || '',
+      isFeatured: product.isFeatured || false,
     });
     setShowForm(true);
   };
-
-  const handleDelete = (productId: string) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
+  
+  const handleDelete = async (productId: string) => {
+    if (!window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await adminApi.deleteProduct(productId);
       setProducts(prev => prev.filter(p => p.id !== productId));
+    } catch (err) {
+      console.error('Errore durante l\'eliminazione del prodotto:', err);
+      setError('Impossibile eliminare il prodotto. Riprova più tardi.');
+    } finally {
+      setLoading(false);
     }
   };
+
+
 
   const resetForm = () => {
     setFormData({

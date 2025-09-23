@@ -1,26 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart3, Package, ShoppingCart, Users, TrendingUp, DollarSign } from 'lucide-react';
+import { adminApi } from '../../services/ApiService';
 
 const AdminDashboard: React.FC = () => {
-  // Mock data - sostituire con dati reali dall'API
-  const stats = {
-    totalRevenue: 124500,
-    totalOrders: 342,
-    totalProducts: 156,
-    totalCustomers: 1247,
-    monthlyGrowth: 12.5,
-    recentOrders: [
-      { id: 'ORD-001', customer: 'John Doe', total: 299.99, status: 'shipped' },
-      { id: 'ORD-002', customer: 'Jane Smith', total: 149.99, status: 'processing' },
-      { id: 'ORD-003', customer: 'Mike Johnson', total: 399.99, status: 'delivered' },
-      { id: 'ORD-004', customer: 'Sarah Wilson', total: 199.99, status: 'pending' },
-    ],
-    topProducts: [
-      { name: 'Smartphone Pro', sales: 245, revenue: 172650 },
-      { name: 'Wireless Headphones', sales: 189, revenue: 28350 },
-      { name: 'Laptop Ultra', sales: 134, revenue: 160800 },
-    ],
-  };
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalProducts: 0,
+    totalCustomers: 0,
+    monthlyGrowth: 0,
+    recentOrders: [],
+    topProducts: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        setLoading(true);
+        const analyticsData = await adminApi.getAnalytics();
+        setStats(analyticsData);
+      } catch (err) {
+        console.error('Errore nel caricamento dei dati analytics:', err);
+        setError('Impossibile caricare i dati analytics');
+        // Fallback ai dati di esempio se l'API fallisce
+        setStats({
+          totalRevenue: 124500,
+          totalOrders: 342,
+          totalProducts: 156,
+          totalCustomers: 1247,
+          monthlyGrowth: 12.5,
+          recentOrders: [
+            { id: 'ORD-001', customer: 'John Doe', total: 299.99, status: 'shipped' },
+            { id: 'ORD-002', customer: 'Jane Smith', total: 149.99, status: 'processing' },
+            { id: 'ORD-003', customer: 'Mike Johnson', total: 399.99, status: 'delivered' },
+            { id: 'ORD-004', customer: 'Sarah Wilson', total: 199.99, status: 'pending' },
+          ],
+          topProducts: [
+            { name: 'Smartphone Pro', sales: 245, revenue: 172650 },
+            { name: 'Wireless Headphones', sales: 189, revenue: 28350 },
+            { name: 'Laptop Ultra', sales: 134, revenue: 160800 },
+          ],
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -37,12 +66,24 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return <div className="flex justify-center items-center h-64">Caricamento dashboard...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-4">
+        {error}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here's what's happening with your store.</p>
+        <p className="text-gray-600">Benvenuto! Ecco cosa sta succedendo nel tuo negozio.</p>
       </div>
 
       {/* Stats Cards */}
@@ -53,16 +94,16 @@ const AdminDashboard: React.FC = () => {
               <DollarSign className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="text-sm font-medium text-gray-600">Ricavi Totali</p>
               <p className="text-2xl font-bold text-gray-900">
-                ${stats.totalRevenue.toLocaleString()}
+                €{stats.totalRevenue.toLocaleString()}
               </p>
             </div>
           </div>
           <div className="mt-4 flex items-center">
             <TrendingUp className="h-4 w-4 text-green-500" />
             <span className="text-sm text-green-600 ml-1">
-              +{stats.monthlyGrowth}% from last month
+              +{stats.monthlyGrowth}% rispetto al mese scorso
             </span>
           </div>
         </div>
@@ -73,12 +114,12 @@ const AdminDashboard: React.FC = () => {
               <ShoppingCart className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
+              <p className="text-sm font-medium text-gray-600">Ordini Totali</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
             </div>
           </div>
           <div className="mt-4">
-            <span className="text-sm text-gray-600">Active orders in progress</span>
+            <span className="text-sm text-gray-600">Ordini attivi in corso</span>
           </div>
         </div>
 
@@ -88,12 +129,12 @@ const AdminDashboard: React.FC = () => {
               <Package className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Products</p>
+              <p className="text-sm font-medium text-gray-600">Prodotti Totali</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalProducts}</p>
             </div>
           </div>
           <div className="mt-4">
-            <span className="text-sm text-gray-600">Available in inventory</span>
+            <span className="text-sm text-gray-600">Disponibili in inventario</span>
           </div>
         </div>
 
@@ -103,89 +144,95 @@ const AdminDashboard: React.FC = () => {
               <Users className="h-6 w-6 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Customers</p>
+              <p className="text-sm font-medium text-gray-600">Clienti Totali</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalCustomers}</p>
             </div>
           </div>
           <div className="mt-4">
-            <span className="text-sm text-gray-600">Registered users</span>
+            <span className="text-sm text-gray-600">Utenti registrati</span>
           </div>
         </div>
       </div>
 
-      {/* Charts and Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-            <a href="#" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-              View all
-            </a>
-          </div>
-          <div className="space-y-4">
-            {stats.recentOrders.map((order) => (
-              <div key={order.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                <div>
-                  <p className="font-medium text-gray-900">{order.id}</p>
-                  <p className="text-sm text-gray-600">{order.customer}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">${order.total}</p>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Products */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Top Products</h2>
-            <BarChart3 className="h-5 w-5 text-gray-400" />
-          </div>
-          <div className="space-y-4">
-            {stats.topProducts.map((product, index) => (
-              <div key={product.name} className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="text-sm font-medium text-gray-500 w-6">
-                    #{index + 1}
-                  </span>
-                  <div className="ml-3">
-                    <p className="font-medium text-gray-900">{product.name}</p>
-                    <p className="text-sm text-gray-600">{product.sales} units sold</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">
-                    ${product.revenue.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
+      {/* Recent Orders */}
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
-            <Package className="h-8 w-8 text-gray-400 mr-3" />
-            <span className="text-gray-600 font-medium">Add New Product</span>
-          </button>
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
-            <ShoppingCart className="h-8 w-8 text-gray-400 mr-3" />
-            <span className="text-gray-600 font-medium">Process Orders</span>
-          </button>
-          <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors">
-            <BarChart3 className="h-8 w-8 text-gray-400 mr-3" />
-            <span className="text-gray-600 font-medium">View Analytics</span>
-          </button>
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Ordini Recenti</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID Ordine
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Cliente
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Totale
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Stato
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {stats.recentOrders.map((order: any) => (
+                <tr key={order.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {order.id}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {order.customer}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    €{order.total.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
+                      {order.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Top Products */}
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <h2 className="text-lg font-medium text-gray-900 mb-4">Prodotti Più Venduti</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Prodotto
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Vendite
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ricavi
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {stats.topProducts.map((product: any, index: number) => (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {product.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {product.sales}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    €{product.revenue.toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

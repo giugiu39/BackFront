@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import ProductManagement from '../components/admin/ProductManagement';
+import { Navigate } from 'react-router-dom';
 
 const AdminPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  // Mostra un loader mentre verifichiamo l'autenticazione
+  if (loading) {
+    return <div className="loading">Caricamento...</div>;
+  }
+
   // Redirect se non è admin
-  if (!user || user.role !== 'admin') {
-    window.location.href = '/admin/login';
-    return null;
+  if (!isAdmin) {
+    return <Navigate to="/login" replace />;
   }
 
   const renderContent = () => {

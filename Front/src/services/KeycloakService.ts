@@ -1,0 +1,67 @@
+import Keycloak from 'keycloak-js';
+
+const keycloakConfig = {
+  url: 'http://localhost:8080',
+  realm: 'ecommerce',
+  clientId: 'ecommerce-app'
+};
+
+const keycloak = new Keycloak(keycloakConfig);
+
+export const initKeycloak = () => {
+  return keycloak
+    .init({
+      onLoad: 'check-sso',
+      silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+      pkceMethod: 'S256'
+    })
+    .then((authenticated) => {
+      if (authenticated) {
+        console.log('User is authenticated');
+      } else {
+        console.log('User is not authenticated');
+      }
+      return authenticated;
+    })
+    .catch((error) => {
+      console.error('Failed to initialize Keycloak', error);
+    });
+};
+
+export const login = () => {
+  keycloak.login();
+};
+
+export const logout = () => {
+  keycloak.logout();
+};
+
+export const getToken = () => {
+  return keycloak.token;
+};
+
+export const isLoggedIn = () => {
+  return !!keycloak.token;
+};
+
+export const updateToken = (minValidity = 5) => {
+  return keycloak.updateToken(minValidity);
+};
+
+export const getUsername = () => {
+  return keycloak.tokenParsed?.preferred_username;
+};
+
+export const hasRole = (roles: string[]) => {
+  return roles.some((role) => keycloak.hasRealmRole(role));
+};
+
+export const isAdmin = () => {
+  return keycloak.hasRealmRole('admin');
+};
+
+export const isCustomer = () => {
+  return keycloak.hasRealmRole('customer');
+};
+
+export default keycloak;

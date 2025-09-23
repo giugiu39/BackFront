@@ -1,20 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
+import keycloak, { initKeycloak, login as keycloakLogin, logout as keycloakLogout, isAdmin, isCustomer } from '../services/KeycloakService';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, password: string, role: 'admin' | 'customer') => Promise<void>;
+  login: () => void;
   logout: () => void;
-  register: (userData: RegisterData) => Promise<void>;
+  register: () => void;
   loading: boolean;
-}
-
-interface RegisterData {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
+  isAdmin: boolean;
+  isCustomer: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,89 +25,90 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userIsAdmin, setUserIsAdmin] = useState(false);
+  const [userIsCustomer, setUserIsCustomer] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
-      const storedToken = localStorage.getItem('token');
-      const storedUser = localStorage.getItem('user');
-      
-      if (storedToken && storedUser) {
-        try {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-        } catch (error) {
-          console.error('Error parsing stored user data:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
+      try {
+        await initKeycloak();
+        
+        if (keycloak.authenticated) {
+          setToken(keycloak.token || null);
+          
+          // Estrai le informazioni dell'utente dal token
+          const tokenParsed = keycloak.tokenParsed as any;
+          if (tokenParsed) {
+            const keycloakUser: User = {
+              id: tokenParsed.sub,
+              email: tokenParsed.email || '',
+              firstName: tokenParsed.given_name || '',
+              lastName: tokenParsed.family_name || '',
+              role: isAdmin() ? 'admin' : 'customer',
+              createdAt: new Date().toISOString(),
+            };
+            setUser(keycloakUser);
+            setUserIsAdmin(isAdmin());
+            setUserIsCustomer(isCustomer());
+          }
         }
+      } catch (error) {
+        console.error('Error initializing Keycloak:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string, role: 'admin' | 'customer') => {
-    try {
-      // Simulazione API call - sostituisci con la tua API
-      const mockUser: User = {
-        id: '1',
-        email,
-        firstName: 'Test',
-        lastName: 'User',
-        role,
-        createdAt: new Date().toISOString(),
-      };
-      const mockToken = 'mock-jwt-token-' + Date.now();
+  // Aggiorna il token quando sta per scadere
+  useEffect(() => {
+    if (keycloak.authenticated) {
+      const refreshInterval = setInterval(() => {
+        keycloak.updateToken(70)
+          .then((refreshed) => {
+            if (refreshed) {
+              setToken(keycloak.token || null);
+            }
+          })
+          .catch(() => {
+            console.error('Failed to refresh token');
+          });
+      }, 60000); // Controlla ogni minuto
 
-      setUser(mockUser);
-      setToken(mockToken);
-      localStorage.setItem('token', mockToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-    } catch (error) {
-      throw new Error('Login failed');
+      return () => clearInterval(refreshInterval);
     }
+  }, []);
+
+  const login = () => {
+    keycloakLogin();
   };
 
-  const register = async (userData: RegisterData) => {
-    try {
-      // Simulazione API call - sostituisci con la tua API
-      const mockUser: User = {
-        id: Date.now().toString(),
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        role: 'customer',
-        createdAt: new Date().toISOString(),
-      };
-      const mockToken = 'mock-jwt-token-' + Date.now();
-
-      setUser(mockUser);
-      setToken(mockToken);
-      localStorage.setItem('token', mockToken);
-      localStorage.setItem('user', JSON.stringify(mockUser));
-    } catch (error) {
-      throw new Error('Registration failed');
-    }
+  const register = () => {
+    keycloak.register();
   };
-
+  
   const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    keycloakLogout();
   };
 
-  const value = {
-    user,
-    token,
-    login,
-    logout,
-    register,
-    loading,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        register,
+        loading,
+        isAdmin: userIsAdmin,
+        isCustomer: userIsCustomer
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
