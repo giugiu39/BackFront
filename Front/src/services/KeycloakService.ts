@@ -7,8 +7,14 @@ const keycloakConfig = {
 };
 
 const keycloak = new Keycloak(keycloakConfig);
+let isInitialized = false;
 
 export const initKeycloak = () => {
+  if (isInitialized) {
+    return Promise.resolve(keycloak.authenticated);
+  }
+  
+  isInitialized = true;
   return keycloak
     .init({
       onLoad: 'check-sso',
@@ -26,12 +32,20 @@ export const initKeycloak = () => {
     })
     .catch((error) => {
       console.error('Failed to initialize Keycloak', error);
+      isInitialized = false; // Reset flag on error
+      throw error;
     });
 };
 
 export const login = () => {
   keycloak.login({
     redirectUri: window.location.origin + '/login'
+  });
+};
+
+export const register = () => {
+  keycloak.register({
+    redirectUri: window.location.origin + '/register'
   });
 };
 

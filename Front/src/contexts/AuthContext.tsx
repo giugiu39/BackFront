@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
-import keycloak, { initKeycloak, login as keycloakLogin, logout as keycloakLogout, isAdmin, isCustomer } from '../services/KeycloakService';
+import keycloak, { initKeycloak, login as keycloakLogin, logout as keycloakLogout, register as keycloakRegister, isAdmin, isCustomer } from '../services/KeycloakService';
 
 interface AuthContextType {
   user: User | null;
@@ -96,9 +96,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const register = () => {
-    // Reindirizza alla pagina di registrazione di Keycloak
-    const registrationUrl = `${keycloak.authServerUrl}/realms/${keycloak.realm}/protocol/openid-connect/registrations?client_id=${keycloak.clientId}&response_type=code&scope=openid&redirect_uri=${encodeURIComponent(window.location.origin + '/login')}`;
-    window.location.href = registrationUrl;
+    keycloakRegister();
   };
 
   return (
