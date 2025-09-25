@@ -19,8 +19,7 @@ export const initKeycloak = () => {
     .init({
       onLoad: 'check-sso',
       silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-      pkceMethod: 'S256',
-      redirectUri: window.location.origin + '/login'
+      pkceMethod: 'S256'
     })
     .then((authenticated) => {
       if (authenticated) {
@@ -39,13 +38,13 @@ export const initKeycloak = () => {
 
 export const login = () => {
   keycloak.login({
-    redirectUri: window.location.origin + '/login'
+    redirectUri: window.location.origin + '/'
   });
 };
 
 export const register = () => {
   keycloak.register({
-    redirectUri: window.location.origin + '/register'
+    redirectUri: window.location.origin + '/'
   });
 };
 

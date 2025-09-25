@@ -5,7 +5,12 @@
 </head>
 <body>
     <script>
-        parent.postMessage(location.href, location.origin);
+        // Fix for iframe sandbox warning
+        try {
+            parent.postMessage(location.href, location.origin);
+        } catch (e) {
+            console.error('Error posting message to parent:', e);
+        }
     </script>
 </body>
 </html>

@@ -6,7 +6,6 @@ import com.codeForProject.ecom.dto.UserDto;
 import com.codeForProject.ecom.entity.User;
 import com.codeForProject.ecom.repository.UserRepository;
 import com.codeForProject.ecom.services.auth.AuthService;
-import com.codeForProject.ecom.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -39,8 +38,6 @@ public class AuthController {
 
     private final UserRepository userRepository;
 
-    private final JwtUtil jwtUtil;
-
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
 
@@ -56,8 +53,10 @@ public class AuthController {
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         Optional<User> optionalUser = userRepository.findFirstByEmail(userDetails.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
+        
+        // Note: This endpoint is for local authentication, not Keycloak
+        // For Keycloak authentication, tokens are handled by the OAuth2 resource server
+        
         if (optionalUser.isPresent()) {
             response.getWriter().write(new JSONObject()
                     .put("userId", optionalUser.get().getId())
@@ -67,7 +66,7 @@ public class AuthController {
             response.addHeader("Access-Control-Expose-Headers", "Authorization");
             response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, " +
                                 "X-Requested-With, Content-Type, Accept, X-Custom-Header");
-            response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
+            // JWT generation removed - using Keycloak tokens instead
         }
     }
 

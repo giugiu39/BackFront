@@ -8,6 +8,12 @@ const authHeader = async () => {
     // Aggiorna il token se sta per scadere
     await updateToken(60);
     const token = getToken();
+    
+    console.log('Token available:', !!token);
+    if (token) {
+      console.log('Token length:', token.length);
+    }
+    
     return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -30,16 +36,29 @@ class ApiService {
 
   async get(endpoint: string) {
     const headers = await authHeader();
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      method: 'GET',
-      headers
-    });
+    console.log('Making GET request to:', `${this.baseURL}${endpoint}`);
+    console.log('Headers:', headers);
+    
+    try {
+      const response = await fetch(`${this.baseURL}${endpoint}`, {
+        method: 'GET',
+        headers
+      });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API error response:', errorText);
+        throw new Error(`API error: ${response.status} - ${errorText}`);
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Fetch error:', error);
+      throw error;
     }
-
-    return response;
   }
 
   async post(endpoint: string, data?: any) {

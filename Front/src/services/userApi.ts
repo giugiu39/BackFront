@@ -11,6 +11,13 @@ export interface UserProfile {
 export const userApi = {
   getUserProfile: async (): Promise<UserProfile> => {
     const response = await apiService.get('/api/user/profile');
-    return response.data;
+    console.log('Raw response:', response);
+    console.log('Response data:', response.data);
+    
+    // Parse JSON if needed
+    const data = response.data || await response.json();
+    console.log('Parsed data:', data);
+    
+    return data;
   }
 };
