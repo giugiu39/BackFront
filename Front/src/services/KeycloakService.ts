@@ -13,7 +13,8 @@ export const initKeycloak = () => {
     .init({
       onLoad: 'check-sso',
       silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-      pkceMethod: 'S256'
+      pkceMethod: 'S256',
+      redirectUri: window.location.origin + '/login'
     })
     .then((authenticated) => {
       if (authenticated) {
@@ -29,7 +30,9 @@ export const initKeycloak = () => {
 };
 
 export const login = () => {
-  keycloak.login();
+  keycloak.login({
+    redirectUri: window.location.origin + '/login'
+  });
 };
 
 export const logout = () => {

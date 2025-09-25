@@ -87,12 +87,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     keycloakLogin();
   };
 
-  const register = () => {
-    keycloak.register();
-  };
-  
   const logout = () => {
     keycloakLogout();
+    setUser(null);
+    setToken(null);
+    setUserIsAdmin(false);
+    setUserIsCustomer(false);
+  };
+
+  const register = () => {
+    // Reindirizza alla pagina di registrazione di Keycloak
+    const registrationUrl = `${keycloak.authServerUrl}/realms/${keycloak.realm}/protocol/openid-connect/registrations?client_id=${keycloak.clientId}&response_type=code&scope=openid&redirect_uri=${encodeURIComponent(window.location.origin + '/login')}`;
+    window.location.href = registrationUrl;
   };
 
   return (
