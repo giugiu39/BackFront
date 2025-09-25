@@ -52,6 +52,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setUser(keycloakUser);
             setUserIsAdmin(isAdmin());
             setUserIsCustomer(isCustomer());
+            
+            // Redirect automatico dopo l'autenticazione
+            const currentPath = window.location.pathname;
+            if (currentPath === '/login' || currentPath === '/register') {
+              if (isAdmin()) {
+                window.location.href = '/admin';
+              } else {
+                window.location.href = '/';
+              }
+            }
           }
         }
       } catch (error) {
