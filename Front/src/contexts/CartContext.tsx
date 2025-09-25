@@ -1,17 +1,129 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { CartItem, Product } from '../types';
+import { customerApi } from '../services/ApiService';
+import { useAuth } from './AuthContext';
+
+interface CartItem {
+  id: string;
+  productId: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addToCart: (productId: number) => Promise<void>;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
-  getTotalItems: () => number;
-  getTotalPrice: () => number;
+  totalItems: number;
+  totalPrice: number;
+  loading: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+
+  const addToCart = async (productId: number) => {
+    if (!isAuthenticated || !user) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await customerApi.addToCart(productId);
+      // Ricarica il carrello dopo l'aggiunta
+      await loadCart();
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadCart = async () => {
+    if (!isAuthenticated || !user) return;
+
+    try {
+      const cartData = await customerApi.getCart();
+      // Trasforma i dati del backend nel formato del frontend
+      const cartItems: CartItem[] = cartData.map((item: any) => ({
+        id: item.id.toString(),
+        productId: item.product.id,
+        name: item.product.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.product.img
+      }));
+      setItems(cartItems);
+    } catch (error) {
+      console.error('Error loading cart:', error);
+      setItems([]);
+    }
+  };
+
+  const removeFromCart = async (itemId: string) => {
+    try {
+      await customerApi.removeFromCart(itemId);
+      setItems(items.filter(item => item.id !== itemId));
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+    }
+  };
+
+  const updateQuantity = async (itemId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(itemId);
+      return;
+    }
+
+    try {
+      await customerApi.updateCartItem(itemId, quantity);
+      setItems(items.map(item => 
+        item.id === itemId ? { ...item, quantity } : item
+      ));
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    }
+  };
+
+  const clearCart = () => {
+    setItems([]);
+  };
+
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  // Carica il carrello quando l'utente è autenticato
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      loadCart();
+    } else {
+      setItems([]);
+    }
+  }, [isAuthenticated, user]);
+
+  return (
+    <CartContext.Provider value={{
+      items,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      totalItems,
+      totalPrice,
+      loading
+    }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
 
 export const useCart = () => {
   const context = useContext(CartContext);
@@ -19,90 +131,4 @@ export const useCart = () => {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
-};
-
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
-
-  useEffect(() => {
-    const storedCart = localStorage.getItem('cart');
-    if (storedCart) {
-      try {
-        setItems(JSON.parse(storedCart));
-      } catch (error) {
-        console.error('Error parsing stored cart data:', error);
-        localStorage.removeItem('cart');
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
-
-  const addToCart = (product: Product, quantity = 1) => {
-    setItems(prevItems => {
-      const existingItem = prevItems.find(item => item.productId === product.id);
-      
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.productId === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        const newItem: CartItem = {
-          id: Date.now().toString(),
-          productId: product.id,
-          product,
-          quantity,
-          price: product.discountPrice || product.price,
-        };
-        return [...prevItems, newItem];
-      }
-    });
-  };
-
-  const removeFromCart = (productId: string) => {
-    setItems(prevItems => prevItems.filter(item => item.productId !== productId));
-  };
-
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    
-    setItems(prevItems =>
-      prevItems.map(item =>
-        item.productId === productId
-          ? { ...item, quantity }
-          : item
-      )
-    );
-  };
-
-  const clearCart = () => {
-    setItems([]);
-  };
-
-  const getTotalItems = () => {
-    return items.reduce((total, item) => total + item.quantity, 0);
-  };
-
-  const getTotalPrice = () => {
-    return items.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
-
-  const value = {
-    items,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    getTotalItems,
-    getTotalPrice,
-  };
-
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

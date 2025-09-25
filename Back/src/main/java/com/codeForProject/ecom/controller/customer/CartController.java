@@ -8,6 +8,8 @@ import com.codeForProject.ecom.services.customer.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,16 +26,20 @@ public class CartController {
         return cartService.addProductToCart(addProductInCartDto);
     }
 
-    @GetMapping("/cart/{userId}")
-    public ResponseEntity<?> getCartByUserId(@PathVariable Long userId) {
-        OrderDto orderDto = cartService.getCartByUserId(userId);
+    @GetMapping("/cart")
+    public ResponseEntity<?> getCartByUserId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        OrderDto orderDto = cartService.getCartByUserId(keycloakId);
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
     }
 
-    @GetMapping("/coupon/{userId}/{code}")
-    public ResponseEntity<?> applyCoupon(@PathVariable Long userId, @PathVariable String code) {
+    @GetMapping("/coupon/{code}")
+    public ResponseEntity<?> applyCoupon(Authentication authentication, @PathVariable String code) {
         try {
-            OrderDto orderDto = cartService.applyCoupon(userId, code);
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String keycloakId = jwt.getSubject();
+            OrderDto orderDto = cartService.applyCoupon(keycloakId, code);
             return ResponseEntity.ok(orderDto);
         } catch (ValidationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -55,9 +61,11 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.placeOrder(placeOrderDto));
     }
 
-    @GetMapping("/myorders/{userId}")
-    public ResponseEntity<List<OrderDto>> getMyPlacedOrders(@PathVariable Long userId) {
-        return ResponseEntity.ok(cartService.getMyPlacedOrders(userId));
+    @GetMapping("/myorders")
+    public ResponseEntity<List<OrderDto>> getMyPlacedOrders(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        return ResponseEntity.ok(cartService.getMyPlacedOrders(keycloakId));
     }
 
 }

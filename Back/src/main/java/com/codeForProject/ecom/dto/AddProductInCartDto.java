@@ -5,8 +5,7 @@ import lombok.Data;
 @Data
 public class AddProductInCartDto {
 
-    private Long userId;
+    private String userId; // Cambiato da Long a String per keycloakId
 
     private Long productId;
-
 }

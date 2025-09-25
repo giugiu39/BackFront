@@ -5,6 +5,8 @@ import com.codeForProject.ecom.services.customer.wishlist.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,9 +27,11 @@ public class WishlistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postedWishlistDto);
     }
 
-    @GetMapping("/wishlist/{userId}")
-    public ResponseEntity<List<WishlistDto>> getWishlistByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(wishlistService.getWishlistByUserId(userId));
+    @GetMapping("/wishlist")
+    public ResponseEntity<List<WishlistDto>> getWishlistByUserId(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        return ResponseEntity.ok(wishlistService.getWishlistByUserId(keycloakId));
     }
 
 }

@@ -26,7 +26,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     public WishlistDto addProductToWishlist(WishlistDto wishlistDto) {
         Optional<Product> optionalProduct = productRepository.findById(wishlistDto.getProductId());
-        Optional<User> optionalUser = userRepository.findById(wishlistDto.getUserId());
+        Optional<User> optionalUser = userRepository.findByKeycloakId(wishlistDto.getUserId());
 
         if (optionalProduct.isPresent() && optionalUser.isPresent()) {
             Wishlist wishlist = new Wishlist();
@@ -38,8 +38,14 @@ public class WishlistServiceImpl implements WishlistService {
         return null;
     }
 
-    public List<WishlistDto> getWishlistByUserId(Long userId) {
-        return wishlistRepository.findAllByUserId(userId).stream()
+    public List<WishlistDto> getWishlistByUserId(String keycloakId) {
+        Optional<User> optionalUser = userRepository.findByKeycloakId(keycloakId);
+        if (optionalUser.isEmpty()) {
+            return List.of();
+        }
+        User user = optionalUser.get();
+        
+        return wishlistRepository.findAllByUserId((long) user.getId()).stream()
                 .map(Wishlist::getWishlistDto).collect(Collectors.toList());
     }
 

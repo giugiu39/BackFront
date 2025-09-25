@@ -13,9 +13,9 @@ public interface CartService {
 
     ResponseEntity<?> addProductToCart(AddProductInCartDto addProductInCartDto);
 
-    OrderDto getCartByUserId(Long userId);
+    OrderDto getCartByUserId(String keycloakId);
 
-    OrderDto applyCoupon(Long userId, String code);
+    OrderDto applyCoupon(String keycloakId, String code);
 
     OrderDto increaseProductQuantity(AddProductInCartDto addProductInCartDto);
 
@@ -23,7 +23,7 @@ public interface CartService {
 
     OrderDto placeOrder(PlaceOrderDto placeOrderDto);
 
-    List<OrderDto> getMyPlacedOrders(Long userId);
+    List<OrderDto> getMyPlacedOrders(String keycloakId);
 
     OrderDto searchOrderByTrackingId(UUID trackingId);
 

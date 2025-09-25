@@ -16,10 +16,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { addToCart } = useCart();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product);
+    
+    try {
+      await addToCart(product.id);
+      // Mostra un feedback visivo
+      console.log('Product added to cart successfully');
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
   };
 
   const handleWishlistToggle = (e: React.MouseEvent) => {

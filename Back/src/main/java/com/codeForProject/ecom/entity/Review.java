@@ -41,7 +41,7 @@ public class Review {
         reviewDto.setDescription(description);
         reviewDto.setReturnedImg(img);
         reviewDto.setProductId(product.getId());
-        reviewDto.setUserId((long) user.getId());
+        reviewDto.setUserId(String.valueOf(user.getId()));
         reviewDto.setUsername(user.getName());
 
         return reviewDto;

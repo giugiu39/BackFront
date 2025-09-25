@@ -21,7 +21,7 @@ public class ReviewDto {
 
     private byte[] returnedImg;
 
-    private Long userId;
+    private String userId;
 
     private Long productId;
 

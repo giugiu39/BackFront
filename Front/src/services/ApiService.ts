@@ -1,6 +1,6 @@
 import keycloak, { getToken, updateToken } from './KeycloakService';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://localhost:8080';
 
 // Funzione helper per aggiungere il token di autenticazione
 const authHeader = async () => {
@@ -19,6 +19,46 @@ const authHeader = async () => {
     };
   }
 };
+
+// Classe per gestire le chiamate API
+class ApiService {
+  private baseURL: string;
+
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
+  }
+
+  async get(endpoint: string) {
+    const headers = await authHeader();
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: 'GET',
+      headers
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    return response;
+  }
+
+  async post(endpoint: string, data?: any) {
+    const headers = await authHeader();
+    const response = await fetch(`${this.baseURL}${endpoint}`, {
+      method: 'POST',
+      headers,
+      body: data ? JSON.stringify(data) : undefined
+    });
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    return response;
+  }
+}
+
+export const apiService = new ApiService(API_BASE_URL);
 
 // Funzione generica per le richieste API
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
@@ -131,10 +171,21 @@ export const customerApi = {
   
   // Carrello
   getCart: () => apiRequest('/customer/cart'),
-  addToCart: (productData: any) => apiRequest('/customer/cart', {
-    method: 'POST',
-    body: JSON.stringify(productData)
-  }),
+  addToCart: async (productId: number) => {
+    // Ottieni l'ID Keycloak dell'utente corrente
+    const keycloakId = keycloak.getUserInfo()?.sub;
+    if (!keycloakId) {
+      throw new Error('User not authenticated');
+    }
+    
+    return apiRequest('/customer/cart', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: keycloakId, // Usa keycloakId invece di un ID numerico
+        productId: productId
+      })
+    });
+  },
   updateCartItem: (itemId: string, quantity: number) => apiRequest(`/customer/cart/${itemId}`, {
     method: 'PUT',
     body: JSON.stringify({ quantity })

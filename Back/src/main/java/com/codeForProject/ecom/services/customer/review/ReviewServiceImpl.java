@@ -51,7 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     public ReviewDto giveReview(ReviewDto reviewDto) throws IOException {
         Optional<Product> optionalProduct = productRepository.findById(reviewDto.getProductId());
-        Optional<User> optionalUser = userRepository.findById(reviewDto.getUserId());
+        Optional<User> optionalUser = userRepository.findByKeycloakId(reviewDto.getUserId());
 
         if (optionalProduct.isPresent() && optionalUser.isPresent()) {
             Review review = new Review();
