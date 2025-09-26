@@ -37,9 +37,9 @@ export const initKeycloak = () => {
 };
 
 export const login = () => {
-  // Use current page as redirect URI to maintain context
+  // Always redirect to root after login, let AuthContext handle role-based routing
   keycloak.login({
-    redirectUri: window.location.href
+    redirectUri: window.location.origin + '/'
   });
 };
 

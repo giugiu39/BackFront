@@ -80,8 +80,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 console.log('About to redirect to /customer from path:', currentPath);
                 window.location.replace('/customer');
               }
-            } else if (justLoggedIn && currentPath === '/') {
-              // Reindirizza dalla home page alla dashboard appropriata dopo il login
+            } else if (currentPath === '/' && justLoggedIn) {
+              // Reindirizza dalla home page alla dashboard appropriata SOLO dopo il login
               if (adminStatus) {
                 console.log('Admin user just logged in from home, redirecting to admin dashboard...');
                 window.location.replace('/admin');

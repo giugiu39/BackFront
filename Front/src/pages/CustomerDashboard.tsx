@@ -27,10 +27,10 @@ const CustomerDashboard: React.FC = () => {
     );
   }
 
-  if (isAdmin) {
-    window.location.href = '/admin';
-    return null;
-  }
+  // Remove the redirect logic - let ProtectedRoute handle role-based access
+  // if (isAdmin) {
+  //   return <div>Redirecting to admin dashboard...</div>;
+  // }
 
   // Mock data for categories
   const mockCategories = [

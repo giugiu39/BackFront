@@ -25,10 +25,10 @@ const AdminDashboard: React.FC = () => {
     );
   }
 
-  if (!isAdmin) {
-    window.location.href = '/customer';
-    return null;
-  }
+  // Remove the redirect logic - let ProtectedRoute handle role-based access
+  // if (!isAdmin) {
+  //   return <div>Redirecting to customer dashboard...</div>;
+  // }
 
   return (
     <Layout>
