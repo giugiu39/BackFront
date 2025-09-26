@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import keycloak, { initKeycloak, login, logout, register, getToken, isLoggedIn, getUsername, hasRole, isAdmin, isCustomer } from '../services/KeycloakService';
 import { userApi, UserProfile } from '../services/userApi';
 
@@ -18,7 +19,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminUser, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -28,7 +31,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsAuthenticated(authenticated);
         
         if (authenticated) {
-          console.log('User is authenticated, fetching profile...');
+          console.log('User authenticated, fetching profile...');
           // Ottieni il profilo utente dal backend solo se autenticato
           try {
             // Aspetta un po' di più per assicurarsi che il token sia disponibile
@@ -57,42 +60,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             console.log('Comparison result: userProfile.role === "ADMIN":', userProfile.role === 'ADMIN');
             setIsAdmin(adminStatus);
             
-            // Reindirizza alla dashboard specifica del ruolo SOLO se l'utente ha appena fatto login
-            // Non reindirizzare automaticamente all'avvio dell'app
-            const currentPath = window.location.pathname;
+            // Gestione redirect post-login semplificata
+            const currentPath = location.pathname;
             console.log('Current path:', currentPath);
             
-            // Controlla se c'è un parametro URL che indica un login appena completato
+            // Controlla se l'utente ha appena completato il login
             const urlParams = new URLSearchParams(window.location.search);
-            const justLoggedIn = urlParams.has('state') || urlParams.has('session_state') || urlParams.has('code');
-            console.log('URL params:', window.location.search);
-            console.log('Just logged in:', justLoggedIn);
-            console.log('Current path for redirect check:', currentPath);
+            const hasKeycloakParams = urlParams.has('state') || urlParams.has('session_state') || urlParams.has('code');
+            const justLoggedIn = sessionStorage.getItem('keycloak-login-redirect') === 'true' || hasKeycloakParams;
             
-            // Sempre reindirizza se l'utente è autenticato e si trova su pagine di login
-            if (currentPath === '/login' || currentPath === '/register' || currentPath === '/admin/login') {
-              if (adminStatus) {
-                console.log('Authenticated admin on login page, redirecting to admin dashboard...');
-                console.log('About to redirect admin to /admin from path:', currentPath);
-                window.location.replace('/admin');
-              } else {
-                console.log('Authenticated customer on login page, redirecting to customer dashboard...');
-                console.log('About to redirect to /customer from path:', currentPath);
-                window.location.replace('/customer');
+            console.log('URL params present:', hasKeycloakParams);
+            console.log('SessionStorage flag:', sessionStorage.getItem('keycloak-login-redirect'));
+            console.log('Just logged in (combined check):', justLoggedIn);
+            
+            // Pulisci sempre i parametri URL se presenti
+            if (hasKeycloakParams) {
+              const cleanUrl = window.location.pathname;
+              window.history.replaceState({}, '', cleanUrl);
+            }
+            
+            // Rimuovi il flag sessionStorage se presente
+            if (sessionStorage.getItem('keycloak-login-redirect')) {
+              sessionStorage.removeItem('keycloak-login-redirect');
+            }
+            
+            // Redirect solo se necessario e solo dopo login
+            if (justLoggedIn) {
+              if (currentPath === '/login' || currentPath === '/register' || currentPath === '/admin/login' || currentPath === '/') {
+                const targetPath = adminStatus ? '/admin' : '/customer';
+                console.log(`Redirecting to ${targetPath} after login`);
+                setTimeout(() => navigate(targetPath, { replace: true }), 100);
               }
-            } else if (currentPath === '/' && justLoggedIn) {
-              // Reindirizza dalla home page alla dashboard appropriata SOLO dopo il login
-              if (adminStatus) {
-                console.log('Admin user just logged in from home, redirecting to admin dashboard...');
-                window.location.replace('/admin');
-              } else {
-                console.log('Customer user just logged in from home, redirecting to customer dashboard...');
-                window.location.replace('/customer');
-              }
-            } else {
-              console.log('User already authenticated, no redirect needed for path:', currentPath);
-              console.log('User role:', adminStatus ? 'admin' : 'customer');
-              console.log('Authentication status:', isLoggedIn());
             }
           } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -159,7 +157,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login: handleLogin, logout: handleLogout, register: handleRegister, loading, isAdmin }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login: handleLogin, logout: handleLogout, register: handleRegister, loading, isAdmin: isAdminUser }}>
       {children}
     </AuthContext.Provider>
   );

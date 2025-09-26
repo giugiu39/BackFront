@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   ShoppingCart, 
   User, 
@@ -25,6 +26,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
   const { user, logout, isAdmin } = useAuth();
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -84,41 +86,41 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
             <div className="hidden md:flex items-center space-x-4">
               {user && !isAdmin && (
                 <>
-                  <a href="/wishlist" className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  <button onClick={() => navigate('/wishlist')} className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Heart className="h-6 w-6" />
-                  </a>
-                  <a href="/cart" className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  </button>
+                  <button onClick={() => navigate('/cart')} className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <ShoppingCart className="h-6 w-6" />
                     {totalItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                         {totalItems}
                       </span>
                     )}
-                  </a>
-                  <a href="/orders" className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  </button>
+                  <button onClick={() => navigate('/orders')} className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Package className="h-6 w-6" />
-                  </a>
+                  </button>
                 </>
               )}
 
               {user && isAdmin && (
                 <>
-                  <a href="/admin" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  <button onClick={() => navigate('/admin')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <BarChart3 className="h-5 w-5" />
                     <span className="text-sm">Dashboard</span>
-                  </a>
-                  <a href="/admin/products" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  </button>
+                  <button onClick={() => navigate('/admin/products')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Package className="h-5 w-5" />
                     <span className="text-sm">Prodotti</span>
-                  </a>
-                  <a href="/admin/orders" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  </button>
+                  <button onClick={() => navigate('/admin/orders')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <ShoppingCart className="h-5 w-5" />
                     <span className="text-sm">Ordini</span>
-                  </a>
-                  <a href="/admin/users" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                  </button>
+                  <button onClick={() => navigate('/admin/users')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Users className="h-5 w-5" />
                     <span className="text-sm">Utenti</span>
-                  </a>
+                  </button>
                 </>
               )}
               
@@ -134,13 +136,19 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                   
                   {mobileMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                      <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <button 
+                        onClick={() => navigate('/profile')} 
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
                         Profile
-                      </a>
+                      </button>
                       {isAdmin && (
-                        <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <button 
+                          onClick={() => navigate('/')} 
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
                           Admin Dashboard
-                        </a>
+                        </button>
                       )}
                       <button
                         onClick={logout}
@@ -154,15 +162,15 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                 </div>
               ) : (
                 <div className="flex items-center space-x-4">
-                  <a href="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
+                  <button onClick={() => navigate('/login')} className="text-gray-700 hover:text-blue-600 transition-colors">
                     Sign in
-                  </a>
-                  <a
-                    href="/register"
+                  </button>
+                  <button
+                    onClick={() => navigate('/register')}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     Sign up
-                  </a>
+                  </button>
                 </div>
               )}
             </div>
@@ -195,40 +203,64 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
               
               {user ? (
                 <>
-                  <a href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                  <button 
+                    onClick={() => navigate('/profile')} 
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                  >
                     Profile
-                  </a>
+                  </button>
                   
                   {/* Customer-specific mobile menu items */}
                   {!isAdmin && (
                     <>
-                      <a href="/cart" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      <button 
+                        onClick={() => navigate('/cart')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         Carrello
-                      </a>
-                      <a href="/orders" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      </button>
+                      <button 
+                        onClick={() => navigate('/orders')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         I miei ordini
-                      </a>
-                      <a href="/wishlist" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      </button>
+                      <button 
+                        onClick={() => navigate('/wishlist')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         Lista desideri
-                      </a>
+                      </button>
                     </>
                   )}
                   
                   {/* Admin-specific mobile menu items */}
                   {isAdmin && (
                     <>
-                      <a href="/admin" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      <button 
+                        onClick={() => navigate('/admin')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         Admin Dashboard
-                      </a>
-                      <a href="/admin/products" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      </button>
+                      <button 
+                        onClick={() => navigate('/admin/products')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         Gestisci Prodotti
-                      </a>
-                      <a href="/admin/orders" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      </button>
+                      <button 
+                        onClick={() => navigate('/admin/orders')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         Gestisci Ordini
-                      </a>
-                      <a href="/admin/users" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                      </button>
+                      <button 
+                        onClick={() => navigate('/admin/users')} 
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                      >
                         Gestisci Utenti
-                      </a>
+                      </button>
                     </>
                   )}
                   
@@ -241,12 +273,18 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                 </>
               ) : (
                 <>
-                  <a href="/login" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                  <button 
+                    onClick={() => navigate('/login')} 
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                  >
                     Sign in
-                  </a>
-                  <a href="/register" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                  </button>
+                  <button 
+                    onClick={() => navigate('/register')} 
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
+                  >
                     Sign up
-                  </a>
+                  </button>
                 </>
               )}
             </div>

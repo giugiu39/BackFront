@@ -37,6 +37,9 @@ export const initKeycloak = () => {
 };
 
 export const login = () => {
+  // Imposta un flag per indicare che l'utente ha appena fatto login
+  sessionStorage.setItem('keycloak-login-redirect', 'true');
+  
   // Always redirect to root after login, let AuthContext handle role-based routing
   keycloak.login({
     redirectUri: window.location.origin + '/'
@@ -44,6 +47,9 @@ export const login = () => {
 };
 
 export const register = () => {
+  // Imposta un flag per indicare che l'utente ha appena fatto registrazione
+  sessionStorage.setItem('keycloak-login-redirect', 'true');
+  
   keycloak.register({
     redirectUri: window.location.origin + '/'
   });

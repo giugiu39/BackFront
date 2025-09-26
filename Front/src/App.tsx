@@ -15,9 +15,9 @@ import './index.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
+    <Router>
+      <AuthProvider>
+        <CartProvider>
           <div className="App">
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -63,9 +63,9 @@ function App() {
               />
             </Routes>
           </div>
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
