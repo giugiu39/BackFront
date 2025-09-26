@@ -28,4 +28,6 @@ public class User {
     @Column(columnDefinition = "longblob")
     private byte[] image;
 
+    private String img; // URL dell'immagine del profilo
+
 }

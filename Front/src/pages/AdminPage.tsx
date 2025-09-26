@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import ProductManagement from '../components/admin/ProductManagement';
-import { Navigate } from 'react-router-dom';
 
 const AdminPage: React.FC = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -14,9 +13,10 @@ const AdminPage: React.FC = () => {
     return <div className="loading">Caricamento...</div>;
   }
 
-  // Redirect se non è admin
-  if (!isAdmin) {
-    return <Navigate to="/login" replace />;
+  // Redirect se non è admin - usando window.location invece di Navigate
+  if (!loading && !isAdmin) {
+    window.location.href = '/login';
+    return null;
   }
 
   const renderContent = () => {

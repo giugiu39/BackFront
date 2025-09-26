@@ -9,6 +9,7 @@ interface AuthContextType {
   logout: () => void;
   register: () => void;
   loading: boolean;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,6 +18,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -39,14 +41,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               console.error('No token available, cannot fetch profile');
               setIsAuthenticated(false);
               setUser(null);
+              setIsAdmin(false);
               return;
             }
             
             const userProfile = await userApi.getUserProfile();
             console.log('User profile fetched successfully:', userProfile);
+            console.log('User profile role:', userProfile.role);
+            console.log('Role type:', typeof userProfile.role);
             setUser(userProfile);
             
-            // Reindirizza alla pagina profilo SOLO se l'utente ha appena fatto login
+            // Check if user is admin based on the role in the profile
+            const adminStatus = userProfile.role === 'ADMIN';
+            console.log('Admin status determined:', adminStatus);
+            console.log('Comparison result: userProfile.role === "ADMIN":', userProfile.role === 'ADMIN');
+            setIsAdmin(adminStatus);
+            
+            // Reindirizza alla dashboard specifica del ruolo SOLO se l'utente ha appena fatto login
             // Non reindirizzare automaticamente all'avvio dell'app
             const currentPath = window.location.pathname;
             console.log('Current path:', currentPath);
@@ -54,12 +65,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             // Controlla se c'è un parametro URL che indica un login appena completato
             const urlParams = new URLSearchParams(window.location.search);
             const justLoggedIn = urlParams.has('state') || urlParams.has('session_state') || urlParams.has('code');
+            console.log('URL params:', window.location.search);
+            console.log('Just logged in:', justLoggedIn);
+            console.log('Current path for redirect check:', currentPath);
             
-            if (justLoggedIn && (currentPath === '/' || currentPath === '/login' || currentPath === '/register')) {
-              console.log('User just logged in, redirecting to profile page...');
-              window.location.href = '/profile';
+            // Sempre reindirizza se l'utente è autenticato e si trova su pagine di login
+            if (currentPath === '/login' || currentPath === '/register' || currentPath === '/admin/login') {
+              if (adminStatus) {
+                console.log('Authenticated admin on login page, redirecting to admin dashboard...');
+                console.log('About to redirect admin to /admin from path:', currentPath);
+                window.location.replace('/admin');
+              } else {
+                console.log('Authenticated customer on login page, redirecting to customer dashboard...');
+                console.log('About to redirect to /customer from path:', currentPath);
+                window.location.replace('/customer');
+              }
+            } else if (justLoggedIn && currentPath === '/') {
+              // Reindirizza dalla home page alla dashboard appropriata dopo il login
+              if (adminStatus) {
+                console.log('Admin user just logged in from home, redirecting to admin dashboard...');
+                window.location.replace('/admin');
+              } else {
+                console.log('Customer user just logged in from home, redirecting to customer dashboard...');
+                window.location.replace('/customer');
+              }
             } else {
-              console.log('User already authenticated, no redirect needed');
+              console.log('User already authenticated, no redirect needed for path:', currentPath);
+              console.log('User role:', adminStatus ? 'admin' : 'customer');
+              console.log('Authentication status:', isLoggedIn());
             }
           } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -68,16 +101,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               console.log('User not authenticated on backend, redirecting to login');
               setIsAuthenticated(false);
               setUser(null);
+              setIsAdmin(false);
               return;
             }
             // Per altri errori, mantieni l'autenticazione Keycloak ma senza profilo
             console.log('Keeping Keycloak authentication despite profile error');
+            setIsAdmin(false);
             // Non reindirizzare se c'è un errore nel profilo
           }
         } else {
           console.log('User is not authenticated');
           setIsAuthenticated(false);
           setUser(null);
+          setIsAdmin(false);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
@@ -119,10 +155,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     logout();
     setIsAuthenticated(false);
     setUser(null);
+    setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login: handleLogin, logout: handleLogout, register: handleRegister, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login: handleLogin, logout: handleLogout, register: handleRegister, loading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

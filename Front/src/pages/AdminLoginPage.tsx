@@ -4,10 +4,6 @@ import LoginForm from '../components/auth/LoginForm';
 import { Shield } from 'lucide-react';
 
 const AdminLoginPage: React.FC = () => {
-  const handleLoginSuccess = () => {
-    window.location.href = '/admin';
-  };
-
   return (
     <Layout showNavbar={false}>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
@@ -22,7 +18,7 @@ const AdminLoginPage: React.FC = () => {
           </div>
 
           {/* Login Form */}
-          <LoginForm role="admin" onSuccess={handleLoginSuccess} />
+          <LoginForm role="admin" />
 
           {/* Back to main site */}
           <div className="mt-6 text-center">

@@ -230,6 +230,13 @@ export const customerApi = {
     method: 'DELETE'
   }),
   
+  // Profile
+  getUserProfile: () => apiRequest('/api/user/profile'),
+  updateUserProfile: (profileData: any) => apiRequest('/api/user/profile', {
+    method: 'PUT',
+    body: JSON.stringify(profileData)
+  }),
+
   // Recensioni
   addReview: (productId: string, reviewData: any) => apiRequest(`/customer/products/${productId}/reviews`, {
     method: 'POST',

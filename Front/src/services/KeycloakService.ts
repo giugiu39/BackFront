@@ -37,8 +37,9 @@ export const initKeycloak = () => {
 };
 
 export const login = () => {
+  // Use current page as redirect URI to maintain context
   keycloak.login({
-    redirectUri: window.location.origin + '/'
+    redirectUri: window.location.href
   });
 };
 

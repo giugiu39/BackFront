@@ -11,7 +11,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onSuccess }) => {
 
   const handleLogin = () => {
     login();
-    onSuccess?.();
+    // Remove onSuccess callback since redirect is now handled in AuthContext
   };
 
   return (

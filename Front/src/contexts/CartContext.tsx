@@ -27,7 +27,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isAdmin } = useAuth();
 
   const addToCart = async (productId: number) => {
     if (!isAuthenticated || !user) {
@@ -100,14 +100,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  // Carica il carrello quando l'utente è autenticato
+  // Carica il carrello quando l'utente è autenticato (solo per i customer, non per gli admin)
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && !isAdmin) {
       loadCart();
     } else {
       setItems([]);
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, isAdmin]);
 
   return (
     <CartContext.Provider value={{

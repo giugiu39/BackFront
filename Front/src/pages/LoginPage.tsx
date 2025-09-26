@@ -4,16 +4,6 @@ import LoginForm from '../components/auth/LoginForm';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
-  const { user } = useAuth();
-
-  const handleLoginSuccess = () => {
-    if (user?.role === 'admin') {
-      window.location.href = '/admin';
-    } else {
-      window.location.href = '/';
-    }
-  };
-
   return (
     <Layout showNavbar={false}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -26,7 +16,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           {/* Login Form */}
-          <LoginForm role="customer" onSuccess={handleLoginSuccess} />
+          <LoginForm role="customer" />
 
           {/* Admin Login Link */}
           <div className="mt-6 text-center">

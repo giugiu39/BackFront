@@ -9,7 +9,10 @@ import {
   X,
   Heart,
   Package,
-  LogOut
+  LogOut,
+  Settings,
+  BarChart3,
+  Users
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -19,8 +22,8 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
-  const { user, logout } = useAuth();
-  const { getTotalItems } = useCart();
+  const { user, logout, isAdmin } = useAuth();
+  const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigation = [
@@ -79,21 +82,42 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
 
             {/* Right Menu */}
             <div className="hidden md:flex items-center space-x-4">
-              {user && user.role === 'customer' && (
+              {user && !isAdmin && (
                 <>
                   <a href="/wishlist" className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Heart className="h-6 w-6" />
                   </a>
                   <a href="/cart" className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <ShoppingCart className="h-6 w-6" />
-                    {getTotalItems() > 0 && (
+                    {totalItems > 0 && (
                       <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {getTotalItems()}
+                        {totalItems}
                       </span>
                     )}
                   </a>
                   <a href="/orders" className="p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Package className="h-6 w-6" />
+                  </a>
+                </>
+              )}
+
+              {user && isAdmin && (
+                <>
+                  <a href="/admin" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <BarChart3 className="h-5 w-5" />
+                    <span className="text-sm">Dashboard</span>
+                  </a>
+                  <a href="/admin/products" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <Package className="h-5 w-5" />
+                    <span className="text-sm">Prodotti</span>
+                  </a>
+                  <a href="/admin/orders" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <ShoppingCart className="h-5 w-5" />
+                    <span className="text-sm">Ordini</span>
+                  </a>
+                  <a href="/admin/users" className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <Users className="h-5 w-5" />
+                    <span className="text-sm">Utenti</span>
                   </a>
                 </>
               )}
@@ -113,8 +137,8 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                       <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         Profile
                       </a>
-                      {user.role === 'admin' && (
-                        <a href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      {isAdmin && (
+                        <a href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           Admin Dashboard
                         </a>
                       )}
@@ -174,11 +198,40 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                   <a href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
                     Profile
                   </a>
-                  {user.role === 'admin' && (
-                    <a href="/admin" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
-                      Admin Dashboard
-                    </a>
+                  
+                  {/* Customer-specific mobile menu items */}
+                  {!isAdmin && (
+                    <>
+                      <a href="/cart" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        Carrello
+                      </a>
+                      <a href="/orders" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        I miei ordini
+                      </a>
+                      <a href="/wishlist" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        Lista desideri
+                      </a>
+                    </>
                   )}
+                  
+                  {/* Admin-specific mobile menu items */}
+                  {isAdmin && (
+                    <>
+                      <a href="/admin" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        Admin Dashboard
+                      </a>
+                      <a href="/admin/products" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        Gestisci Prodotti
+                      </a>
+                      <a href="/admin/orders" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        Gestisci Ordini
+                      </a>
+                      <a href="/admin/users" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+                        Gestisci Utenti
+                      </a>
+                    </>
+                  )}
+                  
                   <button
                     onClick={logout}
                     className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"

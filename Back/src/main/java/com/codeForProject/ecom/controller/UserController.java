@@ -96,6 +96,31 @@ public class UserController {
             } else {
                 user = optionalUser.get();
                 System.out.println("Found existing user with ID: " + user.getId());
+                
+                // Aggiorna il ruolo anche per utenti esistenti basandosi sul JWT corrente
+                Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
+                System.out.println("Updating role for existing user. Realm access: " + realmAccess);
+                
+                if (realmAccess != null && realmAccess.containsKey("roles")) {
+                    @SuppressWarnings("unchecked")
+                    List<String> roles = (List<String>) realmAccess.get("roles");
+                    System.out.println("Current user roles from JWT: " + roles);
+                    
+                    UserRole newRole;
+                    if (roles != null && roles.contains("admin")) {
+                        newRole = UserRole.ADMIN;
+                    } else {
+                        newRole = UserRole.COSTUMER;
+                    }
+                    
+                    if (user.getRole() != newRole) {
+                        System.out.println("Updating user role from " + user.getRole() + " to " + newRole);
+                        user.setRole(newRole);
+                        user = userRepository.save(user);
+                    } else {
+                        System.out.println("User role is already correct: " + user.getRole());
+                    }
+                }
             }
             
             return ResponseEntity.ok(user);
@@ -110,6 +135,49 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error retrieving user profile: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateUserProfile(@RequestBody Map<String, Object> profileData, Authentication authentication) {
+        try {
+            if (authentication == null || authentication.getPrincipal() == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Authentication required");
+            }
+            
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            String keycloakId = jwt.getSubject();
+            
+            Optional<User> optionalUser = userRepository.findByKeycloakId(keycloakId);
+            
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("User not found");
+            }
+            
+            User user = optionalUser.get();
+            
+            // Aggiorna i campi del profilo
+            if (profileData.containsKey("name")) {
+                user.setName((String) profileData.get("name"));
+            }
+            if (profileData.containsKey("email")) {
+                user.setEmail((String) profileData.get("email"));
+            }
+            if (profileData.containsKey("img")) {
+                user.setImg((String) profileData.get("img"));
+            }
+            
+            user = userRepository.save(user);
+            
+            return ResponseEntity.ok(user);
+            
+        } catch (Exception e) {
+            System.err.println("Exception in updateUserProfile: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating user profile: " + e.getMessage());
         }
     }
 }

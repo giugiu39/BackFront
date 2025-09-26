@@ -4,7 +4,6 @@ import { useAuth } from '../../contexts/AuthContext';
 
 interface UserData {
   id: string;
-  username: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -40,7 +39,6 @@ const UserProfile: React.FC = () => {
         if (user) {
           const fallbackData = {
             id: '1',
-            username: user.username || 'user123',
             email: user.email || 'user@example.com',
             firstName: '',
             lastName: '',
@@ -236,10 +234,6 @@ const UserProfile: React.FC = () => {
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Nome completo</h3>
                 <p className="mt-1">{userData?.firstName} {userData?.lastName}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Username</h3>
-                <p className="mt-1">{userData?.username}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Email</h3>

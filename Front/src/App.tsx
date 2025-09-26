@@ -1,50 +1,71 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
-import ErrorBoundary from './components/common/ErrorBoundary';
+import Layout from './components/common/Layout';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import HomePage from './pages/HomePage';
+import AdminDashboard from './pages/AdminDashboard';
+import CustomerDashboard from './pages/CustomerDashboard';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import AdminLoginPage from './pages/AdminLoginPage';
-import AdminPage from './pages/AdminPage';
 import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
+import './index.css';
 
 function App() {
-  // Simple routing basato sul path - in un'app reale useresti React Router
-  const path = window.location.pathname;
-
-  const renderPage = () => {
-    switch (path) {
-      case '/':
-        return <HomePage />;
-      case '/login':
-        return <LoginPage />;
-      case '/register':
-        return <RegisterPage />;
-      case '/admin/login':
-        return <AdminLoginPage />;
-      case '/admin':
-        return <AdminPage />;
-      case '/cart':
-        return <CartPage />;
-      case '/profile':
-        return <ProfilePage />;
-      default:
-        return <HomePage />;
-    }
-  };
-
   return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
           <div className="App">
-            {renderPage()}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              
+              {/* Protected Admin Routes */}
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Protected Customer Routes */}
+              <Route 
+                path="/customer" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* General Protected Routes */}
+              <Route 
+                path="/cart" 
+                element={
+                  <ProtectedRoute>
+                    <Layout><CartPage /></Layout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Layout><ProfilePage /></Layout>
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
           </div>
-        </CartProvider>
-      </AuthProvider>
-    </ErrorBoundary>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
