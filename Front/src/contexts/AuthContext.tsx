@@ -32,6 +32,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         if (authenticated) {
           console.log('User authenticated, fetching profile...');
+          
+          // Crea un profilo utente di fallback dalle informazioni di Keycloak
+          const fallbackUser: UserProfile = {
+            id: 0,
+            keycloakId: keycloak.tokenParsed?.sub || '',
+            email: keycloak.tokenParsed?.email || '',
+            password: '',
+            name: keycloak.tokenParsed?.name || keycloak.tokenParsed?.preferred_username || 'User',
+            firstName: keycloak.tokenParsed?.given_name || keycloak.tokenParsed?.preferred_username || 'User',
+            lastName: keycloak.tokenParsed?.family_name || '',
+            phone: '',
+            street: '',
+            city: '',
+            postalCode: '',
+            country: '',
+            role: isAdmin() ? 'ADMIN' : 'CUSTOMER',
+            image: null,
+            img: ''
+          };
+          
           // Ottieni il profilo utente dal backend solo se autenticato
           try {
             // Aspetta un po' di più per assicurarsi che il token sia disponibile
@@ -41,10 +61,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const token = keycloak.token;
             console.log('Token available before API call:', !!token);
             if (!token) {
-              console.error('No token available, cannot fetch profile');
-              setIsAuthenticated(false);
-              setUser(null);
-              setIsAdmin(false);
+              console.error('No token available, using fallback profile');
+              setUser(fallbackUser);
+              setIsAdmin(isAdmin());
               return;
             }
             
@@ -84,13 +103,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               sessionStorage.removeItem('keycloak-login-redirect');
             }
             
-            // Redirect solo se necessario e solo dopo login
+            // Redirect sempre dopo il login, indipendentemente dalla pagina corrente
             if (justLoggedIn) {
-              if (currentPath === '/login' || currentPath === '/register' || currentPath === '/admin/login' || currentPath === '/') {
-                const targetPath = adminStatus ? '/admin' : '/customer';
-                console.log(`Redirecting to ${targetPath} after login`);
-                setTimeout(() => navigate(targetPath, { replace: true }), 100);
-              }
+              const targetPath = adminStatus ? '/admin' : '/customer';
+              console.log(`Redirecting to ${targetPath} after login from ${currentPath}`);
+              setTimeout(() => navigate(targetPath, { replace: true }), 100);
+            } else if (currentPath === '/' && !justLoggedIn) {
+              // Se l'utente è autenticato e si trova sulla homepage senza aver appena fatto login,
+              // reindirizzalo alla dashboard appropriata
+              const targetPath = adminStatus ? '/admin' : '/customer';
+              console.log(`User authenticated on homepage, redirecting to ${targetPath}`);
+              setTimeout(() => navigate(targetPath, { replace: true }), 100);
             }
           } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -102,9 +125,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               setIsAdmin(false);
               return;
             }
-            // Per altri errori, mantieni l'autenticazione Keycloak ma senza profilo
-            console.log('Keeping Keycloak authentication despite profile error');
-            setIsAdmin(false);
+            // Per altri errori, usa il profilo di fallback
+            console.log('Using fallback profile due to backend error');
+            setUser(fallbackUser);
+            setIsAdmin(isAdmin());
             // Non reindirizzare se c'è un errore nel profilo
           }
         } else {

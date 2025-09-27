@@ -56,14 +56,22 @@ public class AuthServiceImpl implements AuthService {
 
     @PostConstruct
     public void createAdminAccount() {
-        Optional<User> adminAccountOpt = userRepository.findByRole(UserRole.ADMIN);
-        if (adminAccountOpt.isEmpty()) {
-            User user = new User();
-            user.setEmail("admin@test.com");
-            user.setName("admin");
-            user.setRole(UserRole.ADMIN);
-            user.setPassword(new BCryptPasswordEncoder().encode("admin"));
-            userRepository.save(user);
+        try {
+            Optional<User> adminAccountOpt = userRepository.findByRole(UserRole.ADMIN);
+            if (adminAccountOpt.isEmpty()) {
+                User user = new User();
+                user.setEmail("admin@test.com");
+                user.setName("admin");
+                user.setRole(UserRole.ADMIN);
+                user.setPassword(bCryptPasswordEncoder.encode("admin"));
+                userRepository.save(user);
+                System.out.println("Admin account created successfully");
+            } else {
+                System.out.println("Admin account already exists");
+            }
+        } catch (Exception e) {
+            System.err.println("Error creating admin account: " + e.getMessage());
+            // Non lanciare l'eccezione per permettere l'avvio dell'applicazione
         }
     }
 
