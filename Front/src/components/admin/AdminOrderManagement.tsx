@@ -25,57 +25,7 @@ const AdminOrderManagement: React.FC = () => {
 
   useEffect(() => {
     // Mock data - sostituire con chiamate API reali
-    const mockOrders: Order[] = [
-      {
-        id: 'ORD-001',
-        customerName: 'Mario Rossi',
-        customerEmail: 'mario.rossi@email.com',
-        orderDate: '2024-01-15T10:30:00Z',
-        status: 'processing',
-        total: 1299.99,
-        items: [
-          { id: '1', name: 'Premium Smartphone', quantity: 1, price: 899.99 },
-          { id: '2', name: 'Wireless Earbuds', quantity: 1, price: 199.99 },
-          { id: '3', name: 'Phone Case', quantity: 2, price: 99.99 }
-        ]
-      },
-      {
-        id: 'ORD-002',
-        customerName: 'Giulia Bianchi',
-        customerEmail: 'giulia.bianchi@email.com',
-        orderDate: '2024-01-14T15:45:00Z',
-        status: 'shipped',
-        total: 599.99,
-        items: [
-          { id: '4', name: 'Designer Watch', quantity: 1, price: 599.99 }
-        ]
-      },
-      {
-        id: 'ORD-003',
-        customerName: 'Luca Verdi',
-        customerEmail: 'luca.verdi@email.com',
-        orderDate: '2024-01-13T09:15:00Z',
-        status: 'delivered',
-        total: 299.99,
-        items: [
-          { id: '5', name: 'Bluetooth Speaker', quantity: 1, price: 149.99 },
-          { id: '6', name: 'USB Cable', quantity: 3, price: 49.99 }
-        ]
-      },
-      {
-        id: 'ORD-004',
-        customerName: 'Anna Neri',
-        customerEmail: 'anna.neri@email.com',
-        orderDate: '2024-01-12T14:20:00Z',
-        status: 'pending',
-        total: 899.99,
-        items: [
-          { id: '7', name: 'Laptop Stand', quantity: 1, price: 79.99 },
-          { id: '8', name: 'Wireless Mouse', quantity: 1, price: 59.99 },
-          { id: '9', name: 'Mechanical Keyboard', quantity: 1, price: 159.99 }
-        ]
-      }
-    ];
+    const mockOrders: Order[] = [];
     
     setOrders(mockOrders);
     setLoading(false);
@@ -139,11 +89,11 @@ const AdminOrderManagement: React.FC = () => {
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Gestione Ordini</h2>
-          <p className="text-gray-600">Visualizza e gestisci tutti gli ordini dei clienti</p>
+          <h2 className="text-2xl font-bold text-gray-900">Order Management</h2>
+          <p className="text-gray-600">View and manage all customer orders</p>
         </div>
         <div className="text-sm text-gray-500">
-          Totale ordini: {orders.length}
+          Total orders: {orders.length}
         </div>
       </div>
 
@@ -166,12 +116,12 @@ const AdminOrderManagement: React.FC = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="all">Tutti gli stati</option>
-            <option value="pending">In attesa</option>
-            <option value="processing">In elaborazione</option>
-            <option value="shipped">Spedito</option>
-            <option value="delivered">Consegnato</option>
-            <option value="cancelled">Annullato</option>
+            <option value="all">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
           </select>
         </div>
       </div>
@@ -182,22 +132,22 @@ const AdminOrderManagement: React.FC = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID Ordine
+                Order ID
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Cliente
+                Customer
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Data
+                Date
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stato
+                Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Totale
+                Total
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Azioni
+                Actions
               </th>
             </tr>
           </thead>
@@ -214,7 +164,7 @@ const AdminOrderManagement: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {new Date(order.orderDate).toLocaleDateString('it-IT')}
+                  {new Date(order.orderDate).toLocaleDateString('en-US')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
@@ -238,11 +188,11 @@ const AdminOrderManagement: React.FC = () => {
                       onChange={(e) => updateOrderStatus(order.id, e.target.value as Order['status'])}
                       className="text-xs border border-gray-300 rounded px-2 py-1"
                     >
-                      <option value="pending">In attesa</option>
-                      <option value="processing">In elaborazione</option>
-                      <option value="shipped">Spedito</option>
-                      <option value="delivered">Consegnato</option>
-                      <option value="cancelled">Annullato</option>
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
                     </select>
                   </div>
                 </td>
@@ -255,11 +205,11 @@ const AdminOrderManagement: React.FC = () => {
       {filteredOrders.length === 0 && (
         <div className="text-center py-12">
           <Package className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Nessun ordine trovato</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No orders found</h3>
           <p className="mt-1 text-sm text-gray-500">
             {searchTerm || statusFilter !== 'all' 
-              ? 'Prova a modificare i filtri di ricerca.'
-              : 'Non ci sono ordini al momento.'
+              ? 'Try adjusting your search filters.'
+              : 'There are no orders at the moment.'
             }
           </p>
         </div>
@@ -272,7 +222,7 @@ const AdminOrderManagement: React.FC = () => {
             <div className="mt-3">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-gray-900">
-                  Dettagli Ordine {selectedOrder.id}
+                  Order Details {selectedOrder.id}
                 </h3>
                 <button
                   onClick={() => setSelectedOrder(null)}
@@ -285,32 +235,32 @@ const AdminOrderManagement: React.FC = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Cliente</p>
+                    <p className="text-sm font-medium text-gray-500">Customer</p>
                     <p className="text-sm text-gray-900">{selectedOrder.customerName}</p>
                     <p className="text-sm text-gray-500">{selectedOrder.customerEmail}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Data Ordine</p>
+                    <p className="text-sm font-medium text-gray-500">Order Date</p>
                     <p className="text-sm text-gray-900">
-                      {new Date(selectedOrder.orderDate).toLocaleString('it-IT')}
+                      {new Date(selectedOrder.orderDate).toLocaleString('en-US')}
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-sm font-medium text-gray-500 mb-2">Prodotti</p>
+                  <p className="text-sm font-medium text-gray-500 mb-2">Products</p>
                   <div className="border rounded-lg overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
                           <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Prodotto
+                            Product
                           </th>
                           <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Quantità
+                            Quantity
                           </th>
                           <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Prezzo
+                            Price
                           </th>
                         </tr>
                       </thead>

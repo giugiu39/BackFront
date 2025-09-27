@@ -32,8 +32,8 @@ const UserProfile: React.FC = () => {
         setUserData(data);
         setFormData(data);
       } catch (err) {
-        console.error('Errore nel caricamento del profilo:', err);
-        setError('Impossibile caricare i dati del profilo. Riprova più tardi.');
+        console.error('Error loading profile:', err);
+        setError('Unable to load profile data. Please try again later.');
         
         // Dati di fallback basati sull'utente autenticato
         if (user) {
@@ -87,15 +87,15 @@ const UserProfile: React.FC = () => {
       await customerApi.updateUserProfile(formData);
       setUserData(formData as UserData);
       setIsEditing(false);
-      alert('Profilo aggiornato con successo!');
+      alert('Profile updated successfully!');
     } catch (err) {
-      console.error('Errore nell\'aggiornamento del profilo:', err);
-      alert('Impossibile aggiornare il profilo. Riprova più tardi.');
+      console.error('Error updating profile:', err);
+      alert('Unable to update profile. Please try again later.');
     }
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Caricamento profilo...</div>;
+    return <div className="flex justify-center items-center h-64">Loading profile...</div>;
   }
 
   if (error && !userData) {
@@ -115,7 +115,7 @@ const UserProfile: React.FC = () => {
             onClick={() => setIsEditing(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Modifica profilo
+            Edit profile
           </button>
         )}
       </div>
@@ -213,7 +213,7 @@ const UserProfile: React.FC = () => {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-              Salva modifiche
+              Save changes
             </button>
             <button
               type="button"
@@ -223,7 +223,7 @@ const UserProfile: React.FC = () => {
               }}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
             >
-              Annulla
+              Cancel
             </button>
           </div>
         </form>

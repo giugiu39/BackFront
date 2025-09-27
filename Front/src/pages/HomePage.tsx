@@ -121,7 +121,7 @@ const HomePage: React.FC = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
-                <p className="text-xl text-purple-100">Gestisci prodotti, ordini e utenti</p>
+                <p className="text-xl text-purple-100">Manage products, orders and users</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -132,8 +132,8 @@ const HomePage: React.FC = () => {
                     </div>
                     <span className="text-2xl font-bold">+</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Aggiungi Prodotto</h3>
-                  <p className="text-purple-100 text-sm">Aggiungi nuovi prodotti al catalogo</p>
+                  <h3 className="text-lg font-semibold mb-2">Add Product</h3>
+                  <p className="text-purple-100 text-sm">Add new products to catalog</p>
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-colors cursor-pointer">
@@ -143,8 +143,8 @@ const HomePage: React.FC = () => {
                     </div>
                     <span className="text-2xl font-bold">500+</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Gestisci Prodotti</h3>
-                  <p className="text-purple-100 text-sm">Modifica e gestisci il catalogo</p>
+                  <h3 className="text-lg font-semibold mb-2">Manage Products</h3>
+                  <p className="text-purple-100 text-sm">Edit and manage catalog</p>
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-colors cursor-pointer">
@@ -154,8 +154,8 @@ const HomePage: React.FC = () => {
                     </div>
                     <span className="text-2xl font-bold">150</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Ordini Clienti</h3>
-                  <p className="text-purple-100 text-sm">Visualizza e gestisci gli ordini</p>
+                  <h3 className="text-lg font-semibold mb-2">Customer Orders</h3>
+                  <p className="text-purple-100 text-sm">View and manage orders</p>
                 </div>
                 
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-colors cursor-pointer">
@@ -165,8 +165,8 @@ const HomePage: React.FC = () => {
                     </div>
                     <span className="text-2xl font-bold">1.2K</span>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Gestisci Utenti</h3>
-                  <p className="text-purple-100 text-sm">Amministra gli account utente</p>
+                  <h3 className="text-lg font-semibold mb-2">Manage Users</h3>
+                  <p className="text-purple-100 text-sm">Manage user accounts</p>
                 </div>
               </div>
             </div>
@@ -186,21 +186,21 @@ const HomePage: React.FC = () => {
       {isAuthenticated && !isAdmin && (
         <section className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl font-bold mb-4">Benvenuto, {user?.name || 'Cliente'}!</h1>
-            <p className="text-xl text-green-100 mb-6">Scopri i nostri prodotti e aggiungi al carrello</p>
+            <h1 className="text-3xl font-bold mb-4">Welcome, {user?.name || 'Customer'}!</h1>
+            <p className="text-xl text-green-100 mb-6">Discover our products and add to cart</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/products"
                 className="inline-flex items-center justify-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
               >
-                Sfoglia Prodotti
+                Browse Products
                 <ArrowRight className="ml-2 h-5 w-5" />
               </a>
               <a
                 href="/cart"
                 className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-green-600 transition-colors"
               >
-                Vai al Carrello
+                Go to Cart
               </a>
             </div>
           </div>

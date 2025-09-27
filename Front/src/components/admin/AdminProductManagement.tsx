@@ -11,38 +11,7 @@ const AdminProductManagement: React.FC = () => {
 
   useEffect(() => {
     // Mock data - sostituire con chiamate API reali
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Premium Smartphone',
-        description: 'Latest flagship smartphone with advanced camera and AI features',
-        price: 899,
-        discountPrice: 749,
-        categoryId: '1',
-        category: { id: '1', name: 'Electronics', description: 'Tech gadgets', imageUrl: '', createdAt: '' },
-        stock: 25,
-        rating: 4.8,
-        reviewCount: 256,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        name: 'Designer Watch',
-        description: 'Luxury timepiece with premium materials and Swiss movement',
-        price: 1299,
-        discountPrice: 999,
-        categoryId: '2',
-        category: { id: '2', name: 'Fashion', description: 'Trendy items', imageUrl: '', createdAt: '' },
-        stock: 15,
-        rating: 4.9,
-        reviewCount: 89,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-    ];
+    const mockProducts: Product[] = [];
     
     setProducts(mockProducts);
     setLoading(false);
@@ -56,7 +25,7 @@ const AdminProductManagement: React.FC = () => {
   });
 
   const handleDeleteProduct = (productId: string) => {
-    if (window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
+    if (window.confirm('Are you sure you want to delete this product?')) {
       setProducts(products.filter(p => p.id !== productId));
     }
   };
@@ -73,15 +42,15 @@ const AdminProductManagement: React.FC = () => {
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Gestione Prodotti</h2>
-          <p className="text-gray-600">Aggiungi, modifica ed elimina prodotti dal catalogo</p>
+          <h2 className="text-2xl font-bold text-gray-900">Product Management</h2>
+          <p className="text-gray-600">Add, edit and delete products from the catalog</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus className="h-5 w-5 mr-2" />
-          Aggiungi Prodotto
+          Add Product
         </button>
       </div>
 
@@ -119,13 +88,13 @@ const AdminProductManagement: React.FC = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Prodotto
+                Product
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Categoria
+                Category
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Prezzo
+                Price
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Stock
@@ -134,7 +103,7 @@ const AdminProductManagement: React.FC = () => {
                 Rating
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Azioni
+                Actions
               </th>
             </tr>
           </thead>
@@ -213,11 +182,11 @@ const AdminProductManagement: React.FC = () => {
       {filteredProducts.length === 0 && (
         <div className="text-center py-12">
           <Package className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Nessun prodotto trovato</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">No products found</h3>
           <p className="mt-1 text-sm text-gray-500">
             {searchTerm || selectedCategory !== 'all' 
-              ? 'Prova a modificare i filtri di ricerca.'
-              : 'Inizia aggiungendo il tuo primo prodotto.'
+              ? 'Try adjusting your search filters.'
+              : 'Start by adding your first product.'
             }
           </p>
         </div>

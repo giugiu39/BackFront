@@ -12,10 +12,10 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children, activeTab, on
   const { user, logout } = useAuth();
 
   const tabs = [
-    { id: 'products', label: 'Prodotti', icon: <ShoppingBag className="w-5 h-5" /> },
-    { id: 'orders', label: 'I miei ordini', icon: <Clock className="w-5 h-5" /> },
+    { id: 'products', label: 'Products', icon: <ShoppingBag className="w-5 h-5" /> },
+    { id: 'orders', label: 'My orders', icon: <Clock className="w-5 h-5" /> },
     { id: 'wishlist', label: 'Wishlist', icon: <Heart className="w-5 h-5" /> },
-    { id: 'profile', label: 'Profilo', icon: <User className="w-5 h-5" /> },
+    { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
   ];
 
   return (

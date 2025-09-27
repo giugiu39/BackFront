@@ -111,15 +111,15 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                   </button>
                   <button onClick={() => navigate('/admin/products')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Package className="h-5 w-5" />
-                    <span className="text-sm">Prodotti</span>
+                    <span className="text-sm">Products</span>
                   </button>
                   <button onClick={() => navigate('/admin/orders')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <ShoppingCart className="h-5 w-5" />
-                    <span className="text-sm">Ordini</span>
+                    <span className="text-sm">Orders</span>
                   </button>
                   <button onClick={() => navigate('/admin/users')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
                     <Users className="h-5 w-5" />
-                    <span className="text-sm">Utenti</span>
+                    <span className="text-sm">Users</span>
                   </button>
                 </>
               )}
@@ -217,19 +217,19 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                         onClick={() => navigate('/cart')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
-                        Carrello
+                        Cart
                       </button>
                       <button 
                         onClick={() => navigate('/orders')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
-                        I miei ordini
+                        My Orders
                       </button>
                       <button 
                         onClick={() => navigate('/wishlist')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
-                        Lista desideri
+                        Wishlist
                       </button>
                     </>
                   )}
@@ -247,19 +247,19 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                         onClick={() => navigate('/admin/products')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
-                        Gestisci Prodotti
+                        Manage Products
                       </button>
                       <button 
                         onClick={() => navigate('/admin/orders')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
-                        Gestisci Ordini
+                        Manage Orders
                       </button>
                       <button 
                         onClick={() => navigate('/admin/users')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
-                        Gestisci Utenti
+                        Manage Users
                       </button>
                     </>
                   )}

@@ -20,7 +20,7 @@ const CustomerPage: React.FC = () => {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Caricamento...</p>
+            <p className="mt-4 text-gray-600">Loading...</p>
           </div>
         </div>
       </Layout>
@@ -41,50 +41,50 @@ const CustomerPage: React.FC = () => {
       case 'orders':
         return (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">I Miei Ordini</h2>
-            <p className="text-gray-600">Qui vedrai la cronologia dei tuoi ordini.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h2>
+            <p className="text-gray-600">Here you will see your order history.</p>
           </div>
         );
       case 'wishlist':
         return (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Lista Desideri</h2>
-            <p className="text-gray-600">Qui vedrai i prodotti che hai salvato nella tua lista desideri.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Wishlist</h2>
+            <p className="text-gray-600">Here you will see the products you have saved to your wishlist.</p>
           </div>
         );
       case 'payment':
         return (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Metodi di Pagamento</h2>
-            <p className="text-gray-600">Gestisci i tuoi metodi di pagamento salvati.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Methods</h2>
+            <p className="text-gray-600">Manage your saved payment methods.</p>
           </div>
         );
       case 'settings':
         return (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Impostazioni Account</h2>
-            <p className="text-gray-600">Modifica le impostazioni del tuo account.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Account Settings</h2>
+            <p className="text-gray-600">Edit your account settings.</p>
           </div>
         );
       default:
         return (
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard Cliente</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Dashboard</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-blue-50 p-6 rounded-lg">
                 <Package className="h-8 w-8 text-blue-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Ordini Recenti</h3>
-                <p className="text-gray-600 text-sm">Visualizza i tuoi ordini più recenti</p>
+                <h3 className="font-semibold text-gray-900 mb-2">Recent Orders</h3>
+                <p className="text-gray-600 text-sm">View your most recent orders</p>
               </div>
               <div className="bg-green-50 p-6 rounded-lg">
                 <Heart className="h-8 w-8 text-green-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Lista Desideri</h3>
-                <p className="text-gray-600 text-sm">Prodotti che hai salvato per dopo</p>
+                <h3 className="font-semibold text-gray-900 mb-2">Wishlist</h3>
+                <p className="text-gray-600 text-sm">Products you saved for later</p>
               </div>
               <div className="bg-purple-50 p-6 rounded-lg">
                 <ShoppingBag className="h-8 w-8 text-purple-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Carrello</h3>
-                <p className="text-gray-600 text-sm">Completa i tuoi acquisti</p>
+                <h3 className="font-semibold text-gray-900 mb-2">Cart</h3>
+                <p className="text-gray-600 text-sm">Complete your purchases</p>
               </div>
             </div>
           </div>
@@ -94,11 +94,11 @@ const CustomerPage: React.FC = () => {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: User },
-    { id: 'profile', label: 'Profilo', icon: User },
-    { id: 'orders', label: 'Ordini', icon: Package },
-    { id: 'wishlist', label: 'Lista Desideri', icon: Heart },
-    { id: 'payment', label: 'Pagamenti', icon: CreditCard },
-    { id: 'settings', label: 'Impostazioni', icon: Settings },
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'orders', label: 'Orders', icon: Package },
+    { id: 'wishlist', label: 'Wishlist', icon: Heart },
+    { id: 'payment', label: 'Payments', icon: CreditCard },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
@@ -108,9 +108,9 @@ const CustomerPage: React.FC = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">
-              Benvenuto, {user?.name || 'Cliente'}!
+              Welcome, {user?.name || 'Customer'}!
             </h1>
-            <p className="text-gray-600 mt-2">Gestisci il tuo account e visualizza i tuoi ordini</p>
+            <p className="text-gray-600 mt-2">Manage your account and view your orders</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

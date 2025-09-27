@@ -27,29 +27,29 @@ const ProductList: React.FC = () => {
         const data = await customerApi.getProducts();
         setProducts(data);
       } catch (err) {
-        console.error('Errore nel caricamento dei prodotti:', err);
-        setError('Impossibile caricare i prodotti. Riprova più tardi.');
+        console.error('Error loading products:', err);
+        setError('Unable to load products. Please try again later.');
         
         // Dati di fallback
         setProducts([
           {
             id: '1',
             name: 'Smartphone Pro',
-            description: 'Un potente smartphone con funzionalità avanzate',
+            description: 'A powerful smartphone with advanced features',
             price: 699.99,
             discountPrice: 599.99,
             imageUrl: 'https://via.placeholder.com/300',
             rating: 4.5,
-            categoryName: 'Elettronica'
+            categoryName: 'Electronics'
           },
           {
             id: '2',
             name: 'Cuffie Wireless',
-            description: 'Cuffie con cancellazione del rumore e audio di alta qualità',
+            description: 'Headphones with noise cancellation and high-quality audio',
             price: 149.99,
             imageUrl: 'https://via.placeholder.com/300',
             rating: 4.2,
-            categoryName: 'Accessori'
+            categoryName: 'Accessories'
           }
         ]);
       } finally {
@@ -63,20 +63,20 @@ const ProductList: React.FC = () => {
   const handleAddToCart = async (productId: string) => {
     try {
       await customerApi.addToCart({ productId, quantity: 1 });
-      alert('Prodotto aggiunto al carrello!');
+      alert('Product added to cart!');
     } catch (err) {
-      console.error('Errore nell\'aggiunta al carrello:', err);
-      alert('Impossibile aggiungere al carrello. Riprova più tardi.');
+      console.error('Error adding to cart:', err);
+      alert('Unable to add to cart. Please try again later.');
     }
   };
 
   const handleAddToWishlist = async (productId: string) => {
     try {
       await customerApi.addToWishlist(productId);
-      alert('Prodotto aggiunto alla wishlist!');
+      alert('Product added to wishlist!');
     } catch (err) {
-      console.error('Errore nell\'aggiunta alla wishlist:', err);
-      alert('Impossibile aggiungere alla wishlist. Riprova più tardi.');
+      console.error('Error adding to wishlist:', err);
+      alert('Unable to add to wishlist. Please try again later.');
     }
   };
 
@@ -88,7 +88,7 @@ const ProductList: React.FC = () => {
   });
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Caricamento prodotti...</div>;
+    return <div className="flex justify-center items-center h-64">Loading products...</div>;
   }
 
   if (error) {
@@ -101,14 +101,14 @@ const ProductList: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Prodotti</h1>
+      <h1 className="text-2xl font-bold mb-6">Products</h1>
       
       {/* Filtri e ricerca */}
       <div className="flex flex-wrap gap-4 mb-6">
         <div className="flex-1">
           <input
             type="text"
-            placeholder="Cerca prodotti..."
+            placeholder="Search products..."
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -120,10 +120,10 @@ const ProductList: React.FC = () => {
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
-            <option value="">Tutte le categorie</option>
-            <option value="Elettronica">Elettronica</option>
-            <option value="Abbigliamento">Abbigliamento</option>
-            <option value="Accessori">Accessori</option>
+            <option value="">All Categories</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Accessories">Accessories</option>
           </select>
         </div>
       </div>
@@ -141,7 +141,7 @@ const ProductList: React.FC = () => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-500">
-                  Immagine non disponibile
+                  Image not available
                 </div>
               )}
             </div>
@@ -177,7 +177,7 @@ const ProductList: React.FC = () => {
                   className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 flex items-center justify-center"
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
-                  Aggiungi
+                  Add
                 </button>
                 <button
                   onClick={() => handleAddToWishlist(product.id)}
@@ -193,7 +193,7 @@ const ProductList: React.FC = () => {
       
       {filteredProducts.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500">Nessun prodotto trovato</p>
+          <p className="text-gray-500">No products found</p>
         </div>
       )}
     </div>

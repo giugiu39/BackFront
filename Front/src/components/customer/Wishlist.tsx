@@ -23,8 +23,8 @@ const Wishlist: React.FC = () => {
         const data = await customerApi.getWishlist();
         setWishlistItems(data);
       } catch (err) {
-        console.error('Errore nel caricamento della wishlist:', err);
-        setError('Impossibile caricare la wishlist. Riprova più tardi.');
+        console.error('Error loading wishlist:', err);
+        setError('Unable to load wishlist. Please try again later.');
         
         // Dati di fallback
         setWishlistItems([
@@ -34,7 +34,7 @@ const Wishlist: React.FC = () => {
             productName: 'Smartphone Pro',
             price: 599.99,
             imageUrl: 'https://via.placeholder.com/300',
-            description: 'Un potente smartphone con funzionalità avanzate'
+            description: 'A powerful smartphone with advanced features'
           },
           {
             id: 'wish2',
@@ -42,7 +42,7 @@ const Wishlist: React.FC = () => {
             productName: 'Smartwatch',
             price: 299.97,
             imageUrl: 'https://via.placeholder.com/300',
-            description: 'Smartwatch con monitoraggio fitness e notifiche'
+            description: 'Smartwatch with fitness tracking and notifications'
           }
         ]);
       } finally {
@@ -58,23 +58,23 @@ const Wishlist: React.FC = () => {
       await customerApi.removeFromWishlist(wishlistItemId);
       setWishlistItems(wishlistItems.filter(item => item.id !== wishlistItemId));
     } catch (err) {
-      console.error('Errore nella rimozione dalla wishlist:', err);
-      alert('Impossibile rimuovere dalla wishlist. Riprova più tardi.');
+      console.error('Error removing from wishlist:', err);
+      alert('Unable to remove from wishlist. Please try again later.');
     }
   };
 
   const handleAddToCart = async (productId: string) => {
     try {
       await customerApi.addToCart({ productId, quantity: 1 });
-      alert('Prodotto aggiunto al carrello!');
+      alert('Product added to cart!');
     } catch (err) {
-      console.error('Errore nell\'aggiunta al carrello:', err);
-      alert('Impossibile aggiungere al carrello. Riprova più tardi.');
+      console.error('Error adding to cart:', err);
+      alert('Unable to add to cart. Please try again later.');
     }
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Caricamento wishlist...</div>;
+    return <div className="flex justify-center items-center h-64">Loading wishlist...</div>;
   }
 
   if (error) {
@@ -87,16 +87,16 @@ const Wishlist: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">La mia wishlist</h1>
+      <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
       
       {wishlistItems.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">La tua wishlist è vuota</p>
+          <p className="text-gray-500">Your wishlist is empty</p>
           <button 
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             onClick={() => window.location.href = '/customer/products'}
           >
-            Sfoglia i prodotti
+            Browse products
           </button>
         </div>
       ) : (
@@ -112,7 +112,7 @@ const Wishlist: React.FC = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-500">
-                    Immagine non disponibile
+                    Image not available
                   </div>
                 )}
               </div>
@@ -130,7 +130,7 @@ const Wishlist: React.FC = () => {
                     className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 flex items-center justify-center"
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Aggiungi al carrello
+                    Add to cart
                   </button>
                   <button
                     onClick={() => handleRemoveFromWishlist(item.id)}

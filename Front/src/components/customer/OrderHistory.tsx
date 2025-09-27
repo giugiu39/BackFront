@@ -27,15 +27,15 @@ const OrderHistory: React.FC = () => {
         const data = await customerApi.getOrders();
         setOrders(data);
       } catch (err) {
-        console.error('Errore nel caricamento degli ordini:', err);
-        setError('Impossibile caricare gli ordini. Riprova più tardi.');
+        console.error('Error loading orders:', err);
+        setError('Unable to load orders. Please try again later.');
         
         // Dati di fallback
         setOrders([
           {
             id: 'ORD-001',
             orderDate: '2023-10-15T14:30:00',
-            status: 'Consegnato',
+            status: 'Delivered',
             totalAmount: 749.98,
             items: [
               {
@@ -55,7 +55,7 @@ const OrderHistory: React.FC = () => {
           {
             id: 'ORD-002',
             orderDate: '2023-11-05T10:15:00',
-            status: 'In elaborazione',
+            status: 'Processing',
             totalAmount: 299.97,
             items: [
               {
@@ -96,12 +96,16 @@ const OrderHistory: React.FC = () => {
 
   const getStatusBadgeClass = (status: string) => {
     switch (status.toLowerCase()) {
+      case 'delivered':
       case 'consegnato':
         return 'bg-green-100 text-green-800';
+      case 'processing':
       case 'in elaborazione':
         return 'bg-blue-100 text-blue-800';
+      case 'shipped':
       case 'spedito':
         return 'bg-purple-100 text-purple-800';
+      case 'cancelled':
       case 'annullato':
         return 'bg-red-100 text-red-800';
       default:
@@ -110,7 +114,7 @@ const OrderHistory: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Caricamento ordini...</div>;
+    return <div className="flex justify-center items-center h-64">Loading orders...</div>;
   }
 
   if (error) {
@@ -123,16 +127,16 @@ const OrderHistory: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">I miei ordini</h1>
+      <h1 className="text-2xl font-bold mb-6">My Orders</h1>
       
       {orders.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Non hai ancora effettuato ordini</p>
+          <p className="text-gray-500">You haven't placed any orders yet</p>
           <button 
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             onClick={() => window.location.href = '/customer/products'}
           >
-            Inizia a fare acquisti
+            Start shopping
           </button>
         </div>
       ) : (
@@ -170,22 +174,22 @@ const OrderHistory: React.FC = () => {
               
               {expandedOrderId === order.id && (
                 <div className="border-t border-gray-200 p-4">
-                  <h3 className="font-medium mb-2">Dettagli ordine</h3>
+                  <h3 className="font-medium mb-2">Order Details</h3>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Prodotto
+                            Product
                           </th>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Quantità
+                            Quantity
                           </th>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Prezzo
+                            Price
                           </th>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Totale
+                            Total
                           </th>
                         </tr>
                       </thead>

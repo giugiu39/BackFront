@@ -38,10 +38,10 @@ const AdminDashboard: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-6">
               <h1 className="text-3xl font-bold text-gray-900">
-                Dashboard Amministratore
+                Administrator Dashboard
               </h1>
               <p className="mt-2 text-gray-600">
-                Benvenuto, {user?.name}! Gestisci il tuo e-commerce da qui.
+                Welcome, {user?.name}! Manage your e-commerce from here.
               </p>
             </div>
           </div>
@@ -54,8 +54,8 @@ const AdminDashboard: React.FC = () => {
               <div className="flex items-center">
                 <Package className="h-8 w-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Prodotti Totali</p>
-                  <p className="text-2xl font-bold text-gray-900">156</p>
+                  <p className="text-sm font-medium text-gray-600">Total Products</p>
+                  <p className="text-2xl font-bold text-gray-900">0</p>
                 </div>
               </div>
             </div>
@@ -64,8 +64,8 @@ const AdminDashboard: React.FC = () => {
               <div className="flex items-center">
                 <ShoppingCart className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Ordini Oggi</p>
-                  <p className="text-2xl font-bold text-gray-900">23</p>
+                  <p className="text-sm font-medium text-gray-600">Orders Today</p>
+                  <p className="text-2xl font-bold text-gray-900">0</p>
                 </div>
               </div>
             </div>
@@ -74,8 +74,8 @@ const AdminDashboard: React.FC = () => {
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Clienti Attivi</p>
-                  <p className="text-2xl font-bold text-gray-900">1,234</p>
+                  <p className="text-sm font-medium text-gray-600">Active Customers</p>
+                  <p className="text-2xl font-bold text-gray-900">0</p>
                 </div>
               </div>
             </div>
@@ -84,8 +84,8 @@ const AdminDashboard: React.FC = () => {
               <div className="flex items-center">
                 <BarChart3 className="h-8 w-8 text-orange-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Vendite Mese</p>
-                  <p className="text-2xl font-bold text-gray-900">€12,450</p>
+                  <p className="text-sm font-medium text-gray-600">Monthly Sales</p>
+                  <p className="text-2xl font-bold text-gray-900">€0</p>
                 </div>
               </div>
             </div>
@@ -95,22 +95,22 @@ const AdminDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <button className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-lg shadow transition-colors">
               <Plus className="h-8 w-8 mx-auto mb-2" />
-              <p className="font-semibold">Aggiungi Prodotto</p>
+              <p className="font-semibold">Add Product</p>
             </button>
             
             <button className="bg-green-600 hover:bg-green-700 text-white p-6 rounded-lg shadow transition-colors">
               <Package className="h-8 w-8 mx-auto mb-2" />
-              <p className="font-semibold">Gestisci Prodotti</p>
+              <p className="font-semibold">Manage Products</p>
             </button>
             
             <button className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded-lg shadow transition-colors">
               <ShoppingCart className="h-8 w-8 mx-auto mb-2" />
-              <p className="font-semibold">Ordini Clienti</p>
+              <p className="font-semibold">Customer Orders</p>
             </button>
             
             <button className="bg-orange-600 hover:bg-orange-700 text-white p-6 rounded-lg shadow transition-colors">
               <Users className="h-8 w-8 mx-auto mb-2" />
-              <p className="font-semibold">Gestisci Utenti</p>
+              <p className="font-semibold">Manage Users</p>
             </button>
           </div>
 

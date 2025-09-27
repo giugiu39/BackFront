@@ -35,8 +35,8 @@ const ProductManagement: React.FC = () => {
         setProducts(productsData);
         setCategories(categoriesData);
       } catch (err) {
-        console.error('Errore nel caricamento dei dati:', err);
-        setError('Impossibile caricare i dati. Verifica la connessione al server.');
+        console.error('Error loading data:', err);
+        setError('Unable to load data. Please check the server connection.');
         
         // Fallback ai dati di esempio se l'API fallisce
         const mockCategories: Category[] = [
@@ -45,37 +45,7 @@ const ProductManagement: React.FC = () => {
           { id: '3', name: 'Home & Garden', description: 'Home improvement items', createdAt: new Date().toISOString() },
         ];
 
-        const mockProducts: Product[] = [
-          {
-            id: '1',
-            name: 'Smartphone',
-            description: 'Latest smartphone with advanced features',
-            price: 699,
-            discountPrice: 599,
-            categoryId: '1',
-            category: mockCategories[0],
-            stock: 50,
-            rating: 4.5,
-            reviewCount: 123,
-            isFeatured: true,
-            imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-            createdAt: new Date().toISOString(),
-          },
-          {
-            id: '2',
-            name: 'T-Shirt',
-            description: 'Comfortable cotton t-shirt',
-            price: 29,
-            categoryId: '2',
-            category: mockCategories[1],
-            stock: 100,
-            rating: 4.2,
-            reviewCount: 67,
-            isFeatured: false,
-            imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-            createdAt: new Date().toISOString(),
-          },
-        ];
+        const mockProducts: Product[] = [];
 
         setCategories(mockCategories);
         setProducts(mockProducts);
@@ -100,19 +70,19 @@ const ProductManagement: React.FC = () => {
       let updatedProduct;
       
       if (editingProduct) {
-        // Aggiorna prodotto esistente
+        // Update existing product
         updatedProduct = await adminApi.updateProduct(editingProduct.id, productData);
         setProducts(prev => prev.map(p => p.id === editingProduct.id ? updatedProduct : p));
       } else {
-        // Crea nuovo prodotto
+        // Create new product
         updatedProduct = await adminApi.createProduct(productData);
         setProducts(prev => [...prev, updatedProduct]);
       }
       
       resetForm();
     } catch (err) {
-      console.error('Errore durante il salvataggio del prodotto:', err);
-      setError('Impossibile salvare il prodotto. Riprova più tardi.');
+      console.error('Error saving product:', err);
+      setError('Unable to save product. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -134,7 +104,7 @@ const ProductManagement: React.FC = () => {
   };
   
   const handleDelete = async (productId: string) => {
-    if (!window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
+    if (!window.confirm('Are you sure you want to delete this product?')) {
       return;
     }
     
@@ -143,8 +113,8 @@ const ProductManagement: React.FC = () => {
       await adminApi.deleteProduct(productId);
       setProducts(prev => prev.filter(p => p.id !== productId));
     } catch (err) {
-      console.error('Errore durante l\'eliminazione del prodotto:', err);
-      setError('Impossibile eliminare il prodotto. Riprova più tardi.');
+      console.error('Error deleting product:', err);
+      setError('Unable to delete product. Please try again later.');
     } finally {
       setLoading(false);
     }
