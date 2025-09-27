@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Package, Search, Filter } from 'lucide-react';
+import { Plus, Edit, Trash2, Package, Search, Filter, X } from 'lucide-react';
 import { Product } from '../../types';
+import { adminApi } from '../../services/ApiService';
+import AddProductModal from './AddProductModal';
+
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+}
 
 const AdminProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -8,14 +16,47 @@ const AdminProductManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    stock: '',
+    categoryId: '',
+    imageUrl: ''
+  });
 
   useEffect(() => {
-    // Mock data - sostituire con chiamate API reali
-    const mockProducts: Product[] = [];
-    
-    setProducts(mockProducts);
-    setLoading(false);
+    fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const productsData = await adminApi.getProducts();
+      setProducts(productsData || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/admin');
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -24,10 +65,71 @@ const AdminProductManagement: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleDeleteProduct = (productId: string) => {
+  const handleDeleteProduct = async (productId: string) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter(p => p.id !== productId));
+      try {
+        await adminApi.deleteProduct(productId);
+        setProducts(products.filter(p => p.id !== productId));
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Failed to delete product. Please try again.');
+      }
     }
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      stock: product.stock.toString(),
+      categoryId: product.categoryId.toString(),
+      imageUrl: product.imageUrl || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+
+    try {
+      const productData = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock),
+        categoryId: parseInt(formData.categoryId),
+        imageUrl: formData.imageUrl
+      };
+      
+      const updatedProduct = await adminApi.updateProduct(editingProduct.id, productData);
+      setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
+      setShowEditModal(false);
+      setEditingProduct(null);
+      resetForm();
+    } catch (error) {
+      console.error('Error updating product:', error);
+      alert('Failed to update product. Please try again.');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      price: '',
+      stock: '',
+      categoryId: '',
+      imageUrl: ''
+    });
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setEditingProduct(null);
+    resetForm();
   };
 
   if (loading) {
@@ -39,6 +141,7 @@ const AdminProductManagement: React.FC = () => {
   }
 
   return (
+    <>
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -129,7 +232,7 @@ const AdminProductManagement: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                    {product.category.name}
+                    {product.category?.name || product.categoryName || 'N/A'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -150,7 +253,7 @@ const AdminProductManagement: React.FC = () => {
                     product.stock > 5 ? 'bg-yellow-100 text-yellow-800' :
                     'bg-red-100 text-red-800'
                   }`}>
-                    {product.stock} pz
+                    {product.stock}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -162,7 +265,10 @@ const AdminProductManagement: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-2">
-                    <button className="text-blue-600 hover:text-blue-900">
+                    <button 
+                      onClick={() => handleEditProduct(product)}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button 
@@ -192,6 +298,137 @@ const AdminProductManagement: React.FC = () => {
         </div>
       )}
     </div>
+
+    {/* Edit Product Modal */}
+    {showEditModal && editingProduct && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">Edit Product</h2>
+            <button
+              onClick={handleCloseEditModal}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+
+          <form onSubmit={handleUpdateProduct} className="p-6 space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Name *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Price (€) *
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Stock *
+                </label>
+                <input
+                  type="number"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({...formData, stock: e.target.value})}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category *
+              </label>
+              <select
+                value={formData.categoryId}
+                onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description *
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                required
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Image URL
+              </label>
+              <input
+                type="url"
+                value={formData.imageUrl}
+                onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={handleCloseEditModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+              >
+                Update Product
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+
+    {/* Add Product Modal */}
+    <AddProductModal
+      isOpen={showAddModal}
+      onClose={() => setShowAddModal(false)}
+      onProductAdded={() => {
+        fetchProducts();
+        setShowAddModal(false);
+      }}
+    />
+    </>
   );
 };
 

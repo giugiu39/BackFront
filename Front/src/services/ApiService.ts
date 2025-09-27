@@ -144,23 +144,23 @@ const getMockData = (endpoint: string) => {
 // API per gli utenti Admin
 export const adminApi = {
   // Categorie
-  getCategories: () => apiRequest('/admin/categories'),
-  createCategory: (categoryData: any) => apiRequest('/admin/categories', {
+  getCategories: () => apiRequest('/api/admin'),
+  createCategory: (categoryData: any) => apiRequest('/api/admin/category', {
     method: 'POST',
     body: JSON.stringify(categoryData)
   }),
   
   // Prodotti
-  getProducts: () => apiRequest('/admin/products'),
-  createProduct: (productData: any) => apiRequest('/admin/products', {
+  getProducts: () => apiRequest('/api/admin/products'),
+  createProduct: (productData: any) => apiRequest('/api/admin/product', {
     method: 'POST',
-    body: JSON.stringify(productData)
+    body: productData // FormData per il file upload
   }),
-  updateProduct: (productId: string, productData: any) => apiRequest(`/admin/products/${productId}`, {
+  updateProduct: (productId: string, productData: any) => apiRequest(`/api/admin/product/${productId}`, {
     method: 'PUT',
-    body: JSON.stringify(productData)
+    body: productData // FormData per il file upload
   }),
-  deleteProduct: (productId: string) => apiRequest(`/admin/products/${productId}`, {
+  deleteProduct: (productId: string) => apiRequest(`/api/admin/product/${productId}`, {
     method: 'DELETE'
   }),
   

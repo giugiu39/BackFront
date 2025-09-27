@@ -19,94 +19,47 @@ const HomePage: React.FC = () => {
         id: '1', 
         name: 'Electronics', 
         description: 'Latest tech gadgets', 
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+        imageUrl: 'https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg',
         createdAt: new Date().toISOString() 
       },
       { 
         id: '2', 
-        name: 'Fashion', 
-        description: 'Trendy clothing & accessories', 
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+        name: 'Clothing', 
+        description: 'Trendy fashion & apparel', 
+        imageUrl: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg',
         createdAt: new Date().toISOString() 
       },
       { 
         id: '3', 
         name: 'Home & Garden', 
         description: 'Everything for your home', 
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+        imageUrl: 'https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg',
         createdAt: new Date().toISOString() 
       },
       { 
         id: '4', 
         name: 'Sports', 
         description: 'Fitness & outdoor gear', 
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
+        imageUrl: 'https://images.pexels.com/photos/863988/pexels-photo-863988.jpeg',
+        createdAt: new Date().toISOString() 
+      },
+      { 
+        id: '5', 
+        name: 'Books', 
+        description: 'Literature & educational materials', 
+        imageUrl: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg',
+        createdAt: new Date().toISOString() 
+      },
+      { 
+        id: '6', 
+        name: 'Beauty', 
+        description: 'Cosmetics & personal care', 
+        imageUrl: 'https://images.pexels.com/photos/2113855/pexels-photo-2113855.jpeg',
         createdAt: new Date().toISOString() 
       },
     ];
 
-    const mockProducts: Product[] = [
-      {
-        id: '1',
-        name: 'Premium Smartphone',
-        description: 'Latest flagship smartphone with advanced camera and AI features',
-        price: 899,
-        discountPrice: 749,
-        categoryId: '1',
-        category: mockCategories[0],
-        stock: 25,
-        rating: 4.8,
-        reviewCount: 256,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: '2',
-        name: 'Designer Watch',
-        description: 'Luxury timepiece with premium materials and Swiss movement',
-        price: 1299,
-        discountPrice: 999,
-        categoryId: '2',
-        category: mockCategories[1],
-        stock: 15,
-        rating: 4.9,
-        reviewCount: 89,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: '3',
-        name: 'Smart Home Speaker',
-        description: 'Voice-controlled speaker with premium sound quality',
-        price: 199,
-        discountPrice: 149,
-        categoryId: '3',
-        category: mockCategories[2],
-        stock: 40,
-        rating: 4.6,
-        reviewCount: 342,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: '4',
-        name: 'Fitness Tracker',
-        description: 'Advanced fitness tracking with heart rate monitoring',
-        price: 299,
-        discountPrice: 229,
-        categoryId: '4',
-        category: mockCategories[3],
-        stock: 60,
-        rating: 4.5,
-        reviewCount: 178,
-        isFeatured: true,
-        imageUrl: 'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg',
-        createdAt: new Date().toISOString(),
-      },
-    ];
+    const mockProducts: Product[] = [];
 
     setCategories(mockCategories);
     setFeaturedProducts(mockProducts);

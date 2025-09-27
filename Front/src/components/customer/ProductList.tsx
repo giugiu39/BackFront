@@ -123,7 +123,10 @@ const ProductList: React.FC = () => {
             <option value="">All Categories</option>
               <option value="Electronics">Electronics</option>
               <option value="Clothing">Clothing</option>
-              <option value="Accessories">Accessories</option>
+              <option value="Home & Garden">Home & Garden</option>
+              <option value="Sports">Sports</option>
+              <option value="Books">Books</option>
+              <option value="Beauty">Beauty</option>
           </select>
         </div>
       </div>
