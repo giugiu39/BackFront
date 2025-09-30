@@ -16,7 +16,7 @@ export interface Product {
   imageUrl: string;
   categoryId: string;
   category?: Category;
-  stock: number;
+  quantity: number;
   rating: number;
   reviewCount: number;
   isFeatured: boolean;

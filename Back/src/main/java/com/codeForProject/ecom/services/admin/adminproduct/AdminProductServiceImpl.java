@@ -27,6 +27,7 @@ public class AdminProductServiceImpl implements AdminProductService{
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
         product.setImage(productDto.getImg().getBytes());
+        product.setStock(productDto.getQuantity());
 
         Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow();
 
@@ -72,6 +73,7 @@ public class AdminProductServiceImpl implements AdminProductService{
             product.setPrice(productDto.getPrice());
             product.setDescription(productDto.getDescription());
             product.setCategory(optionalCategory.get());
+            product.setStock(productDto.getQuantity());
             if(productDto.getImg() != null) {
                 product.setImage(productDto.getImg().getBytes());
             }

@@ -20,7 +20,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     price: '',
     description: '',
     categoryId: '',
-    quantity: ''
+    stock: ''
   });
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -96,7 +96,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       formDataToSend.append('price', formData.price);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('categoryId', formData.categoryId);
-      formDataToSend.append('quantity', formData.quantity);
+      formDataToSend.append('quantity', formData.stock);
       
       if (image) {
         formDataToSend.append('img', image);
@@ -117,7 +117,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
           price: '',
           description: '',
           categoryId: '',
-          quantity: ''
+          stock: ''
         });
         setImage(null);
         setImagePreview('');
@@ -200,12 +200,12 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Hash className="h-4 w-4 inline mr-1" />
-                Quantity *
+                Stock *
               </label>
               <input
                 type="number"
-                name="quantity"
-                value={formData.quantity}
+                name="stock"
+                value={formData.stock}
                 onChange={handleInputChange}
                 required
                 min="0"

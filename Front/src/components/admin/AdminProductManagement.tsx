@@ -25,7 +25,8 @@ const AdminProductManagement: React.FC = () => {
     price: '',
     stock: '',
     categoryId: '',
-    imageUrl: ''
+    imageUrl: '',
+    imageFile: null as File | null
   });
 
   useEffect(() => {
@@ -48,19 +49,16 @@ const AdminProductManagement: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/admin');
-      if (response.ok) {
-        const data = await response.json();
-        setCategories(data);
-      }
+      const categoriesData = await adminApi.getCategories();
+      setCategories(categoriesData || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (product.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (product.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.categoryId === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -80,12 +78,13 @@ const AdminProductManagement: React.FC = () => {
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
     setFormData({
-      name: product.name,
-      description: product.description,
-      price: product.price.toString(),
-      stock: product.stock.toString(),
-      categoryId: product.categoryId.toString(),
-      imageUrl: product.imageUrl || ''
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price ? product.price.toString() : '',
+      stock: product.quantity ? product.quantity.toString() : '',
+      categoryId: product.categoryId ? product.categoryId.toString() : '',
+      imageUrl: product.imageUrl || '',
+      imageFile: null
     });
     setShowEditModal(true);
   };
@@ -95,16 +94,19 @@ const AdminProductManagement: React.FC = () => {
     if (!editingProduct) return;
 
     try {
-      const productData = {
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        stock: parseInt(formData.stock),
-        categoryId: parseInt(formData.categoryId),
-        imageUrl: formData.imageUrl
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('price', formData.price);
+      formDataToSend.append('quantity', formData.stock);
+      formDataToSend.append('categoryId', formData.categoryId);
       
-      const updatedProduct = await adminApi.updateProduct(editingProduct.id, productData);
+      // Aggiungi il file immagine solo se è stato selezionato
+      if (formData.imageFile) {
+        formDataToSend.append('img', formData.imageFile);
+      }
+      
+      const updatedProduct = await adminApi.updateProduct(editingProduct.id, formDataToSend);
       setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
       setShowEditModal(false);
       setEditingProduct(null);
@@ -122,7 +124,8 @@ const AdminProductManagement: React.FC = () => {
       price: '',
       stock: '',
       categoryId: '',
-      imageUrl: ''
+      imageUrl: '',
+      imageFile: null
     });
   };
 
@@ -249,11 +252,11 @@ const AdminProductManagement: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    product.stock > 20 ? 'bg-green-100 text-green-800' :
-                    product.stock > 5 ? 'bg-yellow-100 text-yellow-800' :
+                    (product.quantity || 0) > 20 ? 'bg-green-100 text-green-800' :
+                    (product.quantity || 0) > 5 ? 'bg-yellow-100 text-yellow-800' :
                     'bg-red-100 text-red-800'
                   }`}>
-                    {product.stock}
+                    {product.quantity || 0}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -397,6 +400,19 @@ const AdminProductManagement: React.FC = () => {
                 onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Upload New Image (Optional)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFormData({...formData, imageFile: e.target.files?.[0] || null})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-sm text-gray-500 mt-1">Leave empty to keep current image</p>
             </div>
 
             <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
