@@ -19,8 +19,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
     name: '',
     price: '',
     description: '',
-    categoryId: '',
-    stock: ''
+    categoryId: ''
   });
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -96,7 +95,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       formDataToSend.append('price', formData.price);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('categoryId', formData.categoryId);
-      formDataToSend.append('quantity', formData.stock);
       
       if (image) {
         formDataToSend.append('img', image);
@@ -116,8 +114,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
           name: '',
           price: '',
           description: '',
-          categoryId: '',
-          stock: ''
+          categoryId: ''
         });
         setImage(null);
         setImagePreview('');
@@ -178,8 +175,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
             />
           </div>
 
-          {/* Price and Quantity */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Price */}
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <DollarSign className="h-4 w-4 inline mr-1" />
@@ -195,22 +192,6 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
                 step="0.01"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="0.00"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Hash className="h-4 w-4 inline mr-1" />
-                Stock *
-              </label>
-              <input
-                type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleInputChange}
-                required
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0"
               />
             </div>
           </div>

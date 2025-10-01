@@ -81,7 +81,6 @@ const AdminProductManagement: React.FC = () => {
       name: product.name || '',
       description: product.description || '',
       price: product.price ? product.price.toString() : '',
-      stock: product.quantity ? product.quantity.toString() : '',
       categoryId: product.categoryId ? product.categoryId.toString() : '',
       imageUrl: product.imageUrl || '',
       imageFile: null
@@ -122,7 +121,6 @@ const AdminProductManagement: React.FC = () => {
       name: '',
       description: '',
       price: '',
-      stock: '',
       categoryId: '',
       imageUrl: '',
       imageFile: null
@@ -203,12 +201,6 @@ const AdminProductManagement: React.FC = () => {
                 Price
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Stock
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rating
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -250,30 +242,8 @@ const AdminProductManagement: React.FC = () => {
                     )}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    (product.quantity || 0) > 20 ? 'bg-green-100 text-green-800' :
-                    (product.quantity || 0) > 5 ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {product.quantity || 0}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <div className="flex items-center">
-                    <span className="text-yellow-400">★</span>
-                    <span className="ml-1">{product.rating}</span>
-                    <span className="text-gray-500 ml-1">({product.reviewCount})</span>
-                  </div>
-                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-2">
-                    <button 
-                      onClick={() => handleEditProduct(product)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </button>
                     <button 
                       onClick={() => handleDeleteProduct(product.id)}
                       className="text-red-600 hover:text-red-900"
@@ -330,7 +300,7 @@ const AdminProductManagement: React.FC = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Price (€) *
@@ -340,18 +310,6 @@ const AdminProductManagement: React.FC = () => {
                   step="0.01"
                   value={formData.price}
                   onChange={(e) => setFormData({...formData, price: e.target.value})}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Stock *
-                </label>
-                <input
-                  type="number"
-                  value={formData.stock}
-                  onChange={(e) => setFormData({...formData, stock: e.target.value})}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

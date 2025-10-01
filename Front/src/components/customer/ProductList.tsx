@@ -9,7 +9,6 @@ interface Product {
   price: number;
   discountPrice?: number;
   imageUrl?: string;
-  rating?: number;
   categoryName?: string;
 }
 
@@ -39,7 +38,6 @@ const ProductList: React.FC = () => {
             price: 699.99,
             discountPrice: 599.99,
             imageUrl: 'https://via.placeholder.com/300',
-            rating: 4.5,
             categoryName: 'Electronics'
           },
           {
@@ -48,7 +46,6 @@ const ProductList: React.FC = () => {
             description: 'Headphones with noise cancellation and high-quality audio',
             price: 149.99,
             imageUrl: 'https://via.placeholder.com/300',
-            rating: 4.2,
             categoryName: 'Accessories'
           }
         ]);
@@ -151,12 +148,19 @@ const ProductList: React.FC = () => {
             <div className="p-4">
               <h3 className="text-lg font-semibold">{product.name}</h3>
               <div className="flex items-center mt-1">
-                {product.rating && (
-                  <div className="flex items-center">
-                    <span className="text-yellow-500">★</span>
-                    <span className="ml-1 text-sm text-gray-600">{product.rating}</span>
-                  </div>
-                )}
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < Math.floor(4.5)
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="ml-1 text-sm text-gray-600">4.5</span>
                 {product.categoryName && (
                   <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
                     {product.categoryName}

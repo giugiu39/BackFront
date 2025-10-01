@@ -75,7 +75,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <Star
                 key={i}
                 className={`h-4 w-4 ${
-                  i < Math.floor(product.rating)
+                  i < Math.floor(4.5)
                     ? 'text-yellow-400 fill-current'
                     : 'text-gray-300'
                 }`}
@@ -83,7 +83,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             ))}
           </div>
           <span className="text-sm text-gray-600 ml-2">
-            ({product.reviewCount})
+            (4.5)
           </span>
         </div>
         
@@ -114,20 +114,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           
           <div className="text-sm text-gray-500">
-            {product.stock > 0 ? (
-              <span className="text-green-600">In Stock</span>
-            ) : (
-              <span className="text-red-600">Out of Stock</span>
-            )}
+            <span className="text-green-600">Available</span>
           </div>
         </div>
         
         <button
           onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
         >
-          {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          Add to Cart
         </button>
       </div>
     </div>

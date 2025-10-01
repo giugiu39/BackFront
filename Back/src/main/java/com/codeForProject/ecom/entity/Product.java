@@ -27,8 +27,6 @@ public class Product {
     @Column(columnDefinition = "longblob")
     private byte[] image;
 
-    private Long stock;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false) //più products in una category
     @JoinColumn(name = "category_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -44,7 +42,6 @@ public class Product {
         productDto.setByteImg(image);
         productDto.setCategoryId(category.getId());
         productDto.setCategoryName(category.getName());
-        productDto.setQuantity(stock);
         return productDto;
     }
 

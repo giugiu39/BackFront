@@ -16,8 +16,6 @@ export interface Product {
   imageUrl: string;
   categoryId: string;
   category?: Category;
-  quantity: number;
-  rating: number;
   reviewCount: number;
   isFeatured: boolean;
   createdAt: string;
@@ -77,7 +75,6 @@ export interface Review {
   productId: string;
   customerId: string;
   customer: User;
-  rating: number;
   comment: string;
   createdAt: string;
 }

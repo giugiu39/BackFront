@@ -122,7 +122,6 @@ const getMockData = (endpoint: string) => {
         price: 699.99,
         discountPrice: 599.99,
         imageUrl: 'https://via.placeholder.com/300',
-        rating: 4.5,
         categoryName: 'Elettronica'
       },
       {
@@ -131,7 +130,6 @@ const getMockData = (endpoint: string) => {
         description: 'Cuffie con cancellazione del rumore e audio di alta qualità',
         price: 149.99,
         imageUrl: 'https://via.placeholder.com/300',
-        rating: 4.2,
         categoryName: 'Accessori'
       }
     ];

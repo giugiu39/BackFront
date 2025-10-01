@@ -18,9 +18,9 @@ const ProductManagement: React.FC = () => {
     price: 0,
     discountPrice: 0,
     categoryId: '',
-    stock: 0,
     imageUrl: '',
     isFeatured: false,
+    img: null as File | null
   });
 
   // Carica prodotti e categorie dalle API
@@ -96,9 +96,9 @@ const ProductManagement: React.FC = () => {
       price: product.price,
       discountPrice: product.discountPrice || 0,
       categoryId: product.categoryId,
-      stock: product.stock,
       imageUrl: product.imageUrl || '',
       isFeatured: product.isFeatured || false,
+      img: null
     });
     setShowForm(true);
   };
@@ -129,9 +129,9 @@ const ProductManagement: React.FC = () => {
       price: 0,
       discountPrice: 0,
       categoryId: '',
-      stock: 0,
       imageUrl: '',
       isFeatured: false,
+      img: null
     });
     setEditingProduct(null);
     setShowForm(false);
@@ -271,19 +271,6 @@ const ProductManagement: React.FC = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Stock Quantity
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      value={formData.stock}
-                      onChange={(e) => setFormData({...formData, stock: parseInt(e.target.value)})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
                 </div>
 
                 <div>
@@ -348,9 +335,6 @@ const ProductManagement: React.FC = () => {
                   Price
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Stock
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -393,16 +377,9 @@ const ProductManagement: React.FC = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {product.stock}
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      product.stock > 0 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Available
                     </span>
                     {product.isFeatured && (
                       <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">

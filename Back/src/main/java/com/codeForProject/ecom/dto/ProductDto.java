@@ -24,6 +24,4 @@ public class ProductDto {
 
     private MultipartFile img;
 
-    private Long quantity;
-
 }
