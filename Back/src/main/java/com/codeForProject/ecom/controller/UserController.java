@@ -72,18 +72,18 @@ public class UserController {
                     if (roles != null && roles.contains("admin")) {
                         user.setRole(UserRole.ADMIN);
                     } else {
-                        user.setRole(UserRole.COSTUMER);
+                        user.setRole(UserRole.CUSTOMER);
                     }
                 } else {
                     System.out.println("No realm_access found, setting default role");
-                    user.setRole(UserRole.COSTUMER);
+                    user.setRole(UserRole.CUSTOMER);
                 }
                 
                 user = userRepository.save(user);
                 System.out.println("User saved with ID: " + user.getId());
                 
                 // Crea un ordine pending per il nuovo utente customer
-                if (user.getRole() == UserRole.COSTUMER) {
+                if (user.getRole() == UserRole.CUSTOMER) {
                     Order order = new Order();
                     order.setAmount(0L);
                     order.setTotalAmount(0L);
@@ -110,7 +110,7 @@ public class UserController {
                     if (roles != null && roles.contains("admin")) {
                         newRole = UserRole.ADMIN;
                     } else {
-                        newRole = UserRole.COSTUMER;
+                        newRole = UserRole.CUSTOMER;
                     }
                     
                     if (user.getRole() != newRole) {

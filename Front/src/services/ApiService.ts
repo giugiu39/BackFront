@@ -1,6 +1,6 @@
 import keycloak, { getToken, updateToken } from './KeycloakService';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:8081';
 
 // Funzione helper per aggiungere il token di autenticazione
 const authHeader = async () => {

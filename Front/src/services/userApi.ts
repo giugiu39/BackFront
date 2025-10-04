@@ -5,7 +5,7 @@ export interface UserProfile {
   keycloakId: string;
   email: string;
   name: string;
-  role: 'ADMIN' | 'COSTUMER';
+  role: 'ADMIN' | 'CUSTOMER';
 }
 
 export const userApi = {

@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
         user.setName(signupRequest.getName());
         user.setEmail(signupRequest.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
-        user.setRole(UserRole.COSTUMER);
+        user.setRole(UserRole.CUSTOMER);
         User createdUser = userRepository.save(user);
 
         Order order = new Order();
