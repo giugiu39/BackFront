@@ -103,26 +103,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                 </>
               )}
 
-              {user && isAdmin && (
-                <>
-                  <button onClick={() => navigate('/admin')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
-                    <BarChart3 className="h-5 w-5" />
-                    <span className="text-sm">Dashboard</span>
-                  </button>
-                  <button onClick={() => navigate('/admin/products')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
-                    <Package className="h-5 w-5" />
-                    <span className="text-sm">Products</span>
-                  </button>
-                  <button onClick={() => navigate('/admin/orders')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
-                    <ShoppingCart className="h-5 w-5" />
-                    <span className="text-sm">Orders</span>
-                  </button>
-                  <button onClick={() => navigate('/admin/users')} className="flex items-center space-x-1 p-2 text-gray-600 hover:text-blue-600 transition-colors">
-                    <Users className="h-5 w-5" />
-                    <span className="text-sm">Users</span>
-                  </button>
-                </>
-              )}
+              {/* Admin navigation buttons removed as requested */}
               
               {user ? (
                 <div className="relative">
@@ -142,14 +123,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                       >
                         Profile
                       </button>
-                      {isAdmin && (
-                        <button 
-                          onClick={() => navigate('/')} 
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          Admin Dashboard
-                        </button>
-                      )}
+                      {/* Admin Dashboard button removed as requested - home button already provides this functionality */}
                       <button
                         onClick={logout}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -234,35 +208,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                     </>
                   )}
                   
-                  {/* Admin-specific mobile menu items */}
-                  {isAdmin && (
-                    <>
-                      <button 
-                        onClick={() => navigate('/admin')} 
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
-                      >
-                        Admin Dashboard
-                      </button>
-                      <button 
-                        onClick={() => navigate('/admin/products')} 
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
-                      >
-                        Manage Products
-                      </button>
-                      <button 
-                        onClick={() => navigate('/admin/orders')} 
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
-                      >
-                        Manage Orders
-                      </button>
-                      <button 
-                        onClick={() => navigate('/admin/users')} 
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
-                      >
-                        Manage Users
-                      </button>
-                    </>
-                  )}
+                  {/* Admin-specific mobile menu items removed as requested */}
                   
                   <button
                     onClick={logout}
