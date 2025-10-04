@@ -54,8 +54,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           
           // Ottieni il profilo utente dal backend solo se autenticato
           try {
-            // Aspetta un po' di più per assicurarsi che il token sia disponibile
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Aspetta di più per assicurarsi che il token sia completamente disponibile
+            await new Promise(resolve => setTimeout(resolve, 2000));
             
             // Verifica che il token sia disponibile
             const token = keycloak.token;
@@ -103,8 +103,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               sessionStorage.removeItem('keycloak-login-redirect');
             }
             
-            // Redirect sempre dopo il login, indipendentemente dalla pagina corrente
-            if (justLoggedIn) {
+            // Redirect SOLO se l'utente ha appena fatto login E si trova su una pagina generica
+            if (justLoggedIn && (currentPath === '/' || currentPath === '/login' || currentPath === '/register')) {
               const targetPath = adminStatus ? '/admin' : '/customer';
               console.log(`Redirecting to ${targetPath} after login from ${currentPath}`);
               setTimeout(() => navigate(targetPath, { replace: true }), 100);
@@ -115,6 +115,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               console.log(`User authenticated on homepage, redirecting to ${targetPath}`);
               setTimeout(() => navigate(targetPath, { replace: true }), 100);
             }
+            // NON reindirizzare se l'utente è già su una pagina specifica (come /admin/products)
           } catch (error) {
             console.error('Error fetching user profile:', error);
             // Se l'errore è 401, l'utente non è realmente autenticato
@@ -151,10 +152,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Aggiungi listener per i cambiamenti di pagina
     const handleLocationChange = () => {
       console.log('Location changed, re-checking auth status');
-      // Solo se non stiamo già caricando, ricontrolla lo stato
-      if (!loading) {
-        initAuth();
-      }
+      // RIMUOVO il re-check automatico che può causare race conditions
+      // if (!loading) {
+      //   initAuth();
+      // }
     };
     
     // Ascolta i cambiamenti di popstate (back/forward)

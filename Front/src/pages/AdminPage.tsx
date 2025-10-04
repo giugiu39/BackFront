@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminDashboard from '../components/admin/AdminDashboard';
 import ProductManagement from '../components/admin/ProductManagement';
 
 const AdminPage: React.FC = () => {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
 
   // Mostra un loader mentre verifichiamo l'autenticazione
@@ -26,7 +28,18 @@ const AdminPage: React.FC = () => {
       case 'products':
         return <ProductManagement />;
       case 'categories':
-        return <div>Categories Management - Coming Soon</div>;
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Categories Management</h2>
+            <p className="text-gray-600 mb-6">Explore and manage product categories</p>
+            <button
+              onClick={() => navigate('/categories')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            >
+              View Categories Page
+            </button>
+          </div>
+        );
       case 'orders':
         return <div>Order Management - Coming Soon</div>;
       case 'customers':

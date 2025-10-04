@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/common/Layout';
+import { adminApi, customerApi } from '../services/ApiService';
+import { Product } from '../types';
 import { 
   ShoppingBag, 
   Heart, 
@@ -14,8 +17,10 @@ import {
 
 const CustomerDashboard: React.FC = () => {
   const { user, isAdmin, loading } = useAuth();
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   if (loading) {
     return (
@@ -34,20 +39,48 @@ const CustomerDashboard: React.FC = () => {
 
   // Mock data for categories (keeping these)
   const mockCategories = [
-    { id: 1, name: 'Electronics', image: '📱', count: 0 },
-    { id: 2, name: 'Clothing', image: '👕', count: 0 },
-    { id: 3, name: 'Home & Garden', image: '🏠', count: 0 },
-    { id: 4, name: 'Sports', image: '⚽', count: 0 },
-    { id: 5, name: 'Books', image: '📚', count: 0 },
-    { id: 6, name: 'Beauty', image: '💄', count: 0 }
+    { id: 'electronics', name: 'Electronics', image: '📱', count: 0 },
+    { id: 'clothing', name: 'Clothing', image: '👕', count: 0 },
+    { id: 'home-garden', name: 'Home & Garden', image: '🏠', count: 0 },
+    { id: 'sports', name: 'Sports', image: '⚽', count: 0 },
+    { id: 'books', name: 'Books', image: '📚', count: 0 },
+    { id: 'beauty', name: 'Beauty', image: '💄', count: 0 }
   ];
 
+  // Load products from backend
   useEffect(() => {
-    setCategories(mockCategories);
-    
-    // TODO: Implement loading real products from backend
-    // For now leave the featured products array empty
-    setFeaturedProducts([]);
+    const loadProducts = async () => {
+      try {
+        const response = await adminApi.getProducts();
+        if (response && Array.isArray(response)) {
+          setProducts(response);
+          
+          // Function to count products by category
+          const getProductCountByCategory = (categoryId: string): number => {
+            return response.filter(product => 
+              product.category && product.category.toLowerCase() === categoryId.toLowerCase()
+            ).length;
+          };
+          
+          // Update categories with real product counts
+          const updatedCategories = mockCategories.map(category => ({
+            ...category,
+            count: getProductCountByCategory(category.id)
+          }));
+          setCategories(updatedCategories);
+          
+          // Set featured products (first 6 products)
+          setFeaturedProducts(response.slice(0, 6));
+        }
+      } catch (error) {
+        console.error('Error loading products:', error);
+        // Fallback to mock data
+        setCategories(mockCategories);
+        setFeaturedProducts([]);
+      }
+    };
+
+    loadProducts();
   }, []);
 
   return (
@@ -115,11 +148,21 @@ const CustomerDashboard: React.FC = () => {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Explore Categories</h2>
               <p className="text-gray-600 text-lg">Find what you're looking for</p>
+              <button
+                onClick={() => navigate('/categories')}
+                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+              >
+                View All Categories
+              </button>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {categories.map((category) => (
-                <div key={category.id} className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow cursor-pointer">
+                <div 
+                  key={category.id} 
+                  onClick={() => navigate(`/categories/${category.id}`)}
+                  className="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow cursor-pointer"
+                >
                   <div className="text-4xl mb-3">{category.image}</div>
                   <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
                   <p className="text-sm text-gray-500">{category.count} products</p>

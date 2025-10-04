@@ -13,6 +13,9 @@ import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import CategoriesPage from './pages/CategoriesPage';
+import CustomerProductsPage from './pages/CustomerProductsPage';
+// Pagine prodotti customer rimosse temporaneamente
 import './index.css';
 
 function App() {
@@ -27,6 +30,27 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/categories" element={<CategoriesPage />} />
+              
+              {/* Rotta admin/products rimossa definitivamente */}
+              
+              {/* Customer Products Routes */}
+              <Route 
+                path="/customer/products" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerProductsPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/categories/:categoryName" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerProductsPage />
+                  </ProtectedRoute>
+                } 
+              />
               
               {/* Protected Admin Routes */}
               <Route 

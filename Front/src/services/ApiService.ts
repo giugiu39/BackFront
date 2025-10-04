@@ -183,7 +183,8 @@ export const adminApi = {
 // API per gli utenti Customer
 export const customerApi = {
   // Prodotti
-  getProducts: () => apiRequest('/customer/products'),
+  getAllProducts: () => apiRequest('/api/customer/products'),
+  getProducts: () => apiRequest('/api/customer/products'),
   getProductDetails: (productId: string) => apiRequest(`/customer/products/${productId}`),
   
   // Carrello

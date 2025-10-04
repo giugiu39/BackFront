@@ -18,9 +18,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loading) return;
+    console.log('ProtectedRoute - loading:', loading, 'isAuthenticated:', isAuthenticated, 'isAdmin:', isAdmin, 'requiredRole:', requiredRole);
+    
+    // IMPORTANTE: Non fare NULLA finché il loading non è completato
+    if (loading) {
+      console.log('ProtectedRoute - Still loading, waiting...');
+      return;
+    }
 
     if (!isAuthenticated) {
+      console.log('ProtectedRoute - User not authenticated after loading completed, redirecting to login');
       navigate('/login');
       return;
     }
@@ -29,16 +36,20 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     if (requiredRole) {
       if (requiredRole === 'admin' && !isAdmin) {
         // Customer trying to access admin route
+        console.log('ProtectedRoute - Customer trying to access admin route, redirecting to customer');
         navigate(redirectTo || '/customer');
         return;
       }
       
       if (requiredRole === 'customer' && isAdmin) {
         // Admin trying to access customer route
+        console.log('ProtectedRoute - Admin trying to access customer route, redirecting to admin');
         navigate(redirectTo || '/admin');
         return;
       }
     }
+
+    console.log('ProtectedRoute - Access granted');
   }, [loading, isAuthenticated, isAdmin, requiredRole, redirectTo, navigate]);
 
   if (loading) {

@@ -36,7 +36,8 @@ const AboutPage: React.FC = () => {
                     It all started during a torrential rainy day. Gianluca, our founder, urgently needed a laptop charger 
                     but all the stores were closed. "If only there was a way to get what you need in a flash!" he thought. 
                     And so the idea of <strong>Speedy</strong> was born - an e-commerce that promises deliveries as fast 
-                    as lightning! ⚡
+                    as lightning! ⚡ Our unique approach? <strong>One product, one chance</strong> - each item is available 
+                    in limited quantity of just one piece, making every purchase exclusive and urgent!
                   </p>
                 </div>
                 <div className="lg:w-1/2">
@@ -58,7 +59,9 @@ const AboutPage: React.FC = () => {
                   <p className="text-gray-600 text-lg leading-relaxed">
                     Gianluca convinced his best friends: Laura (former athletics champion), Giuseppe (logistics wizard) 
                     and Sofia (marketing genius). Their motto? "If it doesn't arrive same day, coffee's on us!" ☕
-                    They started from Gianluca's garage with 3 electric bikes and lots of determination.
+                    They started from Gianluca's garage with 3 electric bikes and lots of determination. The revolutionary 
+                    concept was simple: <strong>exclusive single-item availability</strong> - when you see something you like, 
+                    you better be quick because there's only one available!
                   </p>
                 </div>
                 <div className="lg:w-1/2">
@@ -81,7 +84,8 @@ const AboutPage: React.FC = () => {
                     Our record? Delivering a pair of running shoes in just 47 minutes from order! 🏃‍♂️ 
                     The customer was about to miss a marathon and we saved her! From that day, Speedy became 
                     synonymous with "impossible is just a word". We opened our first automated warehouse 
-                    with robots that move faster than a cheetah!
+                    with robots that move faster than a cheetah! Our <strong>one-item-per-product philosophy</strong> 
+                    creates the perfect urgency - no time to hesitate, just pure speed and decision!
                   </p>
                 </div>
                 <div className="lg:w-1/2">
@@ -104,7 +108,9 @@ const AboutPage: React.FC = () => {
                     Today Speedy is Italy's #1 e-commerce for delivery speed! 🏆 We won the "Golden Lightning" award 
                     for logistics innovation and the "Customer Choice Award" for three consecutive years. 
                     Our fleet includes drones, electric bikes and even a rocket-shaped van! 🚀 
-                    But the best part? The smiles on our customers' faces when they receive their orders!
+                    But the best part? The smiles on our customers' faces when they receive their orders! 
+                    Our <strong>exclusive single-piece inventory</strong> model has revolutionized online shopping - 
+                    every purchase is unique, every decision matters, and every delivery is special!
                   </p>
                 </div>
                 <div className="lg:w-1/2">
@@ -140,9 +146,9 @@ const AboutPage: React.FC = () => {
                 <p className="text-gray-600">Offered for delays (very few!)</p>
               </div>
               <div className="text-center bg-white p-6 rounded-lg shadow-md">
-                <div className="text-4xl mb-4">😊</div>
-                <h3 className="font-bold text-lg mb-2">99.8%</h3>
-                <p className="text-gray-600">Happy and smiling customers</p>
+                <div className="text-4xl mb-4">🎯</div>
+                <h3 className="font-bold text-lg mb-2">1 Item Only</h3>
+                <p className="text-gray-600">Each product has just one piece available</p>
               </div>
             </div>
           </div>

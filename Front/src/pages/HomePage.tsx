@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Layout from '../components/common/Layout';
 import ProductCard from '../components/customer/ProductCard';
 import { Product, Category } from '../types';
@@ -142,19 +143,19 @@ const HomePage: React.FC = () => {
             <h1 className="text-3xl font-bold mb-4">Welcome, {user?.name || 'Customer'}!</h1>
             <p className="text-xl text-green-100 mb-6">Discover our products and add to cart</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/products"
+              <Link
+                to="/customer/products"
                 className="inline-flex items-center justify-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
               >
                 Browse Products
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
-              <a
-                href="/cart"
+              </Link>
+              <Link
+                to="/cart"
                 className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-green-600 transition-colors"
               >
                 Go to Cart
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -173,19 +174,19 @@ const HomePage: React.FC = () => {
                 Shop the latest trends with unbeatable prices and quality
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="/products"
+                <Link
+                  to="/customer/products"
                   className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   Shop Now
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </a>
-                <a
-                  href="/categories"
+                </Link>
+                <Link
+                  to="/categories"
                   className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-colors"
                 >
                   Browse Categories
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -240,9 +241,9 @@ const HomePage: React.FC = () => {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((category) => (
-                <a
+                <Link
                   key={category.id}
-                  href={`/categories/${category.id}`}
+                  to={`/categories/${category.id}`}
                   className="group relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
                 >
                   <div className="aspect-w-16 aspect-h-10">
@@ -258,7 +259,7 @@ const HomePage: React.FC = () => {
                     </h3>
                     <p className="text-gray-600 text-sm">{category.description}</p>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -274,13 +275,13 @@ const HomePage: React.FC = () => {
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Products</h2>
                 <p className="text-gray-600">Hand-picked products just for you</p>
               </div>
-              <a
-                href="/products"
+              <Link
+                to="/customer/products"
                 className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold"
               >
                 View All
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
+              </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

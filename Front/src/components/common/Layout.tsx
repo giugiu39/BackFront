@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ShoppingCart, 
   User, 
@@ -29,8 +29,9 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
   const navigate = useNavigate();
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
+    { name: 'Home', href: user ? (isAdmin ? '/admin' : '/customer') : '/' },
+    // Rimuovo Products dalla navigazione per gli admin
+    ...(isAdmin ? [] : [{ name: 'Products', href: '/customer/products' }]),
     { name: 'Categories', href: '/categories' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
@@ -57,13 +58,13 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 transition-colors"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -166,13 +167,13 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50">
               {navigation.map((item) => (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
               
               {user ? (
@@ -254,19 +255,19 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
             <div>
               <h4 className="text-sm font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="/products" className="hover:text-white transition-colors">Products</a></li>
-                <li><a href="/categories" className="hover:text-white transition-colors">Categories</a></li>
-                <li><a href="/about" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="/contact" className="hover:text-white transition-colors">Contact</a></li>
+                <li><Link to="/customer/products" className="hover:text-white transition-colors">Products</Link></li>
+                <li><Link to="/categories" className="hover:text-white transition-colors">Categories</Link></li>
+                <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-sm font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="/faq" className="hover:text-white transition-colors">FAQ</a></li>
-                <li><a href="/shipping" className="hover:text-white transition-colors">Shipping</a></li>
-                <li><a href="/returns" className="hover:text-white transition-colors">Returns</a></li>
-                <li><a href="/track" className="hover:text-white transition-colors">Track Order</a></li>
+                <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link to="/shipping" className="hover:text-white transition-colors">Shipping</Link></li>
+                <li><Link to="/returns" className="hover:text-white transition-colors">Returns</Link></li>
+                <li><Link to="/track" className="hover:text-white transition-colors">Track Order</Link></li>
               </ul>
             </div>
             <div>

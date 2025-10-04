@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/common/Layout';
 import AdminProductManagement from '../components/admin/AdminProductManagement';
@@ -16,6 +17,7 @@ import {
 
 const AdminDashboard: React.FC = () => {
   const { user, isAdmin, loading } = useAuth();
+  const navigate = useNavigate();
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [refreshProducts, setRefreshProducts] = useState(0);
   const [stats, setStats] = useState({
@@ -121,18 +123,13 @@ const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <button 
               onClick={() => setShowAddProductModal(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-lg shadow transition-colors"
             >
               <Plus className="h-8 w-8 mx-auto mb-2" />
               <p className="font-semibold">Add Product</p>
-            </button>
-            
-            <button className="bg-green-600 hover:bg-green-700 text-white p-6 rounded-lg shadow transition-colors">
-              <Package className="h-8 w-8 mx-auto mb-2" />
-              <p className="font-semibold">Manage Products</p>
             </button>
             
             <button className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded-lg shadow transition-colors">
