@@ -3,7 +3,7 @@ import keycloak, { getToken, updateToken } from './KeycloakService';
 const API_BASE_URL = 'http://localhost:8081';
 
 // Funzione helper per aggiungere il token di autenticazione
-const authHeader = async () => {
+const authHeader = async (isFormData = false) => {
   try {
     // Aggiorna il token se sta per scadere
     await updateToken(60);
@@ -14,15 +14,23 @@ const authHeader = async () => {
       console.log('Token length:', token.length);
     }
     
-    return {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+    const headers: Record<string, string> = {
+      'Authorization': `Bearer ${token}`
     };
+    
+    // Non impostare Content-Type per FormData, il browser lo gestisce automaticamente
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
+    
+    return headers;
   } catch (error) {
     console.error('Failed to get auth header', error);
-    return {
-      'Content-Type': 'application/json'
-    };
+    const headers: Record<string, string> = {};
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
+    return headers;
   }
 };
 
@@ -82,7 +90,10 @@ export const apiService = new ApiService(API_BASE_URL);
 // Funzione generica per le richieste API
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   try {
-    const headers = await authHeader();
+    // Determina se stiamo inviando FormData
+    const isFormData = options.body instanceof FormData;
+    const headers = await authHeader(isFormData);
+    
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {

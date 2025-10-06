@@ -22,13 +22,21 @@ public class AdminProductServiceImpl implements AdminProductService{
     private final CategoryRepository categoryRepository;
 
     public ProductDto addProduct(ProductDto productDto) throws IOException {
+        System.out.println("Received ProductDto with categoryId: " + productDto.getCategoryId());
+        
         Product product = new Product();
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
-        product.setImage(productDto.getImg().getBytes());
+        // Handle image - set to null if no image is provided
+        if (productDto.getImg() != null && !productDto.getImg().isEmpty()) {
+            product.setImage(productDto.getImg().getBytes());
+        } else {
+            product.setImage(null);
+        }
 
-        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow();
+        Category category = categoryRepository.findById(productDto.getCategoryId()).orElseThrow(() -> 
+            new RuntimeException("Category not found with ID: " + productDto.getCategoryId()));
 
         product.setCategory(category);
         return productRepository.save(product).getDto();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload, Package, DollarSign, FileText, Tag, Hash } from 'lucide-react';
 import { getToken, updateToken } from '../../services/KeycloakService';
+import { adminApi } from '../../services/ApiService';
 
 interface Category {
   id: number;
@@ -35,25 +36,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
 
   const fetchCategories = async () => {
     try {
-      // Aggiorna il token se sta per scadere
-      await updateToken(60);
-      const token = getToken();
-      
-      const response = await fetch('http://localhost:8080/api/admin', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Categories loaded:', data);
-        setCategories(data);
-      } else {
-        console.error('Failed to fetch categories:', response.status, response.statusText);
-        setError('Failed to load categories');
-      }
+      const categoriesData = await adminApi.getCategories();
+      console.log('Categories loaded:', categoriesData);
+      setCategories(categoriesData || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
       setError('Failed to load categories');
@@ -94,35 +79,26 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onPr
       formDataToSend.append('name', formData.name);
       formDataToSend.append('price', formData.price);
       formDataToSend.append('description', formData.description);
-      formDataToSend.append('categoryId', formData.categoryId);
+      formDataToSend.append('categoryId', String(parseInt(formData.categoryId)));
       
       if (image) {
         formDataToSend.append('img', image);
       }
 
-      const response = await fetch('http://localhost:8080/api/admin/product', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataToSend
-      });
+      const result = await adminApi.createProduct(formDataToSend);
 
-      if (response.ok) {
-        // Reset form
-        setFormData({
-          name: '',
-          price: '',
-          description: '',
-          categoryId: ''
-        });
-        setImage(null);
-        setImagePreview('');
-        onProductAdded();
-        onClose();
-      } else {
-        throw new Error('Failed to add product');
-      }
+      // Since adminApi.createProduct returns JSON data, not a Response object
+      // Reset form
+      setFormData({
+        name: '',
+        price: '',
+        description: '',
+        categoryId: ''
+      });
+      setImage(null);
+      setImagePreview('');
+      onProductAdded();
+      onClose();
     } catch (error) {
       console.error('Error adding product:', error);
       setError('Failed to add product. Please try again.');
