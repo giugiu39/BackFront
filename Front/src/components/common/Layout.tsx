@@ -32,7 +32,6 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
     { name: 'Home', href: user ? (isAdmin ? '/admin' : '/customer') : '/' },
     // Rimuovo Products dalla navigazione per gli admin
     ...(isAdmin ? [] : [{ name: 'Products', href: '/customer/products' }]),
-    { name: 'Categories', href: '/categories' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -244,7 +243,6 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
               <h4 className="text-sm font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><Link to="/customer/products" className="hover:text-white transition-colors">Products</Link></li>
-                <li><Link to="/categories" className="hover:text-white transition-colors">Categories</Link></li>
                 <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
                 <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               </ul>

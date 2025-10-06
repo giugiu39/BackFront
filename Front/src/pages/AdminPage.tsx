@@ -27,19 +27,7 @@ const AdminPage: React.FC = () => {
         return <AdminDashboard />;
       case 'products':
         return <ProductManagement />;
-      case 'categories':
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Categories Management</h2>
-            <p className="text-gray-600 mb-6">Explore and manage product categories</p>
-            <button
-              onClick={() => navigate('/categories')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-            >
-              View Categories Page
-            </button>
-          </div>
-        );
+
       case 'orders':
         return <div>Order Management - Coming Soon</div>;
       case 'customers':

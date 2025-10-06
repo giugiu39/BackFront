@@ -28,7 +28,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeTab, onTabCha
   const navigation = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
     { id: 'products', name: 'Products', icon: Package },
-    { id: 'categories', name: 'Categories', icon: Tag },
     { id: 'orders', name: 'Orders', icon: ShoppingCart },
     { id: 'customers', name: 'Customers', icon: Users },
     { id: 'analytics', name: 'Analytics', icon: BarChart3 },
