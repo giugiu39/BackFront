@@ -111,7 +111,19 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
       throw new Error(`API error: ${response.status}`);
     }
 
-    return await response.json();
+    // Se la risposta è 204 No Content, non c'è JSON da parsare
+    if (response.status === 204) {
+      return null;
+    }
+    
+    // Per altre risposte di successo, prova a parsare il JSON
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    }
+    
+    // Se non è JSON, restituisci null per risposte di successo
+    return null;
   } catch (error) {
     console.error('API request failed:', error);
     // In caso di errore di connessione, restituiamo dati di fallback
