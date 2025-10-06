@@ -8,6 +8,7 @@ const AdminDashboard: React.FC = () => {
     totalOrders: 0,
     totalProducts: 0,
     totalCustomers: 0,
+    totalAmount: 0,
     monthlyGrowth: 0,
     recentOrders: [],
     topProducts: []
@@ -30,6 +31,7 @@ const AdminDashboard: React.FC = () => {
           totalOrders: 0,
           totalProducts: 0,
           totalCustomers: 0,
+          totalAmount: 0,
           monthlyGrowth: 0,
           recentOrders: [],
           topProducts: [],
@@ -85,16 +87,16 @@ const AdminDashboard: React.FC = () => {
               <DollarSign className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="text-sm font-medium text-gray-600">Total Amount</p>
               <p className="text-2xl font-bold text-gray-900">
-                €{stats.totalRevenue.toLocaleString()}
+                €{stats.totalAmount.toLocaleString()}
               </p>
             </div>
           </div>
           <div className="mt-4 flex items-center">
             <TrendingUp className="h-4 w-4 text-green-500" />
             <span className="text-sm text-green-600 ml-1">
-              +{stats.monthlyGrowth}% compared to last month
+              Total revenue from all orders
             </span>
           </div>
         </div>
@@ -135,12 +137,12 @@ const AdminDashboard: React.FC = () => {
               <Users className="h-6 w-6 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Customers</p>
+              <p className="text-sm font-medium text-gray-600">Active Customers</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalCustomers}</p>
             </div>
           </div>
           <div className="mt-4">
-            <span className="text-sm text-gray-600">Registered users</span>
+            <span className="text-sm text-gray-600">Users who made purchases</span>
           </div>
         </div>
       </div>

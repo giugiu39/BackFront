@@ -21,4 +21,8 @@ public class AnalyticsResponse {
 
     private Long previousMonthEarnings;
 
+    private Long totalAmount;
+
+    private Long totalCustomers;
+
 }

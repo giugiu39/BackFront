@@ -14,7 +14,7 @@ export interface Product {
   price: number;
   discountPrice?: number;
   imageUrl: string;
-  categoryId: string;
+  categoryId: number;
   category?: Category;
   reviewCount: number;
   isFeatured: boolean;
@@ -22,7 +22,7 @@ export interface Product {
 }
 
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   description: string;
   imageUrl?: string;

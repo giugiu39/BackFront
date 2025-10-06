@@ -52,8 +52,14 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         Long shipped = orderRepository.countByOrderStatus(OrderStatus.Shipped);
         Long delivered = orderRepository.countByOrderStatus(OrderStatus.Delivered);
 
+        // Calcola il total amount (entrata totale da tutti gli ordini delivered)
+        Long totalAmount = getTotalAmountFromAllOrders();
+        
+        // Calcola il numero di utenti unici che hanno effettuato ordini
+        Long totalCustomers = getTotalUniqueCustomers();
+
         return new AnalyticsResponse(placed, shipped, delivered, currentMonthOrders,
-                        previousMonthOrders, currentMonthEarnings, previousMonthEarnings);
+                        previousMonthOrders, currentMonthEarnings, previousMonthEarnings, totalAmount, totalCustomers);
     }
 
     public Long getTotalOrdersForMonth(int month, int year) {
@@ -106,6 +112,23 @@ public class AdminOrderServiceImpl implements AdminOrderService {
             sum += order.getAmount();
         }
         return sum;
+    }
+
+    public Long getTotalAmountFromAllOrders() {
+        List<Order> deliveredOrders = orderRepository.findAllByOrderStatusIn(List.of(OrderStatus.Delivered));
+        Long totalAmount = 0L;
+        for(Order order : deliveredOrders) {
+            totalAmount += order.getAmount();
+        }
+        return totalAmount;
+    }
+
+    private Long getTotalUniqueCustomers() {
+        List<Order> allOrders = orderRepository.findAllByOrderStatusIn(List.of(OrderStatus.Placed, OrderStatus.Shipped, OrderStatus.Delivered));
+        return allOrders.stream()
+                .map(order -> order.getUser().getId())
+                .distinct()
+                .count();
     }
 
 }

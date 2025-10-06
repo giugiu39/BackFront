@@ -200,7 +200,7 @@ export const adminApi = {
   }),
   
   // Analytics
-  getAnalytics: () => apiRequest('/admin/analytics')
+  getAnalytics: () => apiRequest('/api/admin/order/analytics')
 };
 
 // API per gli utenti Customer

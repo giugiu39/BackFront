@@ -59,7 +59,16 @@ const AdminProductManagement: React.FC = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = (product.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (product.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.categoryId === selectedCategory;
+    
+    // Debug logging per capire il problema del filtro
+    console.log('Product:', product.name, 'CategoryId:', product.categoryId, 'Type:', typeof product.categoryId);
+    console.log('Selected Category:', selectedCategory, 'Type:', typeof selectedCategory);
+    
+    const matchesCategory = selectedCategory === 'all' || 
+                           product.categoryId === Number(selectedCategory);
+    
+    console.log('Matches Category:', matchesCategory);
+    
     return matchesSearch && matchesCategory;
   });
 
@@ -178,10 +187,9 @@ const AdminProductManagement: React.FC = () => {
             className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="all">Tutte le categorie</option>
-            <option value="1">Electronics</option>
-            <option value="2">Fashion</option>
-            <option value="3">Home & Garden</option>
-            <option value="4">Sports</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>{category.name}</option>
+            ))}
           </select>
         </div>
       </div>
