@@ -184,8 +184,9 @@ export const adminApi = {
 export const customerApi = {
   // Prodotti
   getAllProducts: () => apiRequest('/api/customer/products'),
-  getProducts: () => apiRequest('/api/customer/products'),
-  getProductDetails: (productId: string) => apiRequest(`/customer/products/${productId}`),
+  getProductsByCategory: (categoryName: string) => apiRequest(`/api/customer/products/category/${categoryName}`),
+  searchProducts: (searchTerm: string) => apiRequest(`/api/customer/search/${searchTerm}`),
+  getProductDetails: (productId: string) => apiRequest(`/api/customer/product/${productId}`),
   
   // Carrello
   getCart: () => apiRequest('/customer/cart'),

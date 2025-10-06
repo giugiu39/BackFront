@@ -13,4 +13,6 @@ public interface CustomerProductService {
 
     ProductDetailDto getProductDetailById(Long productId);
 
+    List<ProductDto> getProductsByCategory(String categoryName);
+
 }

@@ -52,4 +52,30 @@ public class CustomerProductServiceImpl implements CustomerProductService {
         return null;
     }
 
+    public List<ProductDto> getProductsByCategory(String categoryName) {
+        // Mappa gli ID delle categorie ai nomi reali nel database
+        String actualCategoryName = mapCategoryIdToName(categoryName);
+        List<Product> products = productRepository.findAllByCategoryName(actualCategoryName);
+        return products.stream().map(Product::getDto).collect(Collectors.toList());
+    }
+    
+    private String mapCategoryIdToName(String categoryId) {
+        switch (categoryId.toLowerCase()) {
+            case "electronics":
+                return "Electronics";
+            case "clothing":
+                return "Clothing";
+            case "home-garden":
+                return "Home & Garden";
+            case "sports":
+                return "Sports";
+            case "books":
+                return "Books";
+            case "beauty":
+                return "Beauty";
+            default:
+                return categoryId; // Fallback al nome originale
+        }
+    }
+
 }

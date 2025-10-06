@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import Layout from '../components/common/Layout';
@@ -7,6 +8,7 @@ import { Product } from '../types';
 import { ShoppingCart, Search, Filter, Star, Heart } from 'lucide-react';
 
 const CustomerProductsPage: React.FC = () => {
+  const { categoryName } = useParams<{ categoryName?: string }>();
   const { user } = useAuth();
   const { addToCart, loading: cartLoading } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,7 +19,7 @@ const CustomerProductsPage: React.FC = () => {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [categoryName]);
 
   useEffect(() => {
     // Filtra i prodotti in base al termine di ricerca
@@ -36,8 +38,16 @@ const CustomerProductsPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await customerApi.getAllProducts();
-      // La risposta è direttamente l'array di prodotti, non ha una proprietà data
+      
+      let response;
+      if (categoryName) {
+        // Carica prodotti per categoria specifica
+        response = await customerApi.getProductsByCategory(categoryName);
+      } else {
+        // Carica tutti i prodotti
+        response = await customerApi.getAllProducts();
+      }
+      
       setProducts(response || []);
       setFilteredProducts(response || []);
     } catch (err: any) {
@@ -105,9 +115,24 @@ const CustomerProductsPage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Prodotti</h1>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {categoryName 
+                    ? categoryName === 'home-garden' 
+                      ? 'Products - Home & Garden'
+                      : `Products - ${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}`
+                    : 'Products'
+                  }
+                </h1>
                 <p className="text-gray-600 mt-1">
-                  Scopri i nostri {filteredProducts.length} prodotti disponibili
+                  {categoryName 
+                    ? categoryName === 'home-garden'
+                      ? 'Here you will find the products of category Home & Garden'
+                      : `Here you will find the products of category ${categoryName}`
+                    : `Discover our ${filteredProducts.length} available products`
+                  }
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Number of items: {filteredProducts.length}
                 </p>
               </div>
               
@@ -117,7 +142,7 @@ const CustomerProductsPage: React.FC = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <input
                     type="text"
-                    placeholder="Cerca prodotti..."
+                    placeholder="Search products..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full md:w-80"
@@ -134,12 +159,12 @@ const CustomerProductsPage: React.FC = () => {
             <div className="text-center py-12">
               <div className="text-gray-400 text-6xl mb-4">📦</div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {searchTerm ? 'Nessun prodotto trovato' : 'Nessun prodotto disponibile'}
+                {searchTerm ? 'No products found' : 'No products available'}
               </h3>
               <p className="text-gray-600">
                 {searchTerm 
-                  ? 'Prova a modificare i termini di ricerca'
-                  : 'I prodotti verranno visualizzati qui quando saranno disponibili'
+                  ? 'Try modifying your search terms'
+                  : 'Products will be displayed here when available'
                 }
               </p>
             </div>
