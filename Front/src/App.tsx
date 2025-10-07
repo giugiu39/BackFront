@@ -15,6 +15,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CustomerProductsPage from './pages/CustomerProductsPage';
+import WishlistPage from './pages/WishlistPage';
 // Pagine prodotti customer rimosse temporaneamente
 import './index.css';
 
@@ -61,6 +62,14 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/admin/profile" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Layout><ProfilePage /></Layout>
+                  </ProtectedRoute>
+                } 
+              />
               
               {/* Protected Customer Routes */}
               <Route 
@@ -71,6 +80,14 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/customer/profile" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <Layout><ProfilePage /></Layout>
+                  </ProtectedRoute>
+                } 
+              />
               
               {/* General Protected Routes */}
               <Route 
@@ -78,6 +95,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Layout><CartPage /></Layout>
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/wishlist" 
+                element={
+                  <ProtectedRoute>
+                    <WishlistPage />
                   </ProtectedRoute>
                 } 
               />

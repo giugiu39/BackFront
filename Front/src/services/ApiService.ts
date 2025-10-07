@@ -212,7 +212,7 @@ export const customerApi = {
   getProductDetails: (productId: string) => apiRequest(`/api/customer/product/${productId}`),
   
   // Carrello
-  getCart: () => apiRequest('/customer/cart'),
+  getCart: () => apiRequest('/api/customer/cart'),
   addToCart: async (productId: number) => {
     // Ottieni l'ID Keycloak dell'utente corrente
     const keycloakId = keycloak.getUserInfo()?.sub;
@@ -220,7 +220,7 @@ export const customerApi = {
       throw new Error('User not authenticated');
     }
     
-    return apiRequest('/customer/cart', {
+    return apiRequest('/api/customer/cart', {
       method: 'POST',
       body: JSON.stringify({
         userId: keycloakId, // Usa keycloakId invece di un ID numerico
@@ -228,28 +228,28 @@ export const customerApi = {
       })
     });
   },
-  updateCartItem: (itemId: string, quantity: number) => apiRequest(`/customer/cart/${itemId}`, {
+  updateCartItem: (itemId: string, quantity: number) => apiRequest(`/api/customer/cart/${itemId}`, {
     method: 'PUT',
     body: JSON.stringify({ quantity })
   }),
-  removeFromCart: (itemId: string) => apiRequest(`/customer/cart/${itemId}`, {
+  removeFromCart: (itemId: string) => apiRequest(`/api/customer/cart/${itemId}`, {
     method: 'DELETE'
   }),
   
   // Ordini
-  placeOrder: (orderData: any) => apiRequest('/customer/orders', {
+  placeOrder: (orderData: any) => apiRequest('/api/customer/orders', {
     method: 'POST',
     body: JSON.stringify(orderData)
   }),
-  getOrders: () => apiRequest('/customer/orders'),
+  getOrders: () => apiRequest('/api/customer/orders'),
   
   // Wishlist
-  getWishlist: () => apiRequest('/customer/wishlist'),
-  addToWishlist: (productId: string) => apiRequest('/customer/wishlist', {
+  getWishlist: () => apiRequest('/api/customer/wishlist'),
+  addToWishlist: (productId: string) => apiRequest('/api/customer/wishlist', {
     method: 'POST',
     body: JSON.stringify({ productId })
   }),
-  removeFromWishlist: (wishlistItemId: string) => apiRequest(`/customer/wishlist/${wishlistItemId}`, {
+  removeFromWishlist: (wishlistItemId: string) => apiRequest(`/api/customer/wishlist/${wishlistItemId}`, {
     method: 'DELETE'
   }),
   

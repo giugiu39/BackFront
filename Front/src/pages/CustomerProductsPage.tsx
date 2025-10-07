@@ -68,10 +68,14 @@ const CustomerProductsPage: React.FC = () => {
     }
   };
 
-  const addToWishlist = (product: Product) => {
-    // TODO: Implementare la logica della wishlist
-    console.log('Aggiunto alla wishlist:', product);
-    alert(`${product.name} aggiunto alla wishlist!`);
+  const addToWishlist = async (product: Product) => {
+    try {
+      await customerApi.addToWishlist(product.id.toString());
+      alert(`${product.name} aggiunto alla wishlist!`);
+    } catch (error) {
+      console.error('Errore nell\'aggiunta alla wishlist:', error);
+      alert('Errore nell\'aggiunta alla wishlist. Riprova più tardi.');
+    }
   };
 
   if (loading) {

@@ -21,6 +21,9 @@ const Wishlist: React.FC = () => {
       try {
         setLoading(true);
         const data = await customerApi.getWishlist();
+        console.log('Wishlist data received:', data);
+        console.log('Wishlist data type:', typeof data);
+        console.log('Wishlist data length:', Array.isArray(data) ? data.length : 'not an array');
         setWishlistItems(data);
       } catch (err) {
         console.error('Error loading wishlist:', err);
