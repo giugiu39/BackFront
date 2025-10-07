@@ -215,7 +215,7 @@ const CustomerProductsPage: React.FC = () => {
                   className="group relative bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300"
                 >
                   {/* Gradient Overlay like CategoriesPage */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
                   {/* Product Image */}
                   <div className="aspect-w-1 aspect-h-1 bg-gray-200 relative overflow-hidden">
                     {product.img ? (
@@ -250,7 +250,7 @@ const CustomerProductsPage: React.FC = () => {
                   </div>
 
                   {/* Product Info */}
-                  <div className="p-4">
+                  <div className="p-4 relative z-10">
                     <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 transition-all duration-300">
                       {product.name}
                     </h3>
@@ -290,10 +290,10 @@ const CustomerProductsPage: React.FC = () => {
                     <button
                       onClick={() => handleAddToCart(product)}
                       disabled={cartLoading}
-                      className={`w-full py-2 px-4 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-sm ${
+                      className={`w-full py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg font-medium ${
                         cartLoading 
                           ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
-                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-md'
+                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
                       }`}
                     >
                       <ShoppingCart className="h-4 w-4" />

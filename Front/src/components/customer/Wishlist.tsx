@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { customerApi } from '../../services/ApiService';
+import { useCart } from '../../contexts/CartContext';
 import { ShoppingCart, Trash2, Heart } from 'lucide-react';
 
 interface WishlistItem {
@@ -13,6 +14,7 @@ interface WishlistItem {
 }
 
 const Wishlist: React.FC = () => {
+  const { addToCart, loading: cartLoading } = useCart();
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -87,7 +89,7 @@ const Wishlist: React.FC = () => {
 
   const handleAddToCart = async (productId: string) => {
     try {
-      await customerApi.addToCart({ productId, quantity: 1 });
+      await addToCart(Number(productId));
       alert('Product added to cart!');
     } catch (err) {
       console.error('Error adding to cart:', err);
@@ -190,10 +192,11 @@ const Wishlist: React.FC = () => {
                 <div className="flex space-x-3">
                   <button
                     onClick={() => handleAddToCart(item.productId)}
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 flex items-center justify-center transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
+                    disabled={cartLoading}
+                    className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg font-medium ${cartLoading ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'}`}
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Add to cart
+                    {cartLoading ? 'Adding...' : 'Add to cart'}
                   </button>
                   <button
                     onClick={() => handleRemoveFromWishlist(item.id)}
