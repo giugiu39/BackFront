@@ -10,7 +10,8 @@ import { ShoppingCart, Search, Filter, Star, Heart, Zap } from 'lucide-react';
 const CustomerProductsPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName?: string }>();
   const { user } = useAuth();
-  const { addToCart, loading: cartLoading } = useCart();
+  const { addToCart, loading: cartLoading, items } = useCart();
+  const isInCart = (pid: number | string) => items.some(i => Number(i.productId) === Number(pid));
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -294,10 +295,10 @@ const CustomerProductsPage: React.FC = () => {
                     {/* Add to Cart Button */}
                     <button
                       onClick={() => handleAddToCart(product)}
-                      disabled={cartLoading}
+                      disabled={cartLoading || isInCart(product.id)}
                       className={`w-full py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg font-medium ${
-                        cartLoading 
-                          ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
+                        cartLoading || isInCart(product.id)
+                          ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
                           : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
                       }`}
                     >

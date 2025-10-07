@@ -14,7 +14,8 @@ interface WishlistItem {
 }
 
 const Wishlist: React.FC = () => {
-  const { addToCart, loading: cartLoading } = useCart();
+  const { addToCart, loading: cartLoading, items } = useCart();
+  const isInCart = (pid: number | string) => items.some(i => Number(i.productId) === Number(pid));
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -206,8 +207,8 @@ const Wishlist: React.FC = () => {
                 <div className="flex space-x-3">
                   <button
                     onClick={() => handleAddToCart(item.productId)}
-                    disabled={cartLoading}
-                    className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg font-medium ${cartLoading ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'}`}
+                    disabled={cartLoading || isInCart(item.productId)}
+                    className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg font-medium ${cartLoading || isInCart(item.productId) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'}`}
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     {cartLoading ? 'Adding...' : 'Add to cart'}

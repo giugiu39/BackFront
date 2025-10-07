@@ -14,7 +14,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onWishlistToggle, 
   isInWishlist = false 
 }) => {
-  const { addToCart } = useCart();
+  const { addToCart, items, loading } = useCart();
+  const isInCart = (pid: string | number) => items.some(i => Number(i.productId) === Number(pid));
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -61,7 +62,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
           <button
             onClick={handleAddToCart}
-            className="p-2 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition-colors"
+            disabled={loading || isInCart(product.id)}
+            className={`p-2 rounded-full shadow-md transition-colors ${loading || isInCart(product.id) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           >
             <ShoppingCart className="h-4 w-4" />
           </button>
@@ -120,9 +122,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         
         <button
           onClick={handleAddToCart}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+          disabled={loading || isInCart(product.id)}
+          className={`w-full py-2 px-4 rounded-lg transition-colors duration-200 font-medium ${loading || isInCart(product.id) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
         >
-          Add to Cart
+          {loading ? 'Aggiungendo...' : 'Add to Cart'}
         </button>
       </div>
     </div>

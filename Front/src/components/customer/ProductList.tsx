@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { customerApi } from '../../services/ApiService';
-import { ShoppingCart, Heart } from 'lucide-react';
+import { ShoppingCart, Heart, Star } from 'lucide-react';
+import { useCart } from '../../contexts/CartContext';
 
 interface Product {
   id: string;
@@ -18,6 +19,9 @@ const ProductList: React.FC = () => {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  const { addToCart, loading: cartLoading, items } = useCart();
+  const isInCart = (pid: string | number) => items.some(i => Number(i.productId) === Number(pid));
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -59,7 +63,7 @@ const ProductList: React.FC = () => {
 
   const handleAddToCart = async (productId: string) => {
     try {
-      await customerApi.addToCart({ productId, quantity: 1 });
+      await addToCart(Number(productId));
       alert('Product added to cart!');
     } catch (err) {
       console.error('Error adding to cart:', err);
@@ -181,10 +185,11 @@ const ProductList: React.FC = () => {
               <div className="mt-4 flex space-x-2">
                 <button
                   onClick={() => handleAddToCart(product.id)}
-                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 flex items-center justify-center"
+                  disabled={cartLoading || isInCart(product.id)}
+                  className={`flex-1 py-2 px-4 rounded-md flex items-center justify-center ${cartLoading || isInCart(product.id) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
-                  Add
+                  {cartLoading ? 'Adding...' : 'Add'}
                 </button>
                 <button
                   onClick={() => handleAddToWishlist(product.id)}
