@@ -68,4 +68,12 @@ public class CartController {
         return ResponseEntity.ok(cartService.getMyPlacedOrders(keycloakId));
     }
 
+    @DeleteMapping("/cart/{itemId}")
+    public ResponseEntity<?> removeCartItem(@PathVariable Long itemId, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        cartService.removeCartItem(itemId, keycloakId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

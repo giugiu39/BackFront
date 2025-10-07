@@ -27,4 +27,7 @@ public interface CartService {
 
     OrderDto searchOrderByTrackingId(UUID trackingId);
 
+    // Remove a cart item and update order totals for the authenticated user
+    void removeCartItem(Long cartItemId, String keycloakId);
+
 }

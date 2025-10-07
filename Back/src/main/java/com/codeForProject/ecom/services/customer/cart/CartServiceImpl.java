@@ -267,4 +267,40 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
+    @Override
+    public void removeCartItem(Long cartItemId, String keycloakId) {
+        Optional<User> optionalUser = userRepository.findByKeycloakId(keycloakId);
+        if (optionalUser.isEmpty()) {
+            return;
+        }
+        User user = optionalUser.get();
+
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus((long) user.getId(), OrderStatus.Pending);
+        if (activeOrder == null) {
+            return;
+        }
+
+        Optional<CartItems> optionalCartItem = cartItemsRepository.findById(cartItemId);
+        if (optionalCartItem.isEmpty()) {
+            return;
+        }
+        CartItems cartItem = optionalCartItem.get();
+        if (cartItem.getUser().getId() != user.getId()) {
+            return;
+        }
+
+        long decrement = cartItem.getPrice() * cartItem.getQuantity();
+        activeOrder.setAmount(Math.max(0, activeOrder.getAmount() - decrement));
+        activeOrder.setTotalAmount(Math.max(0, activeOrder.getTotalAmount() - decrement));
+
+        if (activeOrder.getCoupon() != null) {
+            activeOrder.setDiscount((long) (activeOrder.getTotalAmount() * activeOrder.getCoupon().getDiscount() / 100));
+        } else {
+            activeOrder.setDiscount(0L);
+        }
+
+        cartItemsRepository.deleteById(cartItemId);
+        orderRepository.save(activeOrder);
+    }
+
 }
