@@ -108,7 +108,7 @@ const CategoriesPage: React.FC = () => {
             </h1>
             <p className="text-xl md:text-2xl text-indigo-100 max-w-3xl mx-auto mb-8">
               Each category holds exclusive treasures waiting to be discovered. 
-              <strong className="text-yellow-300"> Remember: only one item per product!</strong> 
+              <strong className="text-yellow-300"> Remember: only one item per product! </strong> 
               When you see something you love, act fast! ⚡
             </p>
             <div className="flex items-center justify-center space-x-2 text-lg">

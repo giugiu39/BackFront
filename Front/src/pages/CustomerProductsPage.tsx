@@ -128,7 +128,7 @@ const CustomerProductsPage: React.FC = () => {
                     ? categoryName === 'home-garden'
                       ? 'Here you will find the products of category Home & Garden'
                       : `Here you will find the products of category ${categoryName}`
-                    : `Discover our ${filteredProducts.length} available products`
+                    : `Discover all our available products`
                   }
                 </p>
                 <p className="text-sm text-gray-500 mt-1">

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Layout from '../components/common/Layout';
 import ProfilePage from './ProfilePage';
 import { useAuth } from '../contexts/AuthContext';
-import { User, ShoppingBag, Package, Heart, Settings, CreditCard } from 'lucide-react';
+import { User, ShoppingBag, Package, Heart, Settings, CreditCard, Tag } from 'lucide-react';
 
 const CustomerPage: React.FC = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -97,6 +97,7 @@ const CustomerPage: React.FC = () => {
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'orders', label: 'Orders', icon: Package },
     { id: 'wishlist', label: 'Wishlist', icon: Heart },
+    { id: 'categories', label: 'Categories', icon: Tag },
     { id: 'payment', label: 'Payments', icon: CreditCard },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
@@ -136,6 +137,12 @@ const CustomerPage: React.FC = () => {
                         <li key={item.id}>
                           <button
                             onClick={() => {
+                              // Handle Categories navigation differently
+                              if (item.id === 'categories') {
+                                window.location.href = '/categories';
+                                return;
+                              }
+                              
                               setActiveTab(item.id);
                               // Update URL for profile tab
                               if (item.id === 'profile') {

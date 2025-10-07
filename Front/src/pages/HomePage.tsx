@@ -136,30 +136,7 @@ const HomePage: React.FC = () => {
         </>
       )}
 
-      {/* Customer Welcome Section */}
-      {isAuthenticated && !isAdmin && (
-        <section className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl font-bold mb-4">Welcome, {user?.name || 'Customer'}!</h1>
-            <p className="text-xl text-green-100 mb-6">Discover our products and add to cart</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/customer/products"
-                className="inline-flex items-center justify-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                Browse Products
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <Link
-                to="/cart"
-                className="inline-flex items-center justify-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-green-600 transition-colors"
-              >
-                Go to Cart
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {/* Public Hero Section - shown to non-authenticated users */}
       {!isAuthenticated && (

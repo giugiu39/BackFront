@@ -65,17 +65,20 @@ public class UserController {
                 Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
                 System.out.println("Realm access: " + realmAccess);
                 
+                // Forza sempre il ruolo CUSTOMER per i nuovi utenti, a meno che non sia esplicitamente admin
                 if (realmAccess != null && realmAccess.containsKey("roles")) {
                     @SuppressWarnings("unchecked")
                     List<String> roles = (List<String>) realmAccess.get("roles");
                     System.out.println("User roles: " + roles);
                     if (roles != null && roles.contains("admin")) {
                         user.setRole(UserRole.ADMIN);
+                        System.out.println("Admin role assigned from JWT");
                     } else {
                         user.setRole(UserRole.CUSTOMER);
+                        System.out.println("Customer role assigned (default for non-admin users)");
                     }
                 } else {
-                    System.out.println("No realm_access found, setting default role");
+                    System.out.println("No realm_access found, forcing CUSTOMER role for new user");
                     user.setRole(UserRole.CUSTOMER);
                 }
                 

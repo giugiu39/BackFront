@@ -32,6 +32,8 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
     { name: 'Home', href: user ? (isAdmin ? '/admin' : '/customer') : '/' },
     // Rimuovo Products dalla navigazione per gli admin
     ...(isAdmin ? [] : [{ name: 'Products', href: '/customer/products' }]),
+    // Aggiungo Categories tra Products e About per i non-admin
+    ...(isAdmin ? [] : [{ name: 'Categories', href: '/categories' }]),
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
