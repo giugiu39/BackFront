@@ -5,7 +5,7 @@ import { useCart } from '../contexts/CartContext';
 import Layout from '../components/common/Layout';
 import { customerApi } from '../services/ApiService';
 import { Product } from '../types';
-import { ShoppingCart, Search, Filter, Star, Heart } from 'lucide-react';
+import { ShoppingCart, Search, Filter, Star, Heart, Zap } from 'lucide-react';
 
 const CustomerProductsPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName?: string }>();
@@ -144,45 +144,50 @@ const CustomerProductsPage: React.FC = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {categoryName 
-                    ? categoryName === 'home-garden' 
-                      ? 'Products - Home & Garden'
-                      : `Products - ${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}`
-                    : 'Products'
-                  }
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  {categoryName 
-                    ? categoryName === 'home-garden'
-                      ? 'Here you will find the products of category Home & Garden'
-                      : `Here you will find the products of category ${categoryName}`
-                    : `Discover all our available products`
-                  }
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Number of items: {filteredProducts.length}
-                </p>
-              </div>
-              
-              {/* Search Bar */}
-              <div className="mt-4 md:mt-0 md:ml-6">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-full md:w-80"
-                  />
-                </div>
-              </div>
+        {/* Hero Section - styled like CategoriesPage */}
+        <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="mb-6">
+              <Zap className="h-14 w-14 mx-auto mb-4 text-yellow-300" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {categoryName 
+                ? categoryName === 'home-garden' 
+                  ? 'Explore Home & Garden'
+                  : `Explore ${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}`
+                : 'Discover Our Exclusive'}
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">
+                Products
+              </span>
+            </h1>
+            <p className="text-lg md:text-xl text-indigo-100 max-w-3xl mx-auto mb-4">
+              {categoryName 
+                ? categoryName === 'home-garden'
+                  ? 'Create the perfect living environment with curated furniture and decor.'
+                  : `Browse top picks from ${categoryName} and find your perfect match.`
+                : 'Each item is unique and carefully selected. Find what speaks to you!'}
+            </p>
+            <div className="flex items-center justify-center space-x-2 text-xl">
+              <span className="text-yellow-300 font-bold">Items available: {filteredProducts.length}</span>
+            </div>
+            <p className="mt-2 text-indigo-100">
+              These are all the products available. If you'd like to select products from specific categories, go to the <span className="font-serif text-yellow-300 font-semibold underline underline-offset-2">Categories</span> section above.
+            </p>
+          </div>
+        </section>
+
+        {/* Search Bar - centered under hero */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 border border-gray-100 max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full"
+              />
             </div>
           </div>
         </div>
@@ -203,19 +208,21 @@ const CustomerProductsPage: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  className="group relative bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300"
                 >
+                  {/* Gradient Overlay like CategoriesPage */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                   {/* Product Image */}
-                  <div className="aspect-w-1 aspect-h-1 bg-gray-200 relative">
+                  <div className="aspect-w-1 aspect-h-1 bg-gray-200 relative overflow-hidden">
                     {product.img ? (
                       <img
                         src={`data:image/jpeg;base64,${product.img}`}
                         alt={product.name}
-                        className="w-full h-48 object-cover"
+                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
                       <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
@@ -234,13 +241,17 @@ const CustomerProductsPage: React.FC = () => {
                       }`}
                       title={wishlistProductIds.has(product.id.toString()) ? 'Già nella wishlist' : 'Aggiungi alla wishlist'}
                     >
-                      <Heart className={`h-4 w-4 ${wishlistProductIds.has(product.id.toString()) ? 'text-red-500' : 'text-gray-600 hover:text-red-500'}`} />
+                      <Heart className={`h-4 w-4 ${wishlistProductIds.has(product.id.toString()) ? 'text-red-500' : 'text-gray-600 group-hover:text-red-500'}`} />
                     </button>
+                    {/* Decorative Element */}
+                    <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600" />
+                    </div>
                   </div>
 
                   {/* Product Info */}
                   <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 transition-all duration-300">
                       {product.name}
                     </h3>
                     
@@ -265,11 +276,11 @@ const CustomerProductsPage: React.FC = () => {
 
                     {/* Price */}
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-2xl font-bold text-blue-600">
+                      <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                         €{product.price}
                       </span>
                       {product.categoryName && (
-                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full border border-gray-200">
                           {product.categoryName}
                         </span>
                       )}
@@ -279,14 +290,14 @@ const CustomerProductsPage: React.FC = () => {
                     <button
                       onClick={() => handleAddToCart(product)}
                       disabled={cartLoading}
-                      className={`w-full py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 ${
+                      className={`w-full py-2 px-4 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-sm ${
                         cartLoading 
                           ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-md'
                       }`}
                     >
                       <ShoppingCart className="h-4 w-4" />
-                      <span>{cartLoading ? 'Aggiungendo...' : 'Aggiungi al carrello'}</span>
+                      <span>{cartLoading ? 'Aggiungendo...' : 'Add to cart'}</span>
                     </button>
                   </div>
                 </div>
