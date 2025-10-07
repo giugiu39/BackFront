@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { customerApi } from '../../services/ApiService';
-import { ShoppingCart, Trash2 } from 'lucide-react';
+import { ShoppingCart, Trash2, Heart } from 'lucide-react';
 
 interface WishlistItem {
   id: string;
@@ -15,6 +16,8 @@ const Wishlist: React.FC = () => {
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -58,8 +61,24 @@ const Wishlist: React.FC = () => {
 
   const handleRemoveFromWishlist = async (wishlistItemId: string) => {
     try {
-      await customerApi.removeFromWishlist(wishlistItemId);
-      setWishlistItems(wishlistItems.filter(item => item.id !== wishlistItemId));
+      setRemovingItems(prev => new Set(prev).add(wishlistItemId));
+      
+      // Aggiungi un piccolo delay per mostrare l'animazione
+      setTimeout(async () => {
+        try {
+          await customerApi.removeFromWishlist(wishlistItemId);
+          setWishlistItems(wishlistItems.filter(item => item.id !== wishlistItemId));
+        } catch (err) {
+          console.error('Error removing from wishlist:', err);
+          alert('Unable to remove from wishlist. Please try again later.');
+        } finally {
+          setRemovingItems(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(wishlistItemId);
+            return newSet;
+          });
+        }
+      }, 300);
     } catch (err) {
       console.error('Error removing from wishlist:', err);
       alert('Unable to remove from wishlist. Please try again later.');
@@ -76,70 +95,112 @@ const Wishlist: React.FC = () => {
     }
   };
 
+  const navigateToProducts = () => {
+    navigate('/customer/products');
+  };
+
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading wishlist...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <span className="ml-3 text-lg text-gray-600">Loading your wishlist...</span>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-4">
-        {error}
+      <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 text-red-800 rounded-xl p-6 mb-6 shadow-lg animate-fade-in">
+        <div className="flex items-center">
+          <Heart className="w-6 h-6 mr-3 text-red-500" />
+          <span className="font-medium">{error}</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
+    <div className="animate-fade-in">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+          My Wishlist
+        </h1>
+        <div className="flex items-center justify-center">
+          <Heart className="w-6 h-6 text-pink-500 mr-2 animate-pulse" />
+          <p className="text-gray-600">Your favorite products in one place</p>
+          <Heart className="w-6 h-6 text-pink-500 ml-2 animate-pulse" />
+        </div>
+      </div>
       
       {wishlistItems.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Your wishlist is empty</p>
+        <div className="text-center py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 rounded-2xl shadow-lg border border-purple-100 animate-fade-in">
+          <div className="mb-6">
+            <Heart className="w-24 h-24 text-gray-300 mx-auto mb-4 animate-bounce" />
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">Your wishlist is empty</h3>
+            <p className="text-gray-500 mb-6">Discover amazing products and add them to your wishlist!</p>
+          </div>
           <button 
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            onClick={() => window.location.href = '/customer/products'}
+            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold"
+            onClick={navigateToProducts}
           >
+            <ShoppingCart className="w-5 h-5 mr-2 inline" />
             Browse products
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {wishlistItems.map(item => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="h-48 bg-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {wishlistItems.map((item, index) => (
+            <div 
+              key={item.id} 
+              className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 border border-gray-100 animate-slide-up ${
+                removingItems.has(item.id) ? 'animate-fade-out scale-95' : ''
+              }`}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="relative h-56 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
                 {item.imageUrl ? (
                   <img 
                     src={item.imageUrl} 
                     alt={item.productName} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-500">
-                    Image not available
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <ShoppingCart className="w-16 h-16" />
                   </div>
                 )}
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold">{item.productName}</h3>
-                {item.description && (
-                  <p className="mt-2 text-sm text-gray-600 line-clamp-2">{item.description}</p>
-                )}
-                <div className="mt-3">
-                  <span className="text-lg font-bold text-gray-900">€{item.price.toFixed(2)}</span>
+                <div className="absolute top-3 right-3">
+                  <Heart className="w-6 h-6 text-pink-500 fill-current animate-pulse" />
                 </div>
-                <div className="mt-4 flex space-x-2">
+              </div>
+              
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2 hover:text-purple-600 transition-colors duration-200">
+                  {item.productName}
+                </h3>
+                {item.description && (
+                  <p className="text-sm text-gray-600 line-clamp-2 mb-4">{item.description}</p>
+                )}
+                <div className="mb-6">
+                  <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    €{item.price.toFixed(2)}
+                  </span>
+                </div>
+                
+                <div className="flex space-x-3">
                   <button
                     onClick={() => handleAddToCart(item.productId)}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 flex items-center justify-center"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 flex items-center justify-center transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     Add to cart
                   </button>
                   <button
                     onClick={() => handleRemoveFromWishlist(item.id)}
-                    className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100 hover:text-red-600"
+                    disabled={removingItems.has(item.id)}
+                    className="w-12 h-12 flex items-center justify-center border-2 border-gray-200 rounded-xl hover:border-red-300 hover:bg-red-50 hover:text-red-600 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className={`w-4 h-4 ${removingItems.has(item.id) ? 'animate-spin' : ''}`} />
                   </button>
                 </div>
               </div>
@@ -147,6 +208,35 @@ const Wishlist: React.FC = () => {
           ))}
         </div>
       )}
+      
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slide-up {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fade-out {
+          from { opacity: 1; transform: scale(1); }
+          to { opacity: 0; transform: scale(0.9); }
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+        
+        .animate-slide-up {
+          animation: slide-up 0.6s ease-out forwards;
+        }
+        
+        .animate-fade-out {
+          animation: fade-out 0.3s ease-in forwards;
+        }
+      `}</style>
     </div>
   );
 };
