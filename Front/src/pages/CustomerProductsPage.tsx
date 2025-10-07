@@ -16,10 +16,30 @@ const CustomerProductsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<Array<{ id: string; productId: string }>>([]);
+  const [wishlistProductIds, setWishlistProductIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadProducts();
   }, [categoryName]);
+
+  useEffect(() => {
+    // Carica la wishlist dell'utente per sapere cosa è già presente
+    const loadWishlist = async () => {
+      try {
+        const data = await customerApi.getWishlist();
+        // data dovrebbe essere un array di oggetti con almeno productId e id
+        const normalized = Array.isArray(data)
+          ? data.map((item: any) => ({ id: String(item.id), productId: String(item.productId) }))
+          : [];
+        setWishlistItems(normalized);
+        setWishlistProductIds(new Set(normalized.map((i) => i.productId)));
+      } catch (e) {
+        console.error('Errore nel caricamento della wishlist:', e);
+      }
+    };
+    loadWishlist();
+  }, []);
 
   useEffect(() => {
     // Filtra i prodotti in base al termine di ricerca
@@ -70,7 +90,17 @@ const CustomerProductsPage: React.FC = () => {
 
   const addToWishlist = async (product: Product) => {
     try {
-      await customerApi.addToWishlist(product.id.toString());
+      const pid = product.id.toString();
+      if (wishlistProductIds.has(pid)) {
+        alert(`${product.name} è già nella wishlist`);
+        return;
+      }
+      const res = await customerApi.addToWishlist(pid);
+      // Aggiorna stato locale per riflettere l'aggiunta
+      const newItemId = res?.id ? String(res.id) : `${pid}`;
+      const updated = [...wishlistItems, { id: newItemId, productId: pid }];
+      setWishlistItems(updated);
+      setWishlistProductIds(new Set(updated.map((i) => i.productId)));
       alert(`${product.name} aggiunto alla wishlist!`);
     } catch (error) {
       console.error('Errore nell\'aggiunta alla wishlist:', error);
@@ -196,9 +226,15 @@ const CustomerProductsPage: React.FC = () => {
                     {/* Wishlist Button */}
                     <button
                       onClick={() => addToWishlist(product)}
-                      className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+                      disabled={wishlistProductIds.has(product.id.toString())}
+                      className={`absolute top-2 right-2 p-2 bg-white rounded-full shadow-md transition-colors ${
+                        wishlistProductIds.has(product.id.toString())
+                          ? 'cursor-not-allowed opacity-70'
+                          : 'hover:bg-gray-50'
+                      }`}
+                      title={wishlistProductIds.has(product.id.toString()) ? 'Già nella wishlist' : 'Aggiungi alla wishlist'}
                     >
-                      <Heart className="h-4 w-4 text-gray-600 hover:text-red-500" />
+                      <Heart className={`h-4 w-4 ${wishlistProductIds.has(product.id.toString()) ? 'text-red-500' : 'text-gray-600 hover:text-red-500'}`} />
                     </button>
                   </div>
 

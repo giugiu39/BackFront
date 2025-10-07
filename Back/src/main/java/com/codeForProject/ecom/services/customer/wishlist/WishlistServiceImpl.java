@@ -31,9 +31,20 @@ public class WishlistServiceImpl implements WishlistService {
 
         if (optionalProduct.isPresent() && optionalUser.isPresent()) {
             System.out.println("WishlistService: Both product and user found, creating wishlist entry");
+            User user = optionalUser.get();
+            Product product = optionalProduct.get();
+
+            // Controllo duplicati: se esiste già una wishlist per (user, product), non aggiungere
+            boolean exists = wishlistRepository.existsByUserIdAndProductId((long) user.getId(), product.getId());
+            if (exists) {
+                System.out.println("WishlistService: Duplicate detected for userId=" + user.getId() + " and productId=" + product.getId());
+                // Restituisci null per segnalare al controller un tentativo duplicato
+                return null;
+            }
+
             Wishlist wishlist = new Wishlist();
-            wishlist.setProduct(optionalProduct.get());
-            wishlist.setUser(optionalUser.get());
+            wishlist.setProduct(product);
+            wishlist.setUser(user);
 
             Wishlist savedWishlist = wishlistRepository.save(wishlist);
             System.out.println("WishlistService: Wishlist saved with ID: " + savedWishlist.getId());
