@@ -29,7 +29,21 @@ const Wishlist: React.FC = () => {
         console.log('Wishlist data received:', data);
         console.log('Wishlist data type:', typeof data);
         console.log('Wishlist data length:', Array.isArray(data) ? data.length : 'not an array');
-        setWishlistItems(data);
+
+        // Normalizza i dati: il backend usa `returnedImg` per l'immagine della wishlist
+        const normalized: WishlistItem[] = (Array.isArray(data) ? data : []).map((item: any) => ({
+          id: String(item.id),
+          productId: String(item.productId),
+          productName: item.productName ?? item.product?.name ?? 'Product',
+          price: Number(item.price ?? item.product?.price ?? 0),
+          imageUrl: item.returnedImg
+            ? `data:image/jpeg;base64,${item.returnedImg}`
+            : item.product?.byteImg
+              ? `data:image/jpeg;base64,${item.product.byteImg}`
+              : item.imageUrl ?? undefined,
+          description: item.productDescription ?? item.product?.description ?? ''
+        }));
+        setWishlistItems(normalized);
       } catch (err) {
         console.error('Error loading wishlist:', err);
         setError('Unable to load wishlist. Please try again later.');

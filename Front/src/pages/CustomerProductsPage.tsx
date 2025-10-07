@@ -67,9 +67,14 @@ const CustomerProductsPage: React.FC = () => {
         // Carica tutti i prodotti
         response = await customerApi.getAllProducts();
       }
-      
-      setProducts(response || []);
-      setFilteredProducts(response || []);
+      // Normalizza le immagini: i ProductDto backend usano `byteImg` per la foto
+      const normalized = (Array.isArray(response) ? response : []).map((p: any) => ({
+        ...p,
+        // Usa `byteImg` come sorgente principale, fallback su eventuale `img`
+        img: p.byteImg ?? p.img ?? undefined
+      }));
+      setProducts(normalized);
+      setFilteredProducts(normalized);
     } catch (err: any) {
       console.error('Errore nel caricamento dei prodotti:', err);
       setError('Errore nel caricamento dei prodotti. Riprova più tardi.');

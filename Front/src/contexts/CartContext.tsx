@@ -59,7 +59,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const cartItems: CartItem[] = rawItems.map((item: any) => ({
         id: item.id?.toString?.() ?? String(item.id),
         productId: item.product?.id ?? item.productId,
-        name: item.product?.name ?? item.name,
+        // Usa il nome prodotto dal DTO: preferisci product.name, poi productName, infine name
+        name: item.product?.name ?? item.productName ?? item.name,
         price: item.price,
         quantity: Number(item.quantity ?? 1),
         // Le immagini dal backend arrivano come byte[] serializzati in base64.
