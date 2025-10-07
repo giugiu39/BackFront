@@ -215,7 +215,7 @@ export const customerApi = {
   getCart: () => apiRequest('/api/customer/cart'),
   addToCart: async (productId: number) => {
     // Ottieni l'ID Keycloak dell'utente corrente
-    const keycloakId = keycloak.getUserInfo()?.sub;
+    const keycloakId = keycloak.tokenParsed?.sub;
     if (!keycloakId) {
       throw new Error('User not authenticated');
     }

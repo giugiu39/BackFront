@@ -42,6 +42,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await loadCart();
     } catch (error) {
       console.error('Error adding to cart:', error);
+      // Propaga l'errore al chiamante, così il UI mostra il messaggio corretto
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -52,14 +54,18 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     try {
       const cartData = await customerApi.getCart();
-      // Trasforma i dati del backend nel formato del frontend
-      const cartItems: CartItem[] = cartData.map((item: any) => ({
-        id: item.id.toString(),
-        productId: item.product.id,
-        name: item.product.name,
+      // Il backend restituisce un OrderDto con cartItems, non un array grezzo
+      const rawItems = Array.isArray(cartData) ? cartData : (cartData?.cartItems || []);
+      const cartItems: CartItem[] = rawItems.map((item: any) => ({
+        id: item.id?.toString?.() ?? String(item.id),
+        productId: item.product?.id ?? item.productId,
+        name: item.product?.name ?? item.name,
         price: item.price,
-        quantity: item.quantity,
-        image: item.product.img
+        quantity: Number(item.quantity ?? 1),
+        // Le immagini dal backend arrivano come byte[] serializzati in base64.
+        // Per i cart items, il campo corretto è `returnedImg`; in alternativa, alcuni
+        // ProductDto usano `byteImg`. Usiamo il primo disponibile.
+        image: item.returnedImg ?? item.product?.byteImg ?? item.image ?? item.product?.img
       }));
       setItems(cartItems);
     } catch (error) {
