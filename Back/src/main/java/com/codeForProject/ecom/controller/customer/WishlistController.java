@@ -45,4 +45,21 @@ public class WishlistController {
         return ResponseEntity.ok(wishlist);
     }
 
+    @DeleteMapping("/wishlist/{wishlistItemId}")
+    public ResponseEntity<?> removeProductFromWishlist(@PathVariable Long wishlistItemId, Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        
+        System.out.println("Removing product from wishlist - keycloakId: " + keycloakId + ", wishlistItemId: " + wishlistItemId);
+        
+        boolean removed = wishlistService.removeProductFromWishlist(wishlistItemId, keycloakId);
+        if (removed) {
+            System.out.println("Successfully removed product from wishlist");
+            return ResponseEntity.noContent().build();
+        } else {
+            System.out.println("Failed to remove product from wishlist - item not found or unauthorized");
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

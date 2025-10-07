@@ -10,4 +10,6 @@ public interface WishlistService {
 
     List<WishlistDto> getWishlistByUserId(String keycloakId);
 
+    boolean removeProductFromWishlist(Long wishlistItemId, String keycloakId);
+
 }
