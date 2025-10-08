@@ -140,27 +140,45 @@ const HomePage: React.FC = () => {
 
       {/* Public Hero Section - shown to non-authenticated users */}
       {!isAuthenticated && (
-        <section className="relative bg-gradient-to-r from-blue-600 to-purple-700 text-white">
-          <div className="absolute inset-0 bg-black opacity-20"></div>
+        <section className="relative text-white overflow-visible">
+          {/* Animated gradient background and light effects */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700" />
+            <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-blue-400 blur-3xl opacity-30 animate-pulse" />
+            <div className="absolute top-20 -right-28 w-[28rem] h-[28rem] rounded-full bg-purple-400 blur-3xl opacity-30 animate-pulse" />
+            <div className="absolute bottom-10 left-1/4 w-72 h-72 rounded-full bg-indigo-400 blur-2xl opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          </div>
+
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              {/* Brand title with unique glow gradient effect */}
+              <div className="relative inline-block mb-4 pb-8 overflow-visible">
+                <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 via-blue-600 to-purple-700 blur-xl opacity-30 animate-pulse z-0"></span>
+                <div className="relative z-10 text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.4] bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 drop-shadow-md">
+                  Speedy
+                </div>
+              </div>
+              <h1 className="text-2xl md:text-4xl font-extrabold mb-6 leading-normal bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-pink-300 to-orange-300">
                 Discover Amazing Products
               </h1>
-              <p className="text-xl md:text-2xl mb-8 text-blue-100">
+              <p className="text-xl md:text-2xl mb-4 text-blue-100">
                 Shop the latest trends with unbeatable prices and quality
+              </p>
+              <p className="text-base md:text-lg mb-8 font-mono text-yellow-300 tracking-wide">
+                Registration is required to complete purchases.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/customer/products"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold transition-all duration-200 bg-white text-blue-700 hover:scale-105 hover:shadow-lg"
                 >
                   Shop Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
                   to="/categories"
-                  className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold transition-all duration-200 border-2 border-white text-white hover:bg-white hover:text-blue-700 hover:scale-105 hover:shadow-lg"
                 >
                   Browse Categories
                 </Link>
@@ -175,31 +193,31 @@ const HomePage: React.FC = () => {
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
+              <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
                 <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-blue-100 rounded-full">
+                  <div className="p-3 bg-blue-100 rounded-full group-hover:scale-110 transition-transform">
                     <Shield className="h-8 w-8 text-blue-600" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Secure Shopping</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600">Secure Shopping</h3>
                 <p className="text-gray-600">Your data is protected with industry-standard encryption</p>
               </div>
-              <div className="text-center">
+              <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
                 <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-green-100 rounded-full">
+                  <div className="p-3 bg-green-100 rounded-full group-hover:scale-110 transition-transform">
                     <Truck className="h-8 w-8 text-green-600" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Delivery</h3>
-                <p className="text-gray-600">Free shipping on orders over $50 with express delivery</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-green-600">Fast Delivery</h3>
+                <p className="text-gray-600">Always free shipping with express delivery</p>
               </div>
-              <div className="text-center">
+              <div className="text-center group bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
                 <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-purple-100 rounded-full">
+                  <div className="p-3 bg-purple-100 rounded-full group-hover:scale-110 transition-transform">
                     <HeartHandshake className="h-8 w-8 text-purple-600" />
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Customer Support</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-purple-600">Customer Support</h3>
                 <p className="text-gray-600">24/7 support team ready to help with any questions</p>
               </div>
             </div>
@@ -221,17 +239,21 @@ const HomePage: React.FC = () => {
                 <Link
                   key={category.id}
                   to={`/categories/${category.id}`}
-                  className="group relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+                  className="group relative rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-2xl transition-all duration-300"
                 >
-                  <div className="aspect-w-16 aspect-h-10">
+                  <div className="relative h-40">
                     <img
                       src={category.imageUrl}
                       alt={category.name}
-                      className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/40 to-transparent" />
+                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold bg-white/90 text-gray-800 shadow">
+                      Explore
+                    </div>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600">
                       {category.name}
                     </h3>
                     <p className="text-gray-600 text-sm">{category.description}</p>
@@ -239,39 +261,45 @@ const HomePage: React.FC = () => {
                 </Link>
               ))}
             </div>
+            {/* Interactive dropdowns (FAQs/Info) */}
+            <div className="mt-12 max-w-3xl mx-auto space-y-4">
+              <details className="group bg-white rounded-xl shadow-md p-4 cursor-pointer">
+                <summary className="flex items-center justify-between list-none">
+                  <span className="text-lg font-semibold text-gray-900">Shipping Policy</span>
+                  <span className="text-sm text-gray-500 group-open:hidden">Click to expand</span>
+                  <span className="text-sm text-gray-500 hidden group-open:inline">Click to collapse</span>
+                </summary>
+                <div className="mt-3 text-gray-600">
+                  We offer always free shipping with express delivery. No minimum order value required.
+                </div>
+              </details>
+              <details className="group bg-white rounded-xl shadow-md p-4 cursor-pointer">
+                <summary className="flex items-center justify-between list-none">
+                  <span className="text-lg font-semibold text-gray-900">Returns & Refunds</span>
+                  <span className="text-sm text-gray-500 group-open:hidden">Click to expand</span>
+                  <span className="text-sm text-gray-500 hidden group-open:inline">Click to collapse</span>
+                </summary>
+                <div className="mt-3 text-gray-600">
+                  Hassle-free returns within 30 days. Refunds processed within 3-5 business days.
+                </div>
+              </details>
+              <details className="group bg-white rounded-xl shadow-md p-4 cursor-pointer">
+                <summary className="flex items-center justify-between list-none">
+                  <span className="text-lg font-semibold text-gray-900">Support</span>
+                  <span className="text-sm text-gray-500 group-open:hidden">Click to expand</span>
+                  <span className="text-sm text-gray-500 hidden group-open:inline">Click to collapse</span>
+                </summary>
+                <div className="mt-3 text-gray-600">
+                  Our 24/7 support team is ready to help via chat, email, and phone.
+                </div>
+              </details>
+            </div>
           </div>
         </section>
       )}
 
       {/* Featured Products Section - shown to customers and non-authenticated users */}
-      {(!isAuthenticated || !isAdmin) && (
-        <section className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center mb-12">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Products</h2>
-                <p className="text-gray-600">Hand-picked products just for you</p>
-              </div>
-              <Link
-                to="/customer/products"
-                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold"
-              >
-                View All
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Featured Products section removed per request */}
 
       {/* Stats Section */}
       <section className="py-16 bg-gray-900 text-white">
