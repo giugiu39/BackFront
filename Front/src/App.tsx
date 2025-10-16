@@ -9,7 +9,6 @@ import AdminDashboard from './pages/AdminDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -91,18 +90,10 @@ function App() {
               
               {/* General Protected Routes */}
               <Route 
-                path="/cart" 
-                element={
-                  <ProtectedRoute>
-                    <Layout><CartPage /></Layout>
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
                 path="/wishlist" 
                 element={
                   <ProtectedRoute>
-                    <WishlistPage />
+                  <WishlistPage />
                   </ProtectedRoute>
                 } 
               />

@@ -1,9 +1,7 @@
 import React, { ReactNode } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCart } from '../../contexts/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  ShoppingCart, 
   User, 
   Search, 
   Menu, 
@@ -24,7 +22,6 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
   const { user, logout, isAdmin } = useAuth();
-  const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -84,21 +81,6 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                     <Heart className="h-6 w-6" />
                     <span className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
                       Wishlist
-                    </span>
-                  </button>
-                  <button 
-                    onClick={() => navigate('/cart')} 
-                    className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors group"
-                    title="Cart"
-                  >
-                    <ShoppingCart className="h-6 w-6" />
-                    {totalItems > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {totalItems}
-                      </span>
-                    )}
-                    <span className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                      Cart
                     </span>
                   </button>
                   <button 
@@ -203,12 +185,6 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                   {/* Customer-specific mobile menu items */}
                   {!isAdmin && (
                     <>
-                      <button 
-                        onClick={() => navigate('/cart')} 
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
-                      >
-                        Cart
-                      </button>
                       <button 
                         onClick={() => navigate('/orders')} 
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"

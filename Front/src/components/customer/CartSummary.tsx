@@ -8,7 +8,7 @@ interface CartSummaryProps {
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({ showCheckout = true, onCheckout }) => {
-  const { items, updateQuantity, removeFromCart, totalPrice, totalItems } = useCart();
+  const { items, updateQuantity, removeFromCart, totalPrice, totalItems, clearCart } = useCart();
 
   if (items.length === 0) {
     return (
@@ -41,16 +41,23 @@ const CartSummary: React.FC<CartSummaryProps> = ({ showCheckout = true, onChecko
       {/* Header counters */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Shopping Cart</h2>
-        <div className="flex items-center space-x-4">
-          <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow">
-            <span className="text-sm">Total products</span>
-            <div className="text-lg font-semibold">{totalItems}</div>
-          </div>
-          <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow">
-            <span className="text-sm">Total amount</span>
-            <div className="text-lg font-semibold">€{totalPrice.toFixed(2)}</div>
-          </div>
+      <div className="flex items-center space-x-4">
+        <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow">
+          <span className="text-sm">Total products</span>
+          <div className="text-lg font-semibold">{totalItems}</div>
         </div>
+        <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow">
+          <span className="text-sm">Total amount</span>
+          <div className="text-lg font-semibold">€{totalPrice.toFixed(2)}</div>
+        </div>
+        <button
+          onClick={clearCart}
+          className="px-4 py-2 rounded-lg bg-red-600 text-white shadow hover:bg-red-700"
+          title="Svuota carrello"
+        >
+          Svuota
+        </button>
+      </div>
       </div>
 
       <div className="space-y-4 mb-6">

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { customerApi } from '../../services/ApiService';
-import { ShoppingCart, Heart, Star } from 'lucide-react';
-import { useCart } from '../../contexts/CartContext';
+import { Heart } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -20,8 +19,7 @@ const ProductList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
-  const { addToCart, loading: cartLoading, items } = useCart();
-  const isInCart = (pid: string | number) => items.some(i => Number(i.productId) === Number(pid));
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -61,15 +59,7 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = async (productId: string) => {
-    try {
-      await addToCart(Number(productId));
-      alert('Product added to cart!');
-    } catch (err) {
-      console.error('Error adding to cart:', err);
-      alert('Unable to add to cart. Please try again later.');
-    }
-  };
+  
 
   const handleAddToWishlist = async (productId: string) => {
     try {
@@ -152,21 +142,8 @@ const ProductList: React.FC = () => {
             <div className="p-4">
               <h3 className="text-lg font-semibold">{product.name}</h3>
               <div className="flex items-center mt-1">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(4.5)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="ml-1 text-sm text-gray-600">4.5</span>
                 {product.categoryName && (
-                  <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                  <span className="ml-0 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
                     {product.categoryName}
                   </span>
                 )}
@@ -183,14 +160,6 @@ const ProductList: React.FC = () => {
                 )}
               </div>
               <div className="mt-4 flex space-x-2">
-                <button
-                  onClick={() => handleAddToCart(product.id)}
-                  disabled={cartLoading || isInCart(product.id)}
-                  className={`flex-1 py-2 px-4 rounded-md flex items-center justify-center ${cartLoading || isInCart(product.id) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  {cartLoading ? 'Adding...' : 'Add'}
-                </button>
                 <button
                   onClick={() => handleAddToWishlist(product.id)}
                   className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-100"

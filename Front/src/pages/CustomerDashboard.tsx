@@ -50,13 +50,13 @@ const CustomerDashboard: React.FC = () => {
     { id: 'beauty', name: 'Beauty', image: '💄', count: 0, gradient: 'from-red-500 to-pink-500' }
   ];
 
-  // Load products from backend
+  // Load products from backend (use customer API, not admin)
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const response = await adminApi.getProducts();
+        const response = await customerApi.getAllProducts();
         if (response && Array.isArray(response)) {
-          setProducts(response);
+          setProducts(response as any);
           
           // Function to map category ID to database category name
           const mapCategoryIdToName = (categoryId: string): string => {
@@ -74,9 +74,11 @@ const CustomerDashboard: React.FC = () => {
           // Function to count products by category
           const getProductCountByCategory = (categoryId: string): number => {
             const categoryName = mapCategoryIdToName(categoryId);
-            return response.filter(product => 
-              product.category && product.category === categoryName
-            ).length;
+            return response.filter((product: any) => {
+              // Preferisci product.categoryName (DTO backend), fallback a product.category?.name
+              const pCat = product?.categoryName ?? product?.category?.name;
+              return pCat && pCat === categoryName;
+            }).length;
           };
           
           // Update categories with real product counts

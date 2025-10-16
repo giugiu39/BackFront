@@ -1,7 +1,6 @@
 import React from 'react';
 import { Product } from '../../types';
-import { useCart } from '../../contexts/CartContext';
-import { ShoppingCart, Heart, Star } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -14,21 +13,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onWishlistToggle, 
   isInWishlist = false 
 }) => {
-  const { addToCart, items, loading } = useCart();
-  const isInCart = (pid: string | number) => items.some(i => Number(i.productId) === Number(pid));
+  
 
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    try {
-      await addToCart(product.id);
-      // Mostra un feedback visivo
-      console.log('Product added to cart successfully');
-    } catch (error) {
-      console.error('Error adding product to cart:', error);
-    }
-  };
+  
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,34 +47,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           >
             <Heart className={`h-4 w-4 ${isInWishlist ? 'fill-current' : ''}`} />
           </button>
-          <button
-            onClick={handleAddToCart}
-            disabled={loading || isInCart(product.id)}
-            className={`p-2 rounded-full shadow-md transition-colors ${loading || isInCart(product.id) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-          >
-            <ShoppingCart className="h-4 w-4" />
-          </button>
         </div>
       </div>
       
       <div className="p-4">
-        <div className="flex items-center mb-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-4 w-4 ${
-                  i < Math.floor(4.5)
-                    ? 'text-yellow-400 fill-current'
-                    : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-sm text-gray-600 ml-2">
-            (4.5)
-          </span>
-        </div>
+        
         
         <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
           {product.name}
@@ -120,13 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
         
-        <button
-          onClick={handleAddToCart}
-          disabled={loading || isInCart(product.id)}
-          className={`w-full py-2 px-4 rounded-lg transition-colors duration-200 font-medium ${loading || isInCart(product.id) ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-        >
-          {loading ? 'Aggiungendo...' : 'Add to Cart'}
-        </button>
+        
       </div>
     </div>
   );

@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useCart } from '../contexts/CartContext';
 import Layout from '../components/common/Layout';
 import { customerApi } from '../services/ApiService';
 import { Product } from '../types';
-import { ShoppingCart, Search, Filter, Star, Heart, Zap } from 'lucide-react';
+import { Search, Filter, Heart, Zap } from 'lucide-react';
 
 const CustomerProductsPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName?: string }>();
   const { user } = useAuth();
-  const { addToCart, loading: cartLoading, items } = useCart();
-  const isInCart = (pid: number | string) => items.some(i => Number(i.productId) === Number(pid));
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,15 +82,7 @@ const CustomerProductsPage: React.FC = () => {
     }
   };
 
-  const handleAddToCart = async (product: Product) => {
-    try {
-      await addToCart(Number(product.id));
-      alert(`${product.name} aggiunto al carrello!`);
-    } catch (error) {
-      console.error('Errore nell\'aggiunta al carrello:', error);
-      alert('Errore nell\'aggiunta al carrello. Riprova più tardi.');
-    }
-  };
+  
 
   const addToWishlist = async (product: Product) => {
     try {
@@ -265,20 +255,7 @@ const CustomerProductsPage: React.FC = () => {
                       {product.description}
                     </p>
 
-                    {/* Rating */}
-                    <div className="flex items-center mb-3">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${
-                              i < 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="ml-2 text-sm text-gray-600">(4.0)</span>
-                    </div>
+                    
 
                     {/* Price */}
                     <div className="flex items-center justify-between mb-4">
@@ -292,19 +269,7 @@ const CustomerProductsPage: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Add to Cart Button */}
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      disabled={cartLoading || isInCart(product.id)}
-                      className={`w-full py-2 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg font-medium ${
-                        cartLoading || isInCart(product.id)
-                          ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
-                      }`}
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      <span>{cartLoading ? 'Aggiungendo...' : 'Add to cart'}</span>
-                    </button>
+                    
                   </div>
                 </div>
               ))}

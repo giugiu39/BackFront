@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CartServiceImpl implements CartService {
 
     @Autowired
@@ -65,7 +67,9 @@ public class CartServiceImpl implements CartService {
                 );
 
                 if (optionalCartItems.isPresent()) {
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+                    // Prodotto già presente nel carrello: restituisci lo stato completo del carrello
+                    OrderDto orderDto = getCartByUserId(addProductInCartDto.getUserId());
+                    return ResponseEntity.status(HttpStatus.OK).body(orderDto);
                 } else {
                     Product product = optionalProduct.get();
                     CartItems cart = new CartItems();
@@ -75,13 +79,23 @@ public class CartServiceImpl implements CartService {
                     cart.setUser(user);
                     cart.setOrder(order);
 
-                    CartItems updatedCart = cartItemsRepository.save(cart);
+                    cartItemsRepository.save(cart);
 
-                    order.setTotalAmount(order.getTotalAmount() + cart.getPrice());
-                    order.setAmount(order.getAmount() + cart.getPrice());
+                    long currentTotal = order.getTotalAmount() == null ? 0L : order.getTotalAmount();
+                    long currentAmount = order.getAmount() == null ? 0L : order.getAmount();
+                    long itemPrice = cart.getPrice() == null ? 0L : cart.getPrice();
+
+                    order.setTotalAmount(currentTotal + itemPrice);
+                    order.setAmount(currentAmount + itemPrice);
+
+                    if (order.getCoupon() != null) {
+                        order.setDiscount((long) (order.getTotalAmount() * order.getCoupon().getDiscount() / 100));
+                    }
                     orderRepository.save(order);
 
-                    return ResponseEntity.status(HttpStatus.CREATED).body(updatedCart);
+                    // Restituisci un DTO completo dell'ordine aggiornato
+                    OrderDto orderDto = getCartByUserId(addProductInCartDto.getUserId());
+                    return ResponseEntity.status(HttpStatus.CREATED).body(orderDto);
                 }
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User or Product not found");
@@ -99,16 +113,31 @@ public class CartServiceImpl implements CartService {
         }
         User user = optionalUser.get();
         
+        // Recupera l'ordine Pending dell'utente; se non esiste, creane uno vuoto
         Order activeOrder = orderRepository.findByUserIdAndOrderStatus((long) user.getId(), OrderStatus.Pending);
-        List<CartItemsDto> cartItemsDtoList = activeOrder.getCartItems().stream().map(CartItems::getCartDto).collect(Collectors.toList());
+        if (activeOrder == null) {
+            activeOrder = new Order();
+            activeOrder.setAmount(0L);
+            activeOrder.setTotalAmount(0L);
+            activeOrder.setDiscount(0L);
+            activeOrder.setUser(user);
+            activeOrder.setOrderStatus(OrderStatus.Pending);
+            activeOrder = orderRepository.save(activeOrder);
+        }
+
+        List<CartItemsDto> cartItemsDtoList = activeOrder.getCartItems() == null
+                ? List.of()
+                : activeOrder.getCartItems().stream().map(CartItems::getCartDto).collect(Collectors.toList());
+
         OrderDto orderDto = new OrderDto();
-        orderDto.setAmount(activeOrder.getAmount());
+        orderDto.setAmount(activeOrder.getAmount() == null ? 0L : activeOrder.getAmount());
         orderDto.setId(activeOrder.getId());
         orderDto.setOrderStatus(activeOrder.getOrderStatus());
-        orderDto.setDiscount(activeOrder.getDiscount());
-        orderDto.setTotalAmount(activeOrder.getTotalAmount());
+        orderDto.setDiscount(activeOrder.getDiscount() == null ? 0L : activeOrder.getDiscount());
+        orderDto.setTotalAmount(activeOrder.getTotalAmount() == null ? 0L : activeOrder.getTotalAmount());
         orderDto.setCartItems(cartItemsDtoList);
-        if(activeOrder.getCoupon() != null) {
+        orderDto.setUserName(user.getName());
+        if (activeOrder.getCoupon() != null) {
             orderDto.setCouponName(activeOrder.getCoupon().getName());
         }
 
@@ -300,6 +329,31 @@ public class CartServiceImpl implements CartService {
         }
 
         cartItemsRepository.deleteById(cartItemId);
+        orderRepository.save(activeOrder);
+    }
+
+    @Override
+    public void clearCart(String keycloakId) {
+        Optional<User> optionalUser = userRepository.findByKeycloakId(keycloakId);
+        if (optionalUser.isEmpty()) {
+            return;
+        }
+        User user = optionalUser.get();
+
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus((long) user.getId(), OrderStatus.Pending);
+        if (activeOrder == null) {
+            return;
+        }
+
+        List<CartItems> items = cartItemsRepository.findByOrderIdAndUserId(activeOrder.getId(), (long) user.getId());
+        if (!items.isEmpty()) {
+            cartItemsRepository.deleteAll(items);
+        }
+
+        activeOrder.setAmount(0L);
+        activeOrder.setTotalAmount(0L);
+        activeOrder.setDiscount(0L);
+        activeOrder.setCoupon(null);
         orderRepository.save(activeOrder);
     }
 

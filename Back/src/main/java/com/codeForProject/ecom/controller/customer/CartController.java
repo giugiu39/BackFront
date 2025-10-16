@@ -22,7 +22,11 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/cart")
-    public ResponseEntity<?> addProductToCart(@RequestBody AddProductInCartDto addProductInCartDto) {
+    public ResponseEntity<?> addProductToCart(@RequestBody AddProductInCartDto addProductInCartDto, Authentication authentication) {
+        // Imposta l'userId dal JWT per coerenza e sicurezza
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        addProductInCartDto.setUserId(keycloakId);
         return cartService.addProductToCart(addProductInCartDto);
     }
 
@@ -73,6 +77,14 @@ public class CartController {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String keycloakId = jwt.getSubject();
         cartService.removeCartItem(itemId, keycloakId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/cart")
+    public ResponseEntity<?> clearCart(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String keycloakId = jwt.getSubject();
+        cartService.clearCart(keycloakId);
         return ResponseEntity.noContent().build();
     }
 

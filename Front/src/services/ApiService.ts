@@ -228,6 +228,9 @@ export const customerApi = {
       })
     });
   },
+  clearCart: () => apiRequest('/api/customer/cart', {
+    method: 'DELETE'
+  }),
   updateCartItem: (itemId: string, quantity: number) => apiRequest(`/api/customer/cart/${itemId}`, {
     method: 'PUT',
     body: JSON.stringify({ quantity })

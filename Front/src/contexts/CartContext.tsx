@@ -100,8 +100,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const clearCart = () => {
-    setItems([]);
+  const clearCart = async () => {
+    try {
+      await customerApi.clearCart();
+      setItems([]);
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+    }
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

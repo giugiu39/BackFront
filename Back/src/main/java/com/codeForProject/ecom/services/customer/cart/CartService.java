@@ -30,4 +30,7 @@ public interface CartService {
     // Remove a cart item and update order totals for the authenticated user
     void removeCartItem(Long cartItemId, String keycloakId);
 
+    // Clear all items from the authenticated user's pending cart
+    void clearCart(String keycloakId);
+
 }
