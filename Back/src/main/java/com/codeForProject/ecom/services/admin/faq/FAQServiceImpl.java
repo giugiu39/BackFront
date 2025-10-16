@@ -28,4 +28,12 @@ public class FAQServiceImpl implements FAQService {
                 .collect(Collectors.toList());
     }
 
+    public boolean deleteFaq(Long id) {
+        if (faqrepository.existsById(id)) {
+            faqrepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 }

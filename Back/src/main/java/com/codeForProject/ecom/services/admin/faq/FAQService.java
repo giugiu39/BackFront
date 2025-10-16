@@ -9,4 +9,6 @@ public interface FAQService {
 
     List<FAQDto> getAllFaqs();
 
+    boolean deleteFaq(Long id);
+
 }

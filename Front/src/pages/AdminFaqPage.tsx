@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Layout from '../components/common/Layout';
 import { adminApi } from '../services/ApiService';
-import { Plus, X, HelpCircle, ChevronDown, Search } from 'lucide-react';
+import { Plus, X, HelpCircle, ChevronDown, Search, Trash2 } from 'lucide-react';
 
 interface Faq {
   id: number;
@@ -45,6 +45,18 @@ const AdminFaqPage: React.FC = () => {
   }, [faqs, search]);
 
   const toggleExpand = (id: number) => setExpandedId((curr) => (curr === id ? null : id));
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this FAQ?')) return;
+    try {
+      await adminApi.deleteFaq(id);
+      setFaqs((prev) => prev.filter((f) => f.id !== id));
+      if (expandedId === id) setExpandedId(null);
+    } catch (err) {
+      console.error('Delete FAQ error', err);
+      setError('Error while deleting the FAQ.');
+    }
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,13 +169,22 @@ const AdminFaqPage: React.FC = () => {
                     const isOpen = expandedId === faq.id;
                     return (
                       <li key={faq.id} className="bg-white/10 rounded-xl border border-white/20">
-                        <button
-                          onClick={() => toggleExpand(faq.id)}
-                          className="w-full flex items-start justify-between gap-3 p-4 text-left"
-                        >
-                          <p className="text-white font-medium">{faq.question}</p>
-                          <ChevronDown className={`w-5 h-5 text-fuchsia-300 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                        </button>
+                        <div className="flex items-start justify-between gap-3 p-4">
+                          <button
+                            onClick={() => toggleExpand(faq.id)}
+                            className="flex-1 text-left flex items-start justify-between gap-3"
+                          >
+                            <p className="text-white font-medium">{faq.question}</p>
+                            <ChevronDown className={`w-5 h-5 text-fuchsia-300 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(faq.id)}
+                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+                            aria-label="Delete FAQ"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                         <div className={`px-4 pb-4 text-fuchsia-100 ${isOpen ? 'block' : 'hidden'}`}>{faq.answer}</div>
                       </li>
                     );

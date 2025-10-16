@@ -59,6 +59,15 @@ public class AdminProductController {
         return ResponseEntity.ok(faqService.getAllFaqs());
     }
 
+    @DeleteMapping("/faqs/{faqId}")
+    public ResponseEntity<Void> deleteFaq(@PathVariable Long faqId) {
+        boolean deleted = faqService.deleteFaq(faqId);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/product/{productId}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
         ProductDto productDto = adminProductService.getProductById(productId);

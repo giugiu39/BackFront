@@ -207,6 +207,9 @@ export const adminApi = {
   createFaq: (faq: { question: string; answer: string }) => apiRequest('/api/admin/faqs', {
     method: 'POST',
     body: JSON.stringify(faq)
+  }),
+  deleteFaq: (faqId: number) => apiRequest(`/api/admin/faqs/${faqId}`, {
+    method: 'DELETE'
   })
 };
 
