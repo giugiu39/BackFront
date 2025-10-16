@@ -165,7 +165,7 @@ const CustomerDashboard: React.FC = () => {
                   <Truck className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">Fast Delivery</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">Free shipping over €50 and 24h delivery</p>
+                <p className="text-gray-600 text-sm leading-relaxed">Free shipping always</p>
               </div>
               
               <div className="group bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -180,8 +180,8 @@ const CustomerDashboard: React.FC = () => {
                 <div className="bg-gradient-to-r from-orange-500 to-amber-500 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Zap className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">Exclusive Offers</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">Member discounts and special promotions</p>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Exclusive Items</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">Early access to new arrivals and limited editions</p>
               </div>
             </div>
           </div>
