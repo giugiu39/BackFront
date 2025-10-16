@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Layout from '../components/common/Layout';
 import { adminApi } from '../services/ApiService';
-import { Plus, X, HelpCircle } from 'lucide-react';
+import { Plus, X, HelpCircle, ChevronDown, Search } from 'lucide-react';
 
 interface Faq {
   id: number;
@@ -16,6 +16,8 @@ const AdminFaqPage: React.FC = () => {
   const [question, setQuestion] = useState<string>('');
   const [answer, setAnswer] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const loadFaqs = async () => {
     try {
@@ -33,6 +35,16 @@ const AdminFaqPage: React.FC = () => {
   useEffect(() => {
     loadFaqs();
   }, []);
+
+  const filteredFaqs = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return faqs;
+    return faqs.filter(
+      (f) => f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q)
+    );
+  }, [faqs, search]);
+
+  const toggleExpand = (id: number) => setExpandedId((curr) => (curr === id ? null : id));
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +81,19 @@ const AdminFaqPage: React.FC = () => {
               >
                 <Plus className="w-5 h-5" /> New FAQ
               </button>
+            </div>
+
+            {/* Admin Search */}
+            <div className="mt-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/80" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Filter by question or answer"
+                  className="w-full pl-10 pr-4 py-2 rounded-lg bg-white/10 text-white placeholder:text-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"
+                />
+              </div>
             </div>
 
             {showForm && (
@@ -116,17 +141,33 @@ const AdminFaqPage: React.FC = () => {
             <div className="mt-8">
               <h2 className="text-lg font-semibold text-white/90">Published FAQs</h2>
               {loading ? (
-                <p className="mt-4 text-fuchsia-100">Loading...</p>
-              ) : faqs.length === 0 ? (
-                <p className="mt-4 text-fuchsia-100">No FAQs available.</p>
+                <div className="mt-4 space-y-3">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-5 w-1/2 bg-white/20 rounded" />
+                      <div className="mt-2 h-4 w-full bg-white/10 rounded" />
+                    </div>
+                  ))}
+                </div>
+              ) : filteredFaqs.length === 0 ? (
+                <p className="mt-4 text-fuchsia-100">No FAQs found for this filter.</p>
               ) : (
                 <ul className="mt-4 space-y-4">
-                  {faqs.map((faq) => (
-                    <li key={faq.id} className="bg-white/10 rounded-xl p-4 border border-white/20">
-                      <p className="text-white font-medium">{faq.question}</p>
-                      <p className="text-fuchsia-100 mt-2">{faq.answer}</p>
-                    </li>
-                  ))}
+                  {filteredFaqs.map((faq) => {
+                    const isOpen = expandedId === faq.id;
+                    return (
+                      <li key={faq.id} className="bg-white/10 rounded-xl border border-white/20">
+                        <button
+                          onClick={() => toggleExpand(faq.id)}
+                          className="w-full flex items-start justify-between gap-3 p-4 text-left"
+                        >
+                          <p className="text-white font-medium">{faq.question}</p>
+                          <ChevronDown className={`w-5 h-5 text-fuchsia-300 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        <div className={`px-4 pb-4 text-fuchsia-100 ${isOpen ? 'block' : 'hidden'}`}>{faq.answer}</div>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
