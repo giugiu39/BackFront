@@ -294,12 +294,12 @@ const CustomerDashboard: React.FC = () => {
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
               <Gift className="h-5 w-5 mr-2 text-yellow-300" />
-              <span className="font-semibold text-sm">Special Offer</span>
+              <span className="font-semibold text-sm">Special Client</span>
             </div>
             
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Stay Always Updated</h2>
             <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-              Subscribe to our newsletter and receive exclusive offers, special discounts and the latest news
+              Subscribe to our newsletter and receive the latest news about our new available items and the new steps forward of Speedy
             </p>
             
             <div className="max-w-md mx-auto">
