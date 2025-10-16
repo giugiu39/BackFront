@@ -75,8 +75,8 @@ const CustomerProductsPage: React.FC = () => {
       setProducts(normalized);
       setFilteredProducts(normalized);
     } catch (err: any) {
-      console.error('Errore nel caricamento dei prodotti:', err);
-      setError('Errore nel caricamento dei prodotti. Riprova più tardi.');
+      console.error('Error loading products:', err);
+      setError('Error loading products. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -110,7 +110,7 @@ const CustomerProductsPage: React.FC = () => {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Caricamento prodotti...</p>
+            <p className="mt-4 text-gray-600">Loading products...</p>
           </div>
         </div>
       </Layout>
@@ -123,13 +123,13 @@ const CustomerProductsPage: React.FC = () => {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Errore</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
             <p className="text-gray-600 mb-4">{error}</p>
             <button
               onClick={loadProducts}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Riprova
+              Retry
             </button>
           </div>
         </div>
