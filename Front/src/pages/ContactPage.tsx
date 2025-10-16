@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Layout from '../components/common/Layout';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, Headphones } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +27,13 @@ const ContactPage: React.FC = () => {
     // Reset form
     setFormData({ name: '', email: '', subject: '', message: '' });
     alert('Thank you for your message! We\'ll get back to you within 30 minutes.');
+  };
+
+  const navigate = useNavigate();
+  const { isAdmin } = useAuth();
+
+  const handleViewFaq = () => {
+    navigate(isAdmin ? '/admin/faq' : '/customer/faq');
   };
 
   return (
@@ -217,7 +226,7 @@ const ContactPage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">FAQ</h3>
                 <p className="text-blue-100 mb-4">Find answers to common questions</p>
-                <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                <button onClick={handleViewFaq} className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                   View FAQ
                 </button>
               </div>

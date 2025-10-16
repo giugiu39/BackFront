@@ -31,6 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
     ...(isAdmin ? [] : [{ name: 'Products', href: '/customer/products' }]),
     // Aggiungo Categories tra Products e About per i non-admin
     ...(isAdmin ? [] : [{ name: 'Categories', href: '/categories' }]),
+    { name: 'FAQ', href: isAdmin ? '/admin/faq' : '/customer/faq' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -254,7 +255,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
           <div>
               <h4 className="text-sm font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link to="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
+                <li><Link to={isAdmin ? '/admin/faq' : '/customer/faq'} className="hover:text-white transition-colors">FAQ</Link></li>
                 <li><Link to="/returns" className="hover:text-white transition-colors">Returns</Link></li>
               </ul>
             </div>

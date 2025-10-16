@@ -1,9 +1,12 @@
 package com.codeForProject.ecom.services.admin.faq;
 
 import com.codeForProject.ecom.dto.FAQDto;
+import java.util.List;
 
 public interface FAQService {
 
-    FAQDto postFaq(Long productId, FAQDto faqDto);
+    FAQDto createFaq(FAQDto faqDto);
+
+    List<FAQDto> getAllFaqs();
 
 }

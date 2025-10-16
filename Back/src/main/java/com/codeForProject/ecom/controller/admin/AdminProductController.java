@@ -49,9 +49,14 @@ public class AdminProductController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/faq/{productId}")
-    public ResponseEntity<FAQDto> postFAQ(@PathVariable Long productId, @RequestBody FAQDto faqDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(faqService.postFaq(productId, faqDto));
+    @PostMapping("/faqs")
+    public ResponseEntity<FAQDto> createFAQ(@RequestBody FAQDto faqDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(faqService.createFaq(faqDto));
+    }
+
+    @GetMapping("/faqs")
+    public ResponseEntity<List<FAQDto>> getAllFaqs() {
+        return ResponseEntity.ok(faqService.getAllFaqs());
     }
 
     @GetMapping("/product/{productId}")

@@ -201,6 +201,13 @@ export const adminApi = {
   
   // Analytics
   getAnalytics: () => apiRequest('/api/admin/order/analytics')
+  ,
+  // FAQ (Admin)
+  getFaqs: () => apiRequest('/api/admin/faqs'),
+  createFaq: (faq: { question: string; answer: string }) => apiRequest('/api/admin/faqs', {
+    method: 'POST',
+    body: JSON.stringify(faq)
+  })
 };
 
 // API per gli utenti Customer
@@ -267,7 +274,10 @@ export const customerApi = {
   addReview: (productId: string, reviewData: any) => apiRequest(`/customer/products/${productId}/reviews`, {
     method: 'POST',
     body: JSON.stringify(reviewData)
-  })
+  }),
+
+  // FAQ (Customer)
+  getFaqs: () => apiRequest('/api/customer/faqs')
 };
 
 // API pubbliche (non richiedono autenticazione)

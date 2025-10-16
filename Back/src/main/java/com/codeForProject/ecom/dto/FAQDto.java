@@ -11,8 +11,5 @@ public class FAQDto {
 
     private String answer;
 
-    private Long productId;
-
-
 
 }

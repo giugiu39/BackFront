@@ -16,6 +16,8 @@ import ReturnsPage from './pages/ReturnsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CustomerProductsPage from './pages/CustomerProductsPage';
 import WishlistPage from './pages/WishlistPage';
+import AdminFaqPage from './pages/AdminFaqPage';
+import CustomerFaqPage from './pages/CustomerFaqPage';
 // Pagine prodotti customer rimosse temporaneamente
 import './index.css';
 
@@ -64,6 +66,14 @@ function App() {
                 } 
               />
               <Route 
+                path="/admin/faq" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminFaqPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/admin/profile" 
                 element={
                   <ProtectedRoute requiredRole="admin">
@@ -78,6 +88,14 @@ function App() {
                 element={
                   <ProtectedRoute requiredRole="customer">
                     <CustomerDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/customer/faq" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerFaqPage />
                   </ProtectedRoute>
                 } 
               />

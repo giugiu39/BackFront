@@ -38,7 +38,7 @@ public class CustomerProductServiceImpl implements CustomerProductService {
     public ProductDetailDto getProductDetailById(Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isPresent()) {
-            List<FAQ> faqList = faqRepository.findAllByProductId(productId);
+            List<FAQ> faqList = faqRepository.findAll();
             List<Review> reviewsList = reviewRepository.findAllByProductId(productId);
 
             ProductDetailDto productDetailDto = new ProductDetailDto();
