@@ -43,8 +43,6 @@ export interface Order {
   customer?: User;
   items: OrderItem[];
   totalAmount: number;
-  discountAmount?: number;
-  couponId?: string;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   trackingId: string;
   shippingAddress: Address;
@@ -79,18 +77,7 @@ export interface Review {
   createdAt: string;
 }
 
-export interface Coupon {
-  id: string;
-  code: string;
-  discountType: 'percentage' | 'fixed';
-  discountValue: number;
-  minOrderAmount?: number;
-  maxDiscountAmount?: number;
-  expiresAt: string;
-  isActive: boolean;
-  usageLimit?: number;
-  usageCount: number;
-}
+// Coupon type removed: no coupon functionality in the app
 
 export interface FAQ {
   id: string;

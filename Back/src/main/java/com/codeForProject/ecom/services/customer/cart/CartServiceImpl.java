@@ -6,7 +6,6 @@ import com.codeForProject.ecom.dto.OrderDto;
 import com.codeForProject.ecom.dto.PlaceOrderDto;
 import com.codeForProject.ecom.entity.*;
 import com.codeForProject.ecom.enums.OrderStatus;
-import com.codeForProject.ecom.exceptions.ValidationException;
 import com.codeForProject.ecom.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,9 +34,7 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private CouponRepository couponRepository;
+    
 
     @Override
     public ResponseEntity<?> addProductToCart(AddProductInCartDto addProductInCartDto) {
@@ -56,7 +53,6 @@ public class CartServiceImpl implements CartService {
                     order = new Order();
                     order.setAmount(0L);
                     order.setTotalAmount(0L);
-                    order.setDiscount(0L);
                     order.setUser(user);
                     order.setOrderStatus(OrderStatus.Pending);
                     order = orderRepository.save(order);
@@ -88,9 +84,6 @@ public class CartServiceImpl implements CartService {
                     order.setTotalAmount(currentTotal + itemPrice);
                     order.setAmount(currentAmount + itemPrice);
 
-                    if (order.getCoupon() != null) {
-                        order.setDiscount((long) (order.getTotalAmount() * order.getCoupon().getDiscount() / 100));
-                    }
                     orderRepository.save(order);
 
                     // Restituisci un DTO completo dell'ordine aggiornato
@@ -119,7 +112,6 @@ public class CartServiceImpl implements CartService {
             activeOrder = new Order();
             activeOrder.setAmount(0L);
             activeOrder.setTotalAmount(0L);
-            activeOrder.setDiscount(0L);
             activeOrder.setUser(user);
             activeOrder.setOrderStatus(OrderStatus.Pending);
             activeOrder = orderRepository.save(activeOrder);
@@ -133,48 +125,14 @@ public class CartServiceImpl implements CartService {
         orderDto.setAmount(activeOrder.getAmount() == null ? 0L : activeOrder.getAmount());
         orderDto.setId(activeOrder.getId());
         orderDto.setOrderStatus(activeOrder.getOrderStatus());
-        orderDto.setDiscount(activeOrder.getDiscount() == null ? 0L : activeOrder.getDiscount());
         orderDto.setTotalAmount(activeOrder.getTotalAmount() == null ? 0L : activeOrder.getTotalAmount());
         orderDto.setCartItems(cartItemsDtoList);
         orderDto.setUserName(user.getName());
-        if (activeOrder.getCoupon() != null) {
-            orderDto.setCouponName(activeOrder.getCoupon().getName());
-        }
 
         return orderDto;
     }
 
-    public OrderDto applyCoupon(String keycloakId, String code) {
-        // Trova l'utente tramite keycloakId
-        Optional<User> optionalUser = userRepository.findByKeycloakId(keycloakId);
-        if (optionalUser.isEmpty()) {
-            return null;
-        }
-        User user = optionalUser.get();
-        
-        Order activeOrder = orderRepository.findByUserIdAndOrderStatus((long) user.getId(), OrderStatus.Pending);
-        Coupon coupon = couponRepository.findByCode(code).orElseThrow(()-> new ValidationException("Coupon not found."));
-
-        if(couponIsExpired(coupon)) {
-            throw new ValidationException("Coupon has expired.");
-        }
-
-        double discountAmount = ((coupon.getDiscount() / 100.0) * activeOrder.getTotalAmount());
-        double netAmount = activeOrder.getTotalAmount() - discountAmount;
-
-        activeOrder.setAmount((long) netAmount);
-        activeOrder.setDiscount((long) discountAmount);
-        activeOrder.setCoupon(coupon);
-
-        orderRepository.save(activeOrder);
-        return activeOrder.getOrderDto();
-    }
-
-    private boolean couponIsExpired(Coupon coupon) {
-        Date currentDate = new Date();
-        Date expirationDate = coupon.getExpirationDate();
-        return expirationDate != null && currentDate.after(expirationDate);
-    }
+    // Funzionalità coupon rimossa
 
     public OrderDto increaseProductQuantity(AddProductInCartDto addProductInCartDto) {
         // Trova l'utente tramite keycloakId
@@ -200,9 +158,6 @@ public class CartServiceImpl implements CartService {
 
             cartItems.setQuantity(cartItems.getQuantity() + 1L);
 
-            if(activeOrder.getCoupon() != null) {
-                activeOrder.setDiscount((long) (activeOrder.getTotalAmount() * activeOrder.getCoupon().getDiscount() / 100));
-            }
             cartItemsRepository.save(cartItems);
             orderRepository.save(activeOrder);
             return activeOrder.getOrderDto();
@@ -234,9 +189,6 @@ public class CartServiceImpl implements CartService {
 
             cartItems.setQuantity(cartItems.getQuantity() - 1L);
 
-            if(activeOrder.getCoupon() != null) {
-                activeOrder.setDiscount((long) (activeOrder.getTotalAmount() * activeOrder.getCoupon().getDiscount() / 100));
-            }
             cartItemsRepository.save(cartItems);
             orderRepository.save(activeOrder);
             return activeOrder.getOrderDto();
@@ -266,7 +218,6 @@ public class CartServiceImpl implements CartService {
             Order order = new Order();
             order.setAmount(0L);
             order.setTotalAmount(0L);
-            order.setDiscount(0L);
             order.setUser(user);
             order.setOrderStatus(OrderStatus.Pending);
             orderRepository.save(order);
@@ -322,12 +273,6 @@ public class CartServiceImpl implements CartService {
         activeOrder.setAmount(Math.max(0, activeOrder.getAmount() - decrement));
         activeOrder.setTotalAmount(Math.max(0, activeOrder.getTotalAmount() - decrement));
 
-        if (activeOrder.getCoupon() != null) {
-            activeOrder.setDiscount((long) (activeOrder.getTotalAmount() * activeOrder.getCoupon().getDiscount() / 100));
-        } else {
-            activeOrder.setDiscount(0L);
-        }
-
         cartItemsRepository.deleteById(cartItemId);
         orderRepository.save(activeOrder);
     }
@@ -352,8 +297,6 @@ public class CartServiceImpl implements CartService {
 
         activeOrder.setAmount(0L);
         activeOrder.setTotalAmount(0L);
-        activeOrder.setDiscount(0L);
-        activeOrder.setCoupon(null);
         orderRepository.save(activeOrder);
     }
 

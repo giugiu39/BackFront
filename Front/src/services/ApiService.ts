@@ -192,12 +192,6 @@ export const adminApi = {
     body: JSON.stringify({ status })
   }),
   
-  // Coupon
-  getCoupons: () => apiRequest('/admin/coupons'),
-  createCoupon: (couponData: any) => apiRequest('/admin/coupons', {
-    method: 'POST',
-    body: JSON.stringify(couponData)
-  }),
   
   // Analytics
   getAnalytics: () => apiRequest('/api/admin/order/analytics')

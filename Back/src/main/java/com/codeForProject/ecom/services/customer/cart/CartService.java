@@ -15,7 +15,6 @@ public interface CartService {
 
     OrderDto getCartByUserId(String keycloakId);
 
-    OrderDto applyCoupon(String keycloakId, String code);
 
     OrderDto increaseProductQuantity(AddProductInCartDto addProductInCartDto);
 

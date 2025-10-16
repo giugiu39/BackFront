@@ -29,14 +29,12 @@ public class OrderDto {
 
     private Long totalAmount;
 
-    private Long discount;
-
     private UUID trackingId;
 
     private String userName;
 
     private List<CartItemsDto> cartItems;
 
-    private String couponName;
+    // Campi coupon rimossi: non usiamo più sconti da coupon
 
 }

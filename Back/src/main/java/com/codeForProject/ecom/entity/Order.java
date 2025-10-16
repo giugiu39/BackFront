@@ -32,17 +32,13 @@ public class Order {
 
     private Long totalAmount;
 
-    private Long discount;
-
     private UUID trackingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "coupon_id", referencedColumnName = "id")
-    private Coupon coupon;
+    // Coupon rimosso: non è più previsto nel modello
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<CartItems> cartItems;
@@ -57,9 +53,6 @@ public class Order {
         orderDto.setDate(date);
         orderDto.setOrderStatus(orderStatus);
         orderDto.setUserName(user.getName());
-        if(coupon != null) {
-            orderDto.setCouponName(coupon.getName());
-        }
         return orderDto;
     }
 

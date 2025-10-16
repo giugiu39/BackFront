@@ -97,7 +97,6 @@ public class UserController {
                     Order order = new Order();
                     order.setAmount(0L);
                     order.setTotalAmount(0L);
-                    order.setDiscount(0L);
                     order.setUser(user);
                     order.setOrderStatus(OrderStatus.Pending);
                     orderRepository.save(order);

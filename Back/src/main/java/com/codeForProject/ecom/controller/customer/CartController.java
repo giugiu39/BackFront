@@ -3,7 +3,6 @@ package com.codeForProject.ecom.controller.customer;
 import com.codeForProject.ecom.dto.AddProductInCartDto;
 import com.codeForProject.ecom.dto.OrderDto;
 import com.codeForProject.ecom.dto.PlaceOrderDto;
-import com.codeForProject.ecom.exceptions.ValidationException;
 import com.codeForProject.ecom.services.customer.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,17 +37,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.OK).body(orderDto);
     }
 
-    @GetMapping("/coupon/{code}")
-    public ResponseEntity<?> applyCoupon(Authentication authentication, @PathVariable String code) {
-        try {
-            Jwt jwt = (Jwt) authentication.getPrincipal();
-            String keycloakId = jwt.getSubject();
-            OrderDto orderDto = cartService.applyCoupon(keycloakId, code);
-            return ResponseEntity.ok(orderDto);
-        } catch (ValidationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+    // Endpoint coupon rimosso
 
     @PostMapping("/addition")
     public ResponseEntity<OrderDto> increaseProductQuantity(@RequestBody AddProductInCartDto addProductInCartDto) {
