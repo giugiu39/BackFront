@@ -43,6 +43,9 @@ public class UserController {
             String keycloakId = jwt.getSubject();
             String email = jwt.getClaimAsString("email");
             String name = jwt.getClaimAsString("preferred_username");
+            String givenName = jwt.getClaimAsString("given_name");
+            String familyName = jwt.getClaimAsString("family_name");
+            String preferredUsername = jwt.getClaimAsString("preferred_username");
             
             System.out.println("JWT Claims: " + jwt.getClaims());
             System.out.println("Keycloak ID: " + keycloakId);
@@ -60,6 +63,10 @@ public class UserController {
                 user.setKeycloakId(keycloakId);
                 user.setEmail(email);
                 user.setName(name != null ? name : email);
+                // Set additional profile fields from Keycloak claims when available
+                user.setFirstName(givenName);
+                user.setLastName(familyName);
+                user.setUsername(preferredUsername != null ? preferredUsername : email);
                 
                 // Determina il ruolo dall'JWT
                 Map<String, Object> realmAccess = jwt.getClaimAsMap("realm_access");
@@ -170,6 +177,38 @@ public class UserController {
             }
             if (profileData.containsKey("img")) {
                 user.setImg((String) profileData.get("img"));
+            }
+            if (profileData.containsKey("firstName")) {
+                user.setFirstName((String) profileData.get("firstName"));
+            }
+            if (profileData.containsKey("lastName")) {
+                user.setLastName((String) profileData.get("lastName"));
+            }
+            if (profileData.containsKey("phone")) {
+                user.setPhone((String) profileData.get("phone"));
+            }
+            if (profileData.containsKey("username")) {
+                user.setUsername((String) profileData.get("username"));
+            }
+
+            if (profileData.containsKey("address") && profileData.get("address") instanceof java.util.Map) {
+                @SuppressWarnings("unchecked")
+                java.util.Map<String, Object> addressMap = (java.util.Map<String, Object>) profileData.get("address");
+                if (user.getAddress() == null) {
+                    user.setAddress(new com.codeForProject.ecom.entity.Address());
+                }
+                if (addressMap.containsKey("street")) {
+                    user.getAddress().setStreet((String) addressMap.get("street"));
+                }
+                if (addressMap.containsKey("city")) {
+                    user.getAddress().setCity((String) addressMap.get("city"));
+                }
+                if (addressMap.containsKey("postalCode")) {
+                    user.getAddress().setPostalCode((String) addressMap.get("postalCode"));
+                }
+                if (addressMap.containsKey("country")) {
+                    user.getAddress().setCountry((String) addressMap.get("country"));
+                }
             }
             
             user = userRepository.save(user);

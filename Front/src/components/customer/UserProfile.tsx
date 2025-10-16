@@ -17,7 +17,7 @@ interface UserData {
 }
 
 const UserProfile: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -35,7 +35,7 @@ const UserProfile: React.FC = () => {
         console.error('Error loading profile:', err);
         setError('Unable to load profile data. Please try again later.');
         
-        // Dati di fallback basati sull'utente autenticato
+        // Fallback data based on authenticated user
         if (user) {
           const fallbackData = {
             id: '1',
@@ -47,7 +47,7 @@ const UserProfile: React.FC = () => {
               street: '',
               city: '',
               postalCode: '',
-              country: 'Italia'
+              country: 'Italy'
             }
           };
           setUserData(fallbackData);
@@ -84,8 +84,15 @@ const UserProfile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await customerApi.updateUserProfile(formData);
-      setUserData(formData as UserData);
+      const payload = isAdmin
+        ? {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+          }
+        : formData;
+      await customerApi.updateUserProfile(payload as Partial<UserData>);
+      setUserData((prev) => ({ ...(prev || {}), ...(payload as UserData) } as UserData));
       setIsEditing(false);
       alert('Profile updated successfully!');
     } catch (err) {
@@ -109,7 +116,7 @@ const UserProfile: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Il mio profilo</h1>
+        <h1 className="text-2xl font-bold">My Profile</h1>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
@@ -124,7 +131,7 @@ const UserProfile: React.FC = () => {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">First name</label>
               <input
                 type="text"
                 name="firstName"
@@ -135,7 +142,7 @@ const UserProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cognome</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Last name</label>
               <input
                 type="text"
                 name="lastName"
@@ -145,6 +152,7 @@ const UserProfile: React.FC = () => {
                 required
               />
             </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
@@ -156,56 +164,60 @@ const UserProfile: React.FC = () => {
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Telefono</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone || ''}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Indirizzo</label>
-              <input
-                type="text"
-                name="address.street"
-                value={formData.address?.street || ''}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Città</label>
-              <input
-                type="text"
-                name="address.city"
-                value={formData.address?.city || ''}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">CAP</label>
-              <input
-                type="text"
-                name="address.postalCode"
-                value={formData.address?.postalCode || ''}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Paese</label>
-              <input
-                type="text"
-                name="address.country"
-                value={formData.address?.country || ''}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
+            {!isAdmin && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                  <input
+                    type="text"
+                    name="address.street"
+                    value={formData.address?.street || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <input
+                    type="text"
+                    name="address.city"
+                    value={formData.address?.city || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                  <input
+                    type="text"
+                    name="address.postalCode"
+                    value={formData.address?.postalCode || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <input
+                    type="text"
+                    name="address.country"
+                    value={formData.address?.country || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              </>
+            )}
           </div>
           
           <div className="mt-6 flex space-x-4">
@@ -232,31 +244,36 @@ const UserProfile: React.FC = () => {
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Nome completo</h3>
+                <h3 className="text-sm font-medium text-gray-500">Full name</h3>
                 <p className="mt-1">{userData?.firstName} {userData?.lastName}</p>
               </div>
+              
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Email</h3>
                 <p className="mt-1">{userData?.email}</p>
               </div>
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Telefono</h3>
-                <p className="mt-1">{userData?.phone || 'Non specificato'}</p>
-              </div>
-              <div className="md:col-span-2">
-                <h3 className="text-sm font-medium text-gray-500">Indirizzo di spedizione</h3>
-                <p className="mt-1">
-                  {userData?.address?.street ? (
-                    <>
-                      {userData.address.street}<br />
-                      {userData.address.postalCode} {userData.address.city}<br />
-                      {userData.address.country}
-                    </>
-                  ) : (
-                    'Indirizzo non specificato'
-                  )}
-                </p>
-              </div>
+              {!isAdmin && (
+                <>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-500">Phone</h3>
+                    <p className="mt-1">{userData?.phone || 'Not specified'}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <h3 className="text-sm font-medium text-gray-500">Shipping address</h3>
+                    <p className="mt-1">
+                      {userData?.address?.street ? (
+                        <>
+                          {userData.address.street}<br />
+                          {userData.address.postalCode} {userData.address.city}<br />
+                          {userData.address.country}
+                        </>
+                      ) : (
+                        'Address not specified'
+                      )}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

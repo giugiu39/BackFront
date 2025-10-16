@@ -5,7 +5,19 @@ export interface UserProfile {
   keycloakId: string;
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  phone?: string;
+  address?: {
+    street?: string;
+    city?: string;
+    postalCode?: string;
+    country?: string;
+  };
   role: 'ADMIN' | 'CUSTOMER';
+  img?: string;
+  image?: any;
 }
 
 export const userApi = {

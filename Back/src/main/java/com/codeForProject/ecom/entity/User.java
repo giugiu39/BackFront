@@ -22,6 +22,19 @@ public class User {
 
     private String name;
 
+    // New profile fields
+    private String firstName;
+
+    private String lastName;
+
+    @Column(name = "username")
+    private String username;
+
+    private String phone;
+
+    @Embedded
+    private Address address;
+
     private UserRole role;
 
     @Lob

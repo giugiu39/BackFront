@@ -121,8 +121,11 @@ const CustomerDashboard: React.FC = () => {
                 <span className="text-sm font-medium">Welcome to your favorite store</span>
               </div>
               
-              <h1 className="text-4xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-                Hello, {user?.name || 'Shopper'}! 👋
+              <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+                <span className="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                  Hello, {user?.name || 'Shopper'}!
+                </span>
+                <span className="ml-2 emoji" aria-hidden="true">👋</span>
               </h1>
               
               <p className="text-lg md:text-xl mb-8 text-indigo-100 max-w-2xl mx-auto leading-relaxed">
