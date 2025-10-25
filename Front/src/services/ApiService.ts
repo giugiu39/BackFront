@@ -215,34 +215,7 @@ export const customerApi = {
   searchProducts: (searchTerm: string) => apiRequest(`/api/customer/search/${searchTerm}`),
   getProductDetails: (productId: string) => apiRequest(`/api/customer/product/${productId}`),
   
-  // Carrello
-  getCart: () => apiRequest('/api/customer/cart'),
-  addToCart: async (productId: number) => {
-    // Ottieni l'ID Keycloak dell'utente corrente
-    const keycloakId = keycloak.tokenParsed?.sub;
-    if (!keycloakId) {
-      throw new Error('User not authenticated');
-    }
-    
-    return apiRequest('/api/customer/cart', {
-      method: 'POST',
-      body: JSON.stringify({
-        userId: keycloakId, // Usa keycloakId invece di un ID numerico
-        productId: productId
-      })
-    });
-  },
-  clearCart: () => apiRequest('/api/customer/cart', {
-    method: 'DELETE'
-  }),
-  updateCartItem: (itemId: string, quantity: number) => apiRequest(`/api/customer/cart/${itemId}`, {
-    method: 'PUT',
-    body: JSON.stringify({ quantity })
-  }),
-  removeFromCart: (itemId: string) => apiRequest(`/api/customer/cart/${itemId}`, {
-    method: 'DELETE'
-  }),
-  
+
   // Ordini
   placeOrder: (orderData: any) => apiRequest('/api/customer/orders', {
     method: 'POST',

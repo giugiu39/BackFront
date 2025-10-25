@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { CartProvider } from './contexts/CartContext';
+
 import Layout from './components/common/Layout';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import HomePage from './pages/HomePage';
@@ -27,8 +27,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <CartProvider>
-          <div className="App">
+        <div className="App">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
@@ -145,7 +144,6 @@ function App() {
               />
             </Routes>
           </div>
-        </CartProvider>
       </AuthProvider>
     </Router>
   );

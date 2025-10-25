@@ -17,8 +17,6 @@ public class CartItems {
 
     private Long price;
 
-    private Long quantity;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -40,7 +38,6 @@ public class CartItems {
         cartItemsDto.setId(id);
         cartItemsDto.setPrice(price);
         cartItemsDto.setProductId(product.getId());
-        cartItemsDto.setQuantity(quantity);
         cartItemsDto.setUserId((long) user.getId());
         cartItemsDto.setProductName(product.getName());
         cartItemsDto.setReturnedImg(product.getImage());

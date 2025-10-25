@@ -249,7 +249,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
               <ul className="space-y-2 text-gray-400">
                 <li><Link to="/customer/products" className="hover:text-white transition-colors">Products</Link></li>
                 <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link to={isAdmin ? '/admin/contact' : (user ? '/customer/contact' : '/contact')} className="hover:text-white transition-colors">Contact</Link></li>
               </ul>
             </div>
           <div>
