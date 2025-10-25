@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/common/Layout';
@@ -26,6 +26,7 @@ const AdminDashboard: React.FC = () => {
     totalCustomers: 0,
     monthlySales: 0
   });
+  const orderManagementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchStats();
@@ -101,7 +102,7 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="hidden">
               <div className="flex items-center">
                 <Users className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
@@ -132,12 +133,15 @@ const AdminDashboard: React.FC = () => {
               <p className="font-semibold">Add Product</p>
             </button>
             
-            <button className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded-lg shadow transition-colors">
+            <button 
+              onClick={() => orderManagementRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              className="bg-purple-600 hover:bg-purple-700 text-white p-6 rounded-lg shadow transition-colors"
+            >
               <ShoppingCart className="h-8 w-8 mx-auto mb-2" />
               <p className="font-semibold">Customer Orders</p>
             </button>
             
-            <button className="bg-orange-600 hover:bg-orange-700 text-white p-6 rounded-lg shadow transition-colors">
+            <button className="hidden">
               <Users className="h-8 w-8 mx-auto mb-2" />
               <p className="font-semibold">Manage Users</p>
             </button>
@@ -150,7 +154,7 @@ const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Order Management */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6" ref={orderManagementRef}>
             <h2 className="text-xl font-semibold mb-4">Order Management</h2>
             <AdminOrderManagement />
           </div>

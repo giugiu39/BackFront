@@ -38,7 +38,11 @@ const AdminProductManagement: React.FC = () => {
     try {
       setLoading(true);
       const productsData = await adminApi.getProducts();
-      setProducts(productsData || []);
+      const normalized = (Array.isArray(productsData) ? productsData : []).map((p: any) => ({
+        ...p,
+        imageUrl: p.byteImg ? `data:image/jpeg;base64,${p.byteImg}` : p.imageUrl
+      }));
+      setProducts(normalized);
     } catch (error) {
       console.error('Error fetching products:', error);
       setProducts([]);
@@ -156,7 +160,7 @@ const AdminProductManagement: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Product Management</h2>
-          <p className="text-gray-600">Add, edit and delete products from the catalog</p>
+          <p className="text-gray-600">Add or delete products from the catalog</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
@@ -219,11 +223,17 @@ const AdminProductManagement: React.FC = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      <img
-                        className="h-10 w-10 rounded-lg object-cover"
-                        src={product.imageUrl}
-                        alt={product.name}
-                      />
+                      {product.imageUrl ? (
+                        <img
+                          className="h-10 w-10 rounded-lg object-cover"
+                          src={product.imageUrl}
+                          alt={product.name}
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+                          No image
+                        </div>
+                      )}
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">{product.name}</div>
