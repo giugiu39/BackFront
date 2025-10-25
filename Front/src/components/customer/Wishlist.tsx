@@ -20,6 +20,7 @@ const Wishlist: React.FC = () => {
   const [error, setError] = useState('');
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
+  const [cartProductIds, setCartProductIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -75,6 +76,21 @@ const Wishlist: React.FC = () => {
     fetchWishlist();
   }, []);
 
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const order = await customerApi.getCart();
+        const ids = Array.isArray((order as any)?.cartItems)
+          ? (order as any).cartItems.map((ci: any) => String(ci.productId))
+          : [];
+        setCartProductIds(new Set(ids));
+      } catch (e) {
+        console.error('Error loading cart:', e);
+      }
+    };
+    loadCart();
+  }, []);
+
   const handleRemoveFromWishlist = async (wishlistItemId: string) => {
     try {
       setRemovingItems(prev => new Set(prev).add(wishlistItemId));
@@ -101,7 +117,23 @@ const Wishlist: React.FC = () => {
     }
   };
 
-
+  const handleAddToCart = async (productId: string, productName?: string) => {
+    try {
+      if (cartProductIds.has(productId)) {
+        alert(`${productName ?? 'Product'} è già nel carrello`);
+        return;
+      }
+      const updated = await customerApi.addToCart(productId);
+      const ids = Array.isArray((updated as any)?.cartItems)
+        ? (updated as any).cartItems.map((ci: any) => String(ci.productId))
+        : [];
+      setCartProductIds(new Set(ids));
+      alert(`${productName ?? 'Product'} aggiunto al carrello!`);
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+      alert('Unable to add to cart. Please try again later.');
+    }
+  };
 
   const navigateToProducts = () => {
     navigate('/customer/products');
@@ -195,7 +227,16 @@ const Wishlist: React.FC = () => {
                   </span>
                 </div>
                 
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => handleAddToCart(item.productId, item.productName)}
+                    disabled={cartProductIds.has(item.productId)}
+                    className="py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    title={cartProductIds.has(item.productId) ? 'Already in cart' : 'Add to cart'}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    <span className="ml-2 text-sm font-medium">Add to cart</span>
+                  </button>
                   <button
                     onClick={() => handleRemoveFromWishlist(item.id)}
                     disabled={removingItems.has(item.id)}

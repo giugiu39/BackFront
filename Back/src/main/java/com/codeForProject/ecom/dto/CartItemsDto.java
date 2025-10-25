@@ -17,6 +17,8 @@ public class CartItemsDto {
 
     private byte[] returnedImg;
 
+    private String categoryName;
+
     private Long userId;
 
 }

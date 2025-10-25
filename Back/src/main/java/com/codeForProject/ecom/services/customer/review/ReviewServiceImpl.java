@@ -38,7 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
                 productDto.setId(cartItems.getProduct().getId());
                 productDto.setName(cartItems.getProduct().getName());
                 productDto.setPrice(cartItems.getProduct().getPrice());
-                productDto.setQuantity(cartItems.getQuantity());
+                productDto.setQuantity(1L);
 
                 productDto.setByteImg(cartItems.getProduct().getImage());
 

@@ -246,6 +246,19 @@ export const customerApi = {
     body: JSON.stringify(reviewData)
   }),
 
+  // Cart
+  getCart: () => apiRequest('/api/customer/cart'),
+  addToCart: (productId: string) => apiRequest('/api/customer/cart', {
+    method: 'POST',
+    body: JSON.stringify({ productId })
+  }),
+  removeCartItem: (itemId: string) => apiRequest(`/api/customer/cart/${itemId}`, {
+    method: 'DELETE'
+  }),
+  clearCart: () => apiRequest('/api/customer/cart', {
+    method: 'DELETE'
+  }),
+
   // FAQ (Customer)
   getFaqs: () => apiRequest('/api/customer/faqs')
 };

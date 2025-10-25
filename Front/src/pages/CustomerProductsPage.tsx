@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/common/Layout';
 import { customerApi } from '../services/ApiService';
 import { Product } from '../types';
-import { Search, Filter, Heart, Zap } from 'lucide-react';
+import { Search, Filter, Heart, Zap, ShoppingCart } from 'lucide-react';
 
 const CustomerProductsPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName?: string }>();
@@ -17,6 +17,7 @@ const CustomerProductsPage: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [wishlistItems, setWishlistItems] = useState<Array<{ id: string; productId: string }>>([]);
   const [wishlistProductIds, setWishlistProductIds] = useState<Set<string>>(new Set());
+  const [cartProductIds, setCartProductIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadProducts();
@@ -38,6 +39,22 @@ const CustomerProductsPage: React.FC = () => {
       }
     };
     loadWishlist();
+  }, []);
+
+  useEffect(() => {
+    // Carica il carrello per disabilitare l'aggiunta se già presente
+    const loadCart = async () => {
+      try {
+        const order = await customerApi.getCart();
+        const ids = Array.isArray((order as any)?.cartItems)
+          ? (order as any).cartItems.map((ci: any) => String(ci.productId))
+          : [];
+        setCartProductIds(new Set(ids));
+      } catch (e) {
+        console.error('Errore nel caricamento del carrello:', e);
+      }
+    };
+    loadCart();
   }, []);
 
   useEffect(() => {
@@ -101,6 +118,25 @@ const CustomerProductsPage: React.FC = () => {
     } catch (error) {
       console.error('Errore nell\'aggiunta alla wishlist:', error);
       alert('Errore nell\'aggiunta alla wishlist. Riprova più tardi.');
+    }
+  };
+
+  const addToCart = async (product: Product) => {
+    try {
+      const pid = product.id.toString();
+      if (cartProductIds.has(pid)) {
+        alert(`${product.name} è già nel carrello`);
+        return;
+      }
+      const updated = await customerApi.addToCart(pid);
+      const ids = Array.isArray((updated as any)?.cartItems)
+        ? (updated as any).cartItems.map((ci: any) => String(ci.productId))
+        : [];
+      setCartProductIds(new Set(ids));
+      alert(`${product.name} aggiunto al carrello!`);
+    } catch (error) {
+      console.error('Errore nell\'aggiunta al carrello:', error);
+      alert('Errore nell\'aggiunta al carrello. Riprova più tardi.');
     }
   };
 
@@ -235,7 +271,7 @@ const CustomerProductsPage: React.FC = () => {
                           ? 'cursor-not-allowed opacity-70'
                           : 'hover:bg-gray-50'
                       }`}
-                      title={wishlistProductIds.has(product.id.toString()) ? 'Già nella wishlist' : 'Aggiungi alla wishlist'}
+                      title={wishlistProductIds.has(product.id.toString()) ? 'Already in wishlist' : 'Add to wishlist'}
                     >
                       <Heart className={`h-4 w-4 ${wishlistProductIds.has(product.id.toString()) ? 'text-red-500' : 'text-gray-600 group-hover:text-red-500'}`} />
                     </button>
@@ -269,7 +305,19 @@ const CustomerProductsPage: React.FC = () => {
                       )}
                     </div>
 
-                    
+                    <div className="flex items-center justify-end">
+                      <button
+                        onClick={() => addToCart(product)}
+                        disabled={cartProductIds.has(product.id.toString())}
+                        className={`px-3 py-2 rounded-md border flex items-center ${
+                          cartProductIds.has(product.id.toString()) ? 'cursor-not-allowed opacity-60' : 'hover:bg-gray-50'
+                        }`}
+                        title={cartProductIds.has(product.id.toString()) ? 'Already in cart' : 'Add to cart'}
+                      >
+                        <ShoppingCart className={`h-4 w-4 ${cartProductIds.has(product.id.toString()) ? 'text-blue-500' : 'text-gray-600 group-hover:text-blue-600'}`} />
+                        <span className="ml-2 text-sm">Add to cart</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

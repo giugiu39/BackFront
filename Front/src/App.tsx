@@ -18,6 +18,7 @@ import ReturnsPage from './pages/ReturnsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CustomerProductsPage from './pages/CustomerProductsPage';
 import WishlistPage from './pages/WishlistPage';
+import CustomerCartPage from './pages/CustomerCartPage';
 import AdminFaqPage from './pages/AdminFaqPage';
 import CustomerFaqPage from './pages/CustomerFaqPage';
 // Pagine prodotti customer rimosse temporaneamente
@@ -130,7 +131,15 @@ function App() {
                 path="/wishlist" 
                 element={
                   <ProtectedRoute>
-                  <WishlistPage />
+                    <WishlistPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/customer/cart" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerCartPage />
                   </ProtectedRoute>
                 } 
               />

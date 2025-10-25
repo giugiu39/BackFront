@@ -71,7 +71,6 @@ public class CartServiceImpl implements CartService {
                     CartItems cart = new CartItems();
                     cart.setProduct(product);
                     cart.setPrice(product.getPrice());
-                    cart.setQuantity(1L);
                     cart.setUser(user);
                     cart.setOrder(order);
 
@@ -153,13 +152,7 @@ public class CartServiceImpl implements CartService {
             CartItems cartItems = optionalCartItems.get();
             Product product = optionalProduct.get();
 
-            activeOrder.setAmount(activeOrder.getAmount() + product.getPrice());
-            activeOrder.setTotalAmount(activeOrder.getTotalAmount() + product.getPrice());
-
-            cartItems.setQuantity(cartItems.getQuantity() + 1L);
-
-            cartItemsRepository.save(cartItems);
-            orderRepository.save(activeOrder);
+            // Quantity adjustments are not supported; return current cart
             return activeOrder.getOrderDto();
         }
         return null;
@@ -184,13 +177,7 @@ public class CartServiceImpl implements CartService {
             CartItems cartItems = optionalCartItems.get();
             Product product = optionalProduct.get();
 
-            activeOrder.setAmount(activeOrder.getAmount() - product.getPrice());
-            activeOrder.setTotalAmount(activeOrder.getTotalAmount() - product.getPrice());
-
-            cartItems.setQuantity(cartItems.getQuantity() - 1L);
-
-            cartItemsRepository.save(cartItems);
-            orderRepository.save(activeOrder);
+            // Quantity adjustments are not supported; return current cart
             return activeOrder.getOrderDto();
         }
         return null;
@@ -269,7 +256,7 @@ public class CartServiceImpl implements CartService {
             return;
         }
 
-        long decrement = cartItem.getPrice() * cartItem.getQuantity();
+        long decrement = cartItem.getPrice();
         activeOrder.setAmount(Math.max(0, activeOrder.getAmount() - decrement));
         activeOrder.setTotalAmount(Math.max(0, activeOrder.getTotalAmount() - decrement));
 

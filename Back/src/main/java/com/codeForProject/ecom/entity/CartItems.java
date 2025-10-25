@@ -41,7 +41,7 @@ public class CartItems {
         cartItemsDto.setUserId((long) user.getId());
         cartItemsDto.setProductName(product.getName());
         cartItemsDto.setReturnedImg(product.getImage());
-
+        cartItemsDto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
         return cartItemsDto;
     }
 
