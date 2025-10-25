@@ -95,16 +95,6 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                       Cart
                     </span>
                   </button>
-                  <button 
-                    onClick={() => navigate('/orders')} 
-                    className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors group"
-                    title="Orders"
-                  >
-                    <Package className="h-6 w-6" />
-                    <span className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                      Orders
-                    </span>
-                  </button>
                 </>
               )}
 
@@ -208,12 +198,6 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
                         className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
                       >
                         My Cart
-                      </button>
-                      <button 
-                        onClick={() => navigate('/orders')} 
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100"
-                      >
-                        My Orders
                       </button>
                     </>
                   )}

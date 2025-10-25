@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { ShoppingBag, Clock, Heart, User } from 'lucide-react';
+import { ShoppingBag, Heart, User } from 'lucide-react';
 
 interface CustomerLayoutProps {
   children: React.ReactNode;
@@ -13,7 +13,6 @@ const CustomerLayout: React.FC<CustomerLayoutProps> = ({ children, activeTab, on
 
   const tabs = [
     { id: 'products', label: 'Products', icon: <ShoppingBag className="w-5 h-5" /> },
-    { id: 'orders', label: 'My orders', icon: <Clock className="w-5 h-5" /> },
     { id: 'wishlist', label: 'Wishlist', icon: <Heart className="w-5 h-5" /> },
     { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
   ];

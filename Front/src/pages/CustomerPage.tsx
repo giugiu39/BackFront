@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Layout from '../components/common/Layout';
 import ProfilePage from './ProfilePage';
 import { useAuth } from '../contexts/AuthContext';
-import { User, ShoppingBag, Package, Heart, Settings, CreditCard, Tag } from 'lucide-react';
+import { User, ShoppingBag, Heart, Settings, CreditCard, Tag } from 'lucide-react';
 
 const CustomerPage: React.FC = () => {
   const { user, isAuthenticated, loading } = useAuth();
@@ -39,12 +39,7 @@ const CustomerPage: React.FC = () => {
       case 'profile':
         return <ProfilePage />;
       case 'orders':
-        return (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">My Orders</h2>
-            <p className="text-gray-600">Here you will see your order history.</p>
-          </div>
-        );
+        return null;
       case 'wishlist':
         return (
           <div className="bg-white rounded-lg shadow p-6">
@@ -72,9 +67,9 @@ const CustomerPage: React.FC = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Dashboard</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="bg-blue-50 p-6 rounded-lg">
-                <Package className="h-8 w-8 text-blue-600 mb-4" />
-                <h3 className="font-semibold text-gray-900 mb-2">Recent Orders</h3>
-                <p className="text-gray-600 text-sm">View your most recent orders</p>
+                <Tag className="h-8 w-8 text-blue-600 mb-4" />
+                <h3 className="font-semibold text-gray-900 mb-2">Categories</h3>
+                <p className="text-gray-600 text-sm">Browse products by category</p>
               </div>
               <div className="bg-green-50 p-6 rounded-lg">
                 <Heart className="h-8 w-8 text-green-600 mb-4" />
@@ -95,7 +90,6 @@ const CustomerPage: React.FC = () => {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: User },
     { id: 'profile', label: 'Profile', icon: User },
-    { id: 'orders', label: 'Orders', icon: Package },
     { id: 'wishlist', label: 'Wishlist', icon: Heart },
     { id: 'categories', label: 'Categories', icon: Tag },
     { id: 'payment', label: 'Payments', icon: CreditCard },
@@ -111,7 +105,7 @@ const CustomerPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">
               Welcome, {user?.name || 'Customer'}!
             </h1>
-            <p className="text-gray-600 mt-2">Manage your account and view your orders</p>
+            <p className="text-gray-600 mt-2">Manage your account and preferences</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
