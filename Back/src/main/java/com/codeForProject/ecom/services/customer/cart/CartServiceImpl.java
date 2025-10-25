@@ -73,6 +73,8 @@ public class CartServiceImpl implements CartService {
                     cart.setPrice(product.getPrice());
                     cart.setUser(user);
                     cart.setOrder(order);
+                    // Sempre un solo pezzo per prodotto nel tuo ecommerce
+                    cart.setQuantity(1L);
 
                     cartItemsRepository.save(cart);
 

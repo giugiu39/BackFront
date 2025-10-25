@@ -21,4 +21,6 @@ public class CartItemsDto {
 
     private Long userId;
 
+    private Long quantity;
+
 }
