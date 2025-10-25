@@ -118,7 +118,7 @@ const CustomerFaqPage: React.FC = () => {
             {/* Help CTA */}
             <div className="mt-8 flex items-center justify-between bg-indigo-50 rounded-xl p-4 border border-indigo-100">
               <p className="text-gray-700">Still need help? Our team is here for you.</p>
-              <Link to="/contact" className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
+              <Link to="/customer/contact" className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
                 Get Support
               </Link>
             </div>
