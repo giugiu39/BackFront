@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children, showNavbar = true }) => {
     ...(isAdmin ? [] : [{ name: 'Categories', href: '/categories' }]),
     { name: 'FAQ', href: isAdmin ? '/admin/faq' : '/customer/faq' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Contact', href: isAdmin ? '/admin/contact' : (user ? '/customer/contact' : '/contact') },
   ];
 
   if (!showNavbar) {

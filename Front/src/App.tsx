@@ -12,6 +12,8 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import AdminContactPage from './pages/AdminContactPage';
+import CustomerContactPage from './pages/CustomerContactPage';
 import ReturnsPage from './pages/ReturnsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CustomerProductsPage from './pages/CustomerProductsPage';
@@ -33,6 +35,22 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route 
+                path="/admin/contact" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminContactPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/customer/contact" 
+                element={
+                  <ProtectedRoute requiredRole="customer">
+                    <CustomerContactPage />
+                  </ProtectedRoute>
+                } 
+              />
               <Route path="/returns" element={<ReturnsPage />} />
               <Route path="/categories" element={<CategoriesPage />} />
               
